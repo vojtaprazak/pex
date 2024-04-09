@@ -1,0 +1,11 @@
+def make_stalk_prm_file(stalk_mod_file, output_temp):
+	f = file(output_temp+'.prm','w')
+	f.write("fnStalkModel = '"+stalk_mod_file+"'\n")
+	f.write("fnRotAxes = '"+output_temp+"_RotAxes.csv'\n")
+	f.write("iRef = 0\n")
+	f.write("fnHead = '"+output_temp+"_head.mod'\n") 
+	f.write("fnCentroid = '"+output_temp+"_centroid.mod'\n")
+	f.write("fnTail = '"+output_temp+"_tail.mod'\n")
+	f.write("fnInitMotiveList = '"+output_temp+"_MOTL.csv'\n")
+	f.write("debugLevel = 3")
+	f.close()

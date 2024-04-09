@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+from PEETPicker import get_vector_from_pos_on_average
+from Vector import Vector
+      
+parser = argparse.ArgumentParser(description=('Create models and motive lists for averaging and aligning a user identified position from an icosahedral viral capsid. The vector must be given'
+                                              ' in pixel positions on the average of an icosahedral virus capsid map. The values from a Chimera marker can also be used, although not by directly'
+                                              ' using a marker file as an input - you must read the x y and z values and manually input them into the command. The map used to find the desired position'
+                                              ' is given as an input using the --from_chim option. You first need to run a PEET alignment and get an average of the whole virus capsid in one of the'
+                                              'standard icosahedral orientations.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm) that corresponds to your virus alignment run.')
+parser.add_argument('vector',  help='The x, y, and z coordinates, in pixels and comma separated, of the vector position to be symmetrised.')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when getting pentons. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+parser.add_argument('orientation', help='Orientation of the virus particle. Available options are i1, i2, i3 and i4.')
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+parser.add_argument('--from_chim', help='The .mrc file used in Chimera to find the vector position.', default='')
+
+
+args = parser.parse_args()
+
+writeprm = not args.no_prm
+
+inp = PEETPRMFile(args.prmfile)
+inp_vector = [float(x) for x in args.vector.split(',')]
+inp_vector = Vector.fromlist(inp_vector)
+if args.from_chim:
+    inp_vector = get_vector_from_pos_on_average(inp_vector, args.from_chim)
+
+inp.get_general_icos_pos(args.iteration, inp_vector, args.outdir, orient=args.orientation, writeprm=writeprm)

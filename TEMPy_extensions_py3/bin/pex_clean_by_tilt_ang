@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Removes or resets particles based on their change of tilt angle between two iterations.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('max_ang', type=float, help='Maximum difference in tilt angles before a particle is reset or removed.')
+parser.add_argument('iter_ini', type=int, help='Number value, the initial iteration to use when comparing tilt angles. 0 refers to the initial input files.')
+parser.add_argument('iter_fin', type=int, help='Number value, the final iteration to use when comparing tilt angles. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+
+parser.add_argument('--axis', nargs=3, metavar=('x','y','z'), help='The axis of each particle to compare. Default is 0,1,0 (y-axis).', default=(0,1,0), type=float)
+parser.add_argument('--reset', help=('Chosen particles are reset to their position in iter_ini, rather than removed'), action="store_true")
+parser.add_argument('--reset_all', help=('If selected and --reset is seleced, particle angles and translational offsets are reset. If only --reset is selected,' \
+                                         ' only angles are reset. If --reset is not selected, this option is ignored.'), action="store_true")
+parser.add_argument('--no_offset_transfer', help='Turn off the transfer of offsets from motive lists to model files.', action="store_true")
+parser.add_argument('--silent', help='Turn off reports on numbers of particles.', action="store_true")
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+
+
+args = parser.parse_args()
+
+offset_mv = not args.no_offset_transfer
+verbose = not args.silent
+writeprm = not args.no_prm
+
+inp = PEETPRMFile(args.prmfile)
+inp.clean_pcles_by_tilt_angles(args.iter_fin, args.iter_ini, args.outdir, args.max_ang, axis=args.axis, reset=args.reset, reset_all=args.reset_all, \
+                               offset_mv=offset_mv, writeprm=writeprm, verbose=verbose)
+
+

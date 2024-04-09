@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+import sys
+import shutil
+import os
+from os.path import join, realpath, isdir
+import glob
+if not '/gpfs/cssb/user/prazakvo/software/scripts/' in sys.path:
+    sys.path.append('/gpfs/cssb/user/prazakvo/software/scripts/')
+import argparse
+from modify_multiple_lib import modify_prm
+from PEETPRMParser import PEETPRMFile
+parser = argparse.ArgumentParser(description=("Expand helical particles (shift along Y axis) and then remove duplicates."))
+
+parser.add_argument('prm', help = "Peet parameter file path")
+parser.add_argument('iteration', type = int)
+parser.add_argument('width', type = int, help = 'Expand points by this amount before removing duplicates.')
+parser.add_argument('max_distance', type = int, help = 'Remove points closer than this after expanding.')
+parser.add_argument('output_directory', help = "Will be created if it does not exist already.")
+parser.add_argument('--max_cores', type = int, default = 2)
+parser.add_argument('--do_not_cleanup', default = False, help = 'Keep intermediate files')
+
+
+args = parser.parse_args()
+if not isdir(args.output_directory):
+    os.makedirs(args.output_directory)
+ro = realpath(args.output_directory)
+edir = 'expand'
+od = join(args.output_directory, edir)
+print('requested cores %s' % args.max_cores)
+modify_prm(args.prm, args.iteration, [args.width, 0, 0], [0, 0, 0], od, max_cores = args.max_cores)
+
+os.chdir(od)
+prm = glob.glob('*.prm')[0]
+o = 'remdup%s' % (str(args.max_distance))
+inp = PEETPRMFile(prm)
+inp.clean_pcles(args.max_distance, 0, o, clean_ccc=False, cccmin=1, cccmax=100, stdev_units=False,\
+                          no_of_nbrs=30, offset_mv=True, writeprm=True, verbose=True, intraclass_rm=True)
+
+os.chdir(o)
+prm = glob.glob('*.prm')[0]
+modify_prm(prm, 0, [-args.width, 0, 0], [0, 0, 0], ro, max_cores = args.max_cores)
+os.chdir(ro)
+
+if not args.do_not_cleanup:
+    shutil.rmtree(edir)
+

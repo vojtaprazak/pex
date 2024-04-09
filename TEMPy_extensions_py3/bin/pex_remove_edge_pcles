@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Removes particles that are too close to the edge of a tomogram.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('edge_dist', type=float, help='Minimum distance, in pixels, each particle can be from an edge of the tomogram before being removed.')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when removing particles. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+parser.add_argument('--aniso_edge_dist', nargs=3, metavar=('x','y','z'), help='Use different edge distances in x,y and z directions. Overrides edge_dist parameter.', default=(0,0,0), type=float)
+parser.add_argument('--no_offset_transfer', help='Turn off the transfer of offsets from motive lists to model files.', action="store_true")
+parser.add_argument('--silent', help='Turn off reports on numbers of particles.', action="store_true")
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+
+
+args = parser.parse_args()
+
+offset_mv = not args.no_offset_transfer
+verbose = not args.silent
+writeprm = not args.no_prm
+
+if sum(args.aniso_edge_dist) == 0:
+    edge_dist = args.edge_dist
+else:
+    edge_dist = args.aniso_edge_dist
+
+inp = PEETPRMFile(args.prmfile)
+inp.remove_offedge_pcles(args.iteration, edge_dist, args.outdir, offset_mv=offset_mv, writeprm=writeprm, verbose=verbose)
+

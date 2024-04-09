@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Combine all motive lists and model files related to each unique tomogram'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when combining files. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+parser.add_argument('--change_classes', help='Classes are added to each particle to distinguish which original motive list they came from.', action="store_true")
+
+
+args = parser.parse_args()
+
+writeprm = not args.no_prm
+
+inp = PEETPRMFile(args.prmfile)
+inp.combine_model_files(args.iteration, args.outdir, writeprm=writeprm, addClassIDs=args.change_classes)
+

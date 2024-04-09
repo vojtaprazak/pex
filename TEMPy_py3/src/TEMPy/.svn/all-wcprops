@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/tempy/!svn/ver/62/src/TEMPy
+END
+TransformParser.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/tempy/!svn/ver/34/src/TEMPy/TransformParser.py
+END
+RigidBodyParser.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/tempy/!svn/ver/34/src/TEMPy/RigidBodyParser.py
+END
+MapParser.py
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/tempy/!svn/ver/34/src/TEMPy/MapParser.py
+END
+ProtRep_Biopy.py
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/tempy/!svn/ver/36/src/TEMPy/ProtRep_Biopy.py
+END
+ScoringFunctions.py
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/tempy/!svn/ver/62/src/TEMPy/ScoringFunctions.py
+END
+StructureParser.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/tempy/!svn/ver/34/src/TEMPy/StructureParser.py
+END
+StructureBlurrer.py
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/tempy/!svn/ver/34/src/TEMPy/StructureBlurrer.py
+END
+EMMap.py
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/tempy/!svn/ver/41/src/TEMPy/EMMap.py
+END
+ShowPlot.py
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/tempy/!svn/ver/59/src/TEMPy/ShowPlot.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/tempy/!svn/ver/10/src/TEMPy/__init__.py
+END
+Cluster.py
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/tempy/!svn/ver/51/src/TEMPy/Cluster.py
+END
+Vector.py
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/tempy/!svn/ver/34/src/TEMPy/Vector.py
+END
+MapTransformScore.py
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/tempy/!svn/ver/28/src/TEMPy/MapTransformScore.py
+END
+EnsembleGeneration.py
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/tempy/!svn/ver/34/src/TEMPy/EnsembleGeneration.py
+END

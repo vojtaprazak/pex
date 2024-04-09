@@ -1,0 +1,817 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. Density Map Instance Informations &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="8. Read Rigid Body Files in Flex-EM format" href="RigidBodyParser.html" />
+    <link rel="prev" title="6. Density Map Generation" href="StructureBlurrer.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="RigidBodyParser.html" title="8. Read Rigid Body Files in Flex-EM format"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="StructureBlurrer.html" title="6. Density Map Generation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="density-map-instance-informations">
+<h1>7. Density Map Instance Informations<a class="headerlink" href="#density-map-instance-informations" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-EMMap"></span><dl class="class">
+<dt id="EMMap.Map">
+<em class="property">class </em><tt class="descclassname">EMMap.</tt><tt class="descname">Map</tt><big>(</big><em>fullMap</em>, <em>origin</em>, <em>apix</em>, <em>filename</em>, <em>header=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representing all information from a density map file. 
+NOTE: Currently it can only read the CCP4/MRC  format.</p>
+<dl class="method">
+<dt id="EMMap.Map.box_size">
+<tt class="descname">box_size</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.box_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.box_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>size of the map array, in ZYX format.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.centre">
+<tt class="descname">centre</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.centre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.centre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Centre of the Map Instance</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>Vector instance of the centre of the map in Angstroms.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.change_origin">
+<tt class="descname">change_origin</tt><big>(</big><em>x_origin</em>, <em>y_origin</em>, <em>z_origin</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.change_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.change_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the origin of the map to a new origin.</p>
+<p>Arguments:</p>
+<dl class="docutils">
+<dt><em>x_origin, y_origin, z_origin</em></dt>
+<dd>new co-ordinates of origin.</dd>
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.copy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>copy of the Map.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.fourier_filter">
+<tt class="descname">fourier_filter</tt><big>(</big><em>resolution</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.fourier_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.fourier_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>NOTE: UNDER CONSTRUCTION</p>
+<p>Return a Map instance of the density map filtered to specific resolution.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>resolution</em></dt>
+<dd>highest frequency value to allow into filtered map</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.fourier_transform">
+<tt class="descname">fourier_transform</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.fourier_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.fourier_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply Fourier transform on the density map.</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.getMap">
+<tt class="descname">getMap</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.getMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.getMap" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>array containing the map density data.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_com">
+<tt class="descname">get_com</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_com"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_com" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the centre of mass of the map.</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>Vector instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_line_between_points">
+<tt class="descname">get_line_between_points</tt><big>(</big><em>point1</em>, <em>point2</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_line_between_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_line_between_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array of float values representing a line of density values between two points on the map.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>point1, point2</em> </dt>
+<dd>Vector instances of the end points co-ordinates of the line.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>array of floating values</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_normal_vector">
+<tt class="descname">get_normal_vector</tt><big>(</big><em>x_pos</em>, <em>y_pos</em>, <em>z_pos</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_normal_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_normal_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the normal vector at the point specified. 
+Point calculated using 3SOM algorithm used by Ceulemans H. &amp; Russell R.B. (2004).</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>x_pos, y_pos, z_pos</em></dt>
+<dd>pixel in map on which to calculate normal vector.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>Normal vector at the point specified</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_pos">
+<tt class="descname">get_pos</tt><big>(</big><em>minDens</em>, <em>maxDens</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify a set of voxels in the map whose density values fall between the specified minimum and maximum values.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>minDens</em></dt>
+<dd>minimum density value to include in array.</dd>
+<dt><em>maxDens</em></dt>
+<dd>maximum density value to include in array.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>An array of 3-tuples (indices of the voxels in x,y,z format)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_primary_boundary">
+<tt class="descname">get_primary_boundary</tt><big>(</big><em>molWeight</em>, <em>low</em>, <em>high</em>, <em>vol_factor=1.21</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_primary_boundary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_primary_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates primary boundary density value. Volume of pixels with greater density than output is 
+equivalent to volume given by molecular weight of protein. Uses recursive algorithm.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><blockquote>
+<div><dl class="docutils">
+<dt><em>molWeight</em></dt>
+<dd>molecular weight of protein;
+use get_prot_mass_from_atoms() if your structure contains HETATOMS else use get_prot_mass_from_res().</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt><em>low, high</em></dt>
+<dd><blockquote class="first">
+<div>minimum and maximum values between which the boundary will be taken. 
+Initial values should be given by minimum and maximum density values in map.</div></blockquote>
+<dl class="last docutils">
+<dt><em>vol_factor</em></dt>
+<dd>in cubic Angstroms per Dalton. 
+This is the approximate value for globular proteins used in Chimera (Petterson et al, 2004) from Harpaz 1994.
+Other recommended volume factor are 1.5 (1.1-1.9) cubic Angstroms per Dalton in EMAN Volume/mass conversions assume a density of 1.35 g/ml (0.81 Da/A3) (~1.23A3/Da)</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p>Return:</p>
+<blockquote>
+<div>primary boundary density value (float)</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_second_boundary">
+<tt class="descname">get_second_boundary</tt><big>(</big><em>primary_boundary</em>, <em>noOfPoints</em>, <em>low</em>, <em>high</em>, <em>err_percent=1</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_second_boundary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_second_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the second bound density value. For a given boundary value, 
+it calculates the second bound density value such that a specified number
+of points whose density values fall between the defined boundaries
+Uses recursive algorithm.</p>
+<dl class="docutils">
+<dt>Arguments:  </dt>
+<dd><dl class="first last docutils">
+<dt><em>primary_boundary</em></dt>
+<dd>primary threshold, normally given by get_primary_boundary method based on protein molecular weight.</dd>
+<dt><em>noOfPoints</em></dt>
+<dd>Number of points to use in the normal vector score - try first with 10% (maybe 5%better) of the number of points in the map ( round((self.map_size())*0.1)</dd>
+<dt><em>low, high</em></dt>
+<dd>minimum and maximum values between which the threshold will be taken.
+low should be equal to the value returned by the get_primary_boundary() method and high is the maximum density values in map.</dd>
+<dt><em>err_percent</em></dt>
+<dd>default value of 1. Allowed to find a secondary boundary that includes a 1% error.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>secondary boundary density value</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_significant_points">
+<tt class="descname">get_significant_points</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_significant_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_significant_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all points with a density greater than one standard deviation above the mean.</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>An array of 4-tuple (indices of the voxels in x,y,z format and density value)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.get_vectors">
+<tt class="descname">get_vectors</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.get_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.get_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all non-zero density points in the form of Vector instances.</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>An array of 4-tuple (indices of the voxels in x,y,z format and density value)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.header_to_binary">
+<tt class="descname">header_to_binary</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.header_to_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.header_to_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns binary version of map header data. For use in writing out density maps in MRC file format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.laplace_filtered">
+<tt class="descname">laplace_filtered</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.laplace_filtered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.laplace_filtered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply Laplacian filter on density maps</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.makeKDTree">
+<tt class="descname">makeKDTree</tt><big>(</big><em>minDens</em>, <em>maxDens</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.makeKDTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.makeKDTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns k-dimensional tree of points in the map with values between those chosen for quick nearest-neighbor lookup.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>minDens</em></dt>
+<dd>minimum density value to include in k-dimensional tree.</dd>
+<dt><em>maxDens</em></dt>
+<dd>maximum density value to include in k-dimensional tree.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>index into a set of k-dimensional points.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.make_bin_map">
+<tt class="descname">make_bin_map</tt><big>(</big><em>cutoff</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.make_bin_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.make_bin_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new Map instance that has been binarised. 
+All voxel with densities above and below the specified cutoff value are assigned a value of 1 and 0 respectively.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>cutoff</em></dt>
+<dd>cutoff density value</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new binarised Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.make_clash_map">
+<tt class="descname">make_clash_map</tt><big>(</big><em>apix=1.0</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.make_clash_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.make_clash_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>NOTE: NEEED TO BE CHECKED.</p>
+<p>Return an empty Map instance with set Angstrom per pixel sampling (default is 1)</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.map_rotate_by_axis_angle">
+<tt class="descname">map_rotate_by_axis_angle</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em>, <em>angle</em>, <em>CoM</em>, <em>rad=False</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.map_rotate_by_axis_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.map_rotate_by_axis_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new Map instance rotated around its centre.</p>
+<dl class="docutils">
+<dt>Arguments:  </dt>
+<dd><dl class="first last docutils">
+<dt><em>angle</em></dt>
+<dd>angle (in radians if rad == True, else in degrees) to rotate map.</dd>
+<dt><em>x,y,z</em></dt>
+<dd>axis to rotate about, ie. x,y,z =  0,0,1 rotates the Map round the xy-plane.</dd>
+<dt><em>CoM</em></dt>
+<dd>centre of mass around which map will be rotated.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Rotated new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.map_size">
+<tt class="descname">map_size</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.map_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.map_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>size of the array fullMap.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.matrix_transform">
+<tt class="descname">matrix_transform</tt><big>(</big><em>mat</em>, <em>x=0</em>, <em>y=0</em>, <em>z=0</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.matrix_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.matrix_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply affine transform to the map.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>mat</em></dt>
+<dd>affine 3x3 transformation matrix</dd>
+<dt><em>shape</em></dt>
+<dd>new box dimensions</dd>
+<dt><em>x, y, z</em></dt>
+<dd>translation in angstroms.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.max">
+<tt class="descname">max</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.max" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>maximum density value of the map.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.mean">
+<tt class="descname">mean</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.mean" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>mean density value of map.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.median">
+<tt class="descname">median</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.median"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.median" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>median density value of map.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.min">
+<tt class="descname">min</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.min" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>minimum density value of the map.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.normalise">
+<tt class="descname">normalise</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.normalise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.normalise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new Map instance with normalised density values.</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.origin_change_maps">
+<tt class="descname">origin_change_maps</tt><big>(</big><em>MapRef</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.origin_change_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.origin_change_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new Map instance with origin changed accordingly to Reference Map</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>MapRef</em></dt>
+<dd>Reference Map</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.pixel_centre">
+<tt class="descname">pixel_centre</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.pixel_centre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.pixel_centre" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Vector instance of the centre of the map in pixels.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.represent_normal_vectors">
+<tt class="descname">represent_normal_vectors</tt><big>(</big><em>min_threshold</em>, <em>max_threshold</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.represent_normal_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.represent_normal_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Structure instance representing normal vectors of density points specified.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>min_threshold, max_threshold</em></dt>
+<dd>minimum/maximum values to include in normal vector representation.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Structure Instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.resample_by_apix">
+<tt class="descname">resample_by_apix</tt><big>(</big><em>new_apix</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.resample_by_apix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.resample_by_apix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the map based on new_apix sampling.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>new_apix</em></dt>
+<dd>Angstrom per pixel sampling</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.resample_by_box_size">
+<tt class="descname">resample_by_box_size</tt><big>(</big><em>new_box_size</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.resample_by_box_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.resample_by_box_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the map based on new box size.</p>
+<dl class="docutils">
+<dt>Arguments</dt>
+<dd><dl class="first last docutils">
+<dt><em>new_box_size</em></dt>
+<dd>An array containing box dimension in ZYX format</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.resize_map">
+<tt class="descname">resize_map</tt><big>(</big><em>new_size</em>, <em>centre=False</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.resize_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.resize_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize Map instance.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>new_size</em></dt>
+<dd><blockquote class="first">
+<div>3-tuple (x,y,z) giving the box size.</div></blockquote>
+<dl class="last docutils">
+<dt><em>centre</em></dt>
+<dd>default False</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.rotate_by_axis_angle">
+<tt class="descname">rotate_by_axis_angle</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em>, <em>angle</em>, <em>CoM</em>, <em>rad=False</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.rotate_by_axis_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.rotate_by_axis_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the map around its centre given an axis and angle.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>angle</em></dt>
+<dd>angle (in radians if rad == True, else in degrees) to rotate map.</dd>
+<dt><em>x,y,z</em></dt>
+<dd>axis to rotate about, ie. x,y,z =  0,0,1 rotates the Map round the xy-plane.</dd>
+<dt><em>CoM</em></dt>
+<dd>centre of mass around which map will be rotated.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.rotate_by_euler">
+<tt class="descname">rotate_by_euler</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em>, <em>CoM</em>, <em>rad=False</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.rotate_by_euler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.rotate_by_euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotated map around pivot given by CoM using Euler angles.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>x,y,z</em></dt>
+<dd>Euler angles (in radians if rad == True, else in degrees) used to rotate map.</dd>
+<dt><em>CoM</em></dt>
+<dd>centre of mass around which map will be rotated.</dd>
+<dt><em>x, y, z</em></dt>
+<dd>translation in angstroms.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.rotate_by_matrix">
+<tt class="descname">rotate_by_matrix</tt><big>(</big><em>mat</em>, <em>CoM</em>, <em>rad=False</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.rotate_by_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.rotate_by_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotated the map around pivot given by CoM using a rotation matrix</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>mat</em></dt>
+<dd>3x3 matrix used to rotate map (in radians if rad == True, else in degrees).</dd>
+<dt><em>CoM</em></dt>
+<dd>rotation pivot, usually the centre of mass around which map will be rotated.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.scale_map">
+<tt class="descname">scale_map</tt><big>(</big><em>scaling</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.scale_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.scale_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scaling Map by scaling factor</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.shift_origin">
+<tt class="descname">shift_origin</tt><big>(</big><em>x_shift</em>, <em>y_shift</em>, <em>z_shift</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.shift_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.shift_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift the Map origin.</p>
+<p>Arguments:</p>
+<dl class="docutils">
+<dt><em>x_origin, y_origin, z_origin</em></dt>
+<dd>new co-ordinates of origin.</dd>
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.std">
+<tt class="descname">std</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.std" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>standard deviation of density values in map.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.threshold_map">
+<tt class="descname">threshold_map</tt><big>(</big><em>minDens</em>, <em>maxDens</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.threshold_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.threshold_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Map instance containing only density values between the specified min and max values.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>minDens</em></dt>
+<dd>minimum density threshold</dd>
+<dt><em>maxDens</em></dt>
+<dd>maximum density threshold</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.translate">
+<tt class="descname">translate</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate the map by changing origin</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>x,y,z</em></dt>
+<dd>translation in angstroms</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new Map instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.update_header">
+<tt class="descname">update_header</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.update_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.update_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update self.header to values currently relevant.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.vectorise_point">
+<tt class="descname">vectorise_point</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.vectorise_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.vectorise_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple of the Angstrom co-ordinates and density value of a particular density point in map. 
+Transform the voxel specified by its indices (x,y,z) into a Vector object. The vector defines the position
+of the voxel with respect to the origin of the map. The magnitude of the vector is in Angstrom units.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>x, y, z</em></dt>
+<dd>co-ordinates of the density point to be vectorised.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Vector instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.write_to_MRC_file">
+<tt class="descname">write_to_MRC_file</tt><big>(</big><em>mrcfilename</em><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.write_to_MRC_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.write_to_MRC_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write out a MRC file</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>mrcfilename</em></dt>
+<dd>name of the output mrc file</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.x_origin">
+<tt class="descname">x_origin</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.x_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.x_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return:
+x-coordinate of the origin.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.x_size">
+<tt class="descname">x_size</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.x_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.x_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>x size of the map array in x direction.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.y_origin">
+<tt class="descname">y_origin</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.y_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.y_origin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>y-coordinate of the origin.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.y_size">
+<tt class="descname">y_size</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.y_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.y_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>y size of the map array in y direction.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.z_origin">
+<tt class="descname">z_origin</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.z_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.z_origin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>z-coordinate of the origin.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EMMap.Map.z_size">
+<tt class="descname">z_size</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/EMMap.html#Map.z_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EMMap.Map.z_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>z size of the map array in z direction.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="RigidBodyParser.html" title="8. Read Rigid Body Files in Flex-EM format"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="StructureBlurrer.html" title="6. Density Map Generation"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

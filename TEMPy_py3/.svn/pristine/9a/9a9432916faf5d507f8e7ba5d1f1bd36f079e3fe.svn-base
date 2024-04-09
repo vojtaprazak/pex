@@ -1,0 +1,546 @@
+## TEMPY is a Python library designed to help the user manipulate and analyse atomic structures and density maps from 3D EM. 
+## Copyright (c) 2013 Daven Vasishtan,Irene Farabella, Arun Prasad Pandurangan, Harpal Sahota, Frank Alber and Maya Topf
+
+
+
+#from TEMPy.EMMap import Map
+#from TEMPy.ProtRep_Biopy import BioPy_Structure,BioPyAtom
+#from TEMPy.MapParser import MapParser
+from TEMPy.StructureBlurrer import StructureBlurrer
+from math import log
+#from scipy.spatial import KDTree
+#import itertools
+#import numpy as np
+from numpy import sum as numsum
+#from scipy import *
+
+#from scipy import *
+
+class ScoringFunctions:
+	""" 
+	
+	A class implementing various scoring functions used in density fitting. 
+	Reference:
+	Vasishtan and Topf (2011) Scoring functions for cryoEM density fitting.
+	J Struct Biol 174:333-343.
+	
+	"""
+	def __init__(self):
+		pass
+
+	def mapComparison(self, map_target, map_probe):
+		"""
+		
+		Compare the properties (sampling rate, box size and origin) of two maps 
+		Arguments:
+			*map_target, map_probe*
+				Map instances to compare.
+		Return:
+			True if the map properties are the same between two maps, False otherwise.
+		
+		"""
+		if (map_target.apix - map_probe.apix < 1E-6) and map_target.box_size() == map_probe.box_size() and map_target.origin == map_probe.origin:
+			return True
+		else:
+			return False
+
+	def _matchMaps(self, map_target, map_probe):
+		## NOTE: CAN'T WORK, NEEDS A WAY OF SCORING DIFFERENT MAPS
+		## he tried to resample 1 map on to the other (and the the 2 on 1)
+		
+		#m1 = map_target.copy()
+		#m2 = map_probe.copy()
+		#if m1.apix == m2.apix:
+		#	ex_origin_shift = (0,0,0)
+		#elif m1.apix > m2.apix:
+		#	m2 = m2.resample_by_apix(m1.apix)
+		#	#ex_origin_shift = m1.centre()-m2.centre()
+		#	m2 = m2.resize_map(m1.box_size())
+		#else:
+		#	m1 = m1.resample_by_apix(m2.apix)
+		#	#ex_origin_shift = m2.centre()-m1.centre()
+		#	m1 = m1.resize_map(m2.box_size())
+		##print m1
+		##print m2
+		#if m1.box_size() != m2.box_size():
+		#	m2 = m2.resize_map(m1.box_size())
+		#origin_shift = [y-x for x,y in zip(m2.origin, m1.origin)]
+		#m2 = m2.shift_map(origin_shift)#shift_map
+		#m2.origin = m1.origin[:]
+		##return m1, m2
+		return "Warning: can't match the map at the moment, use map with same box size." #comment all out!
+	
+	def CCC(self, map_target, map_probe):
+		"""
+		
+		Calculate cross-correlation between two Map instances.
+				
+		Arguments:
+			*map_target, map_probe*
+				EMMap instances to compare.
+		Return:
+			CCC score
+		
+		"""
+		if self.mapComparison(map_target, map_probe):
+			return (map_target.normalise().getMap()*map_probe.normalise().getMap()).mean()
+		else:
+			return "can't Match the map"
+			#m1,m2 = self.matchMaps(map_target, map_probe)
+			#return (m1.normalise().getMap()*m2.normalise().getMap()).mean()
+
+	def LSF(self, map_target, map_probe):
+		"""
+		
+		Calculate least-squares between two Map instances.
+		
+				
+		Arguments:
+			*map_target, map_probe*
+				EMMap instances to compare.
+		Return:
+			least-squares value
+		"""
+		if self.mapComparison(map_target, map_probe):
+			return ((map_target.getMap()-map_probe.getMap())**2).mean()
+		else:
+			return "can't Match the map"
+
+	def laplace_CCC(self, map_target, map_probe, prefil=(False, False)):
+		"""
+		
+		Calculate Laplacian cross-correlation between two Map instances.
+		Based on (Chacon and Wriggers, 2002).
+				
+		Arguments:
+			*map_target, map_probe*
+				Map instances to compare.
+			*prefil*
+				2-tuple of boolean values, one for each map respectively.
+				True if Map instance is already Laplacian-filtered. False otherwise.
+		Return:
+			Laplacian cross-correlation score
+		"""
+		if not prefil[0]:
+			map_target = map_target.laplace_filtered()
+		if not prefil[1]:
+			map_probe = map_probe.laplace_filtered()
+		map_target = map_target.normalise()
+		map_probe = map_probe.normalise()
+		return self.CCC(map_target, map_probe)
+
+	def normal_vector_score(self, map_target, map_probe, primary_boundary, secondary_boundary):
+		"""
+		
+		Calculate the Normal Vector Score between two Map instances.
+		Based on 3SOM algorithm (Ceulemans and Russell, 2004) 
+		
+				
+		Arguments:
+			*map_target, map_probe*
+				EMMap instances to compare. map_target is the target map.
+			*primary_boundary, secondary_boundary*
+				need to run get_primary_boundary and get_second_boundary based on map_target.
+		Return:
+			Normal vector score.
+			
+		"""
+		scores = []
+		if not self.mapComparison(map_target, map_probe):
+			#map_target, map_probe = self.matchMaps(map_target, map_probe)
+			return "can't Match the map"
+		#print "fff", primary_boundary, secondary_boundary
+		if primary_boundary > secondary_boundary:
+			temp_thr = secondary_boundary
+			secondary_boundary = primary_boundary
+			primary_boundary = temp_thr
+		#print "after", primary_boundary, secondary_boundary
+		points = map_target.get_pos(primary_boundary, secondary_boundary)
+		#print points
+		for v in points:
+			n_vec = map_target.get_normal_vector(v[0],v[1],v[2])
+			o_vec = map_probe.get_normal_vector(v[0],v[1],v[2])
+			try:
+			#print n_vec, o_vec, n_vec.arg(o_vec)
+				scores.append(abs(n_vec.arg(o_vec)))
+			except ValueError:
+				print 'Error: Angle between '+ str(n_vec) +', '+ str(o_vec) +' for point %d, %d, %d cannot be calculated.' %(v.x,v.y,v.z)
+			#	return
+		if len(scores) == 0:
+			print "There are no points to be scored! The threshold values or the number of points to be considered needs to be changed."
+		else:
+			if sum(scores) == 0:
+				return 0
+			else:
+				return -(sum(scores)/len(points))
+
+
+	def get_partial_DLSF(self, num_of_points, map_target, map_probe):
+		"""
+		
+		Calculate the DLSF score between two Map instances.
+		The DLSF is similar to the LSF; 
+		whereas the LSF compares absolute density values, 
+		the DLSF compares the difference between pairs of values. 
+	
+		Arguments:
+			*map_target, map_probe*
+				the two Map instances to compare.
+			*num_of_points*
+				number of significant points.
+		Return:
+			DLSF score		
+		"""
+		map_target_sig_pairs=map_target._get_random_significant_pairs(int(num_of_points))
+		otherMap=map_probe
+		score = 0.0
+		for p in map_target_sig_pairs:
+			z1 = p[0]
+			y1 = p[1]
+			x1 = p[2]
+			z2 = p[3]
+			y2 = p[4]
+			x2 = p[5]
+			dens = p[6]
+			prot_dens = otherMap.fullMap[z1][y1][x1] - otherMap.fullMap[z2][y2][x2]
+			score += (dens-prot_dens)**2
+		return score/map_target.fullMap.size
+		
+	def MI(self, map_target, map_probe, layers=20):
+		""" 
+		
+		Calculate the mutual information score between two Map instances.
+					 
+						
+		Arguments:
+			*map_target, map_probe*
+				EMMap instances to compare.
+			*layers*
+				Number of layers used to bin the map. Default is 20  as in Shatsky et al., 2008.
+	   	Return:
+			MI score
+		
+		"""
+		
+		if self.mapComparison(map_target, map_probe):
+			m1, m2 = map_target, map_probe
+		else:
+			return "Can't Match"
+			#m1,m2 = self.matchMaps(map_target, map_probe)
+		score = 0
+		m1_levels = (m1.max()-m1.min())/layers
+		m2_levels = (m2.max()-m2.min())/layers
+		for x in range(layers):
+			for y in range(layers):
+				m1_level_map = (m1.getMap() >= m1.min()+(x*m1_levels))*(m1.getMap() <= m1.min()+((x+1)*m1_levels))
+				m2_level_map = (m2.getMap() >= m2.min()+(y*m2_levels))*(m2.getMap() <= m2.min()+((y+1)*m2_levels))
+				comb_level_map = m1_level_map*m2_level_map
+				p_m1 = float(m1_level_map.sum())/m1_level_map.size
+				p_m2 = float(m2_level_map.sum())/m2_level_map.size
+				p_comb = float(comb_level_map.sum())/comb_level_map.size
+				if p_comb == 0:
+					mi_score = 0.0
+				else:
+					#print p_comb, p_m1, p_m2, p_comb/(p_m1*p_m2), log(p_comb/(p_m1*p_m2),2)
+					mi_score = p_comb*log(p_comb/(p_m1*p_m2), 2)
+				score += mi_score
+		return score
+	
+	def _NMI(self, map_target, map_probe, layers=20):
+		"""
+		
+		Normalized Mutual Information from Martin et al. 2005.
+		
+		*not implemented yet*
+		
+		"""
+		#call all normaliz as in 
+		#Martin LC, Gloor GB, Dunn SD, Wahl LM. Using information theory to search for co-evolving residues in proteins. Bioinformatics 2005 21(22):4116-4124.
+				
+		if self.mapComparison(map_target, map_probe):
+			m1, m2 = map_target, map_probe
+		else:
+			return "Can't Match"
+			#m1,m2 = self.matchMaps(map_target, map_probe)
+		score = 0
+		combo_entropy=0
+		m1_levels = (m1.max()-m1.min())/layers
+		m2_levels = (m2.max()-m2.min())/layers
+		for x in range(layers):
+			for y in range(layers):
+				m1_level_map = (m1.getMap() >= m1.min()+(x*m1_levels))*(m1.getMap() <= m1.min()+((x+1)*m1_levels))
+				m2_level_map = (m2.getMap() >= m2.min()+(y*m2_levels))*(m2.getMap() <= m2.min()+((y+1)*m2_levels))
+				comb_level_map = m1_level_map*m2_level_map
+				p_m1 = float(m1_level_map.sum())/m1_level_map.size
+				p_m2 = float(m2_level_map.sum())/m2_level_map.size
+				p_comb = float(comb_level_map.sum())/comb_level_map.size
+				if p_comb == 0:
+					mi_score = 0.0
+				else:
+					mi_score = p_comb*log(p_comb/(p_m1*p_m2), 2)
+				score += mi_score
+				combo_entropy+=p_comb
+		return score
+
+		print "not implemented yet"
+		
+	def _APC_MI(self):
+		"""
+		
+		Average Product Correction Mutual information from Dunn et al. 2008.
+		
+		*not implemented yet*
+		
+		"""
+		#Dunn SD, Wahl LM, Gloor GB. Mutual information without the influence of phylogeny or entropy dramatically improves residue contact prediction. Bioinformatics 2008 24(3):333-340.
+		print "not implemented yet"
+		
+	def _hausdorff_list(self, primary_boundary, secondary_boundary, kdtree, map_probe):
+		"""
+		
+		This is for the chamdef distance def chamfer_distance, min max density value that define the surface of the protein
+		
+		Arguments:
+		
+			*kdtree* (there are 2 of them in numpy one Cbased on py-based, the latter is better, ctrl) this have to be one of the input.
+					kdtree from map_target 
+			*primary_boundary, secondary_boundary*  need to run get_primary_boundary and get_second_boundary for map_probe
+			
+			NOTE: if you keep the kdtree as parametre out os less time consuming as building it takes time.
+			
+		"""
+		points = map_probe.get_pos(primary_boundary, secondary_boundary)
+		return kdtree.query(points)[0] #kdtree give 2 list 0=distance 1=actual points
+		
+
+	def chamfer_distance(self, map_target, map_probe, primary_boundary, secondary_boundary, kdtree=None):
+		""" 
+		
+		Calculate the chamfer distance Score between two Map instances. 
+		NOT RACCOMANDED.	  
+						
+		Arguments:
+			*map_target, map_probe*
+				EMMap instances to compare.
+			*primary_boundary*
+				is the value returned by get_primary_boundary for map_probe
+			*secondary_boundary*  
+				is the value returned by get_second_boundary for map_probe
+			*kdtree* 
+				If set True it is possible to choose between two option of kdtree in numpy 
+				The one that is py-based is a better choice.
+		
+		"""
+		if self.mapComparison(map_target, map_probe):
+			m1, m2 = map_target, map_probe
+		else:
+			return "can't match"
+			#m1,m2 = matchMaps(map_target, map_probe)
+		if kdtree:
+			return self._hausdorff_list(primary_boundary, secondary_boundary, kdtree, m2).mean()
+		else:
+			kdtree = m1.makeKDTree(primary_boundary, secondary_boundary)
+			#if you don't assine it wil be build one kdtree
+			return self._hausdorff_list(primary_boundary, secondary_boundary, kdtree, m2).mean()#mean distance to the nearest neighbour 
+
+
+#MODIFIED by IF and DV
+#3-01-2014
+
+	def envelope_score(self,map_target, primary_boundary, structure_instance,norm=True):
+		"""
+		
+		Calculate the envelope score between a target Map and a Structure Instances.
+		
+				
+		Arguments:
+			*map_target*
+				Target Map Instance.
+			*primary_boundary* 
+				: Value specified is calculated with primary_boundary of the map object.
+			*structure_instance*
+				Structure Instance to compare.
+		Return:
+			Envelope score
+		"""
+		binMap = map_target.make_bin_map(primary_boundary)
+		max_score = float(-2*numsum(binMap.fullMap))
+		min_score = float(numsum(binMap.fullMap)-2*numsum(binMap.fullMap+1))
+	
+		blurrer = StructureBlurrer()
+		struct_binMap = blurrer.make_atom_overlay_map1(map_target, structure_instance)
+		grid = struct_binMap.get_pos(0.9,1.1)
+		for x,y,z in grid:
+			g = binMap[z][y][x]
+			if g == -1:
+				binMap[z][y][x] = 2
+			elif g == 0:
+				binMap[z][y][x] = -2
+		#score=binMap.fullMap.sum()
+		score = float(numsum(binMap.fullMap))
+		if norm:
+			norm_score = float((score-min_score)/(max_score-min_score))
+			return norm_score
+		else:
+			return score
+#added by IF
+# 19-12-2013
+#ORIGINAL form PAP
+#Modified by IF and PAP 17-2-2014
+
+	def SCCC(self,map_target,resolution_densMap,sigma_map,structure_instance,rigid_body_structure,write=False):
+		"""
+        
+        Calculate Segment based cross-correlation from Pandurangan et al. 2013,J Struct Biol. 2013 Dec 12
+        It is a local CCC around a selection of atoms.  
+                
+        Arguments:
+        
+            *map_target*
+                Target Map Instance.
+            *resolution_densMap*
+                Parameter need for Structure Blurrer.
+                Resolution of the target map. 
+            *sigma_map*
+                Parameter need for Structure Blurrer.
+                The sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+                Default values is 0.356.
+                
+                Other values used :
+                
+                    0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);
+                    
+                    0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, the default in Chimera (Petterson et al, 2004);
+                    
+                    0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);
+                                
+                    0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);
+                                
+                    1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).
+            *structure_instance*
+                Structure instance to compare
+            *rigid_body_structure*
+                Rigid-body Structure instance.
+.		Return:
+			SCCC score
+                
+        """
+		blurrer = StructureBlurrer()
+		scorer = ScoringFunctions()
+		outline = ""
+		whole_fit_map = blurrer.gaussian_blur(structure_instance, resolution_densMap, densMap=map_target, sigma_coeff=sigma_map, normalise=True)
+		sim_map = blurrer.gaussian_blur(rigid_body_structure, resolution_densMap, densMap=map_target, sigma_coeff=sigma_map, normalise=True)
+		minDens = sim_map.std()
+		sim_mask_array = sim_map._get_maskArray(minDens)
+		#Apply the mask to em and simulated maps
+		mask_emMap=map_target._get_maskMap(sim_mask_array)
+		mask_simMap = whole_fit_map._get_maskMap(sim_mask_array)
+		sse_lccf=scorer.CCC(mask_emMap,mask_simMap)
+			#return the overall score
+		if write==True:
+			outline+='SCCC for segment %f\n'%(sse_lccf)
+			return outline
+		return sse_lccf
+			
+
+
+
+
+### |||		 WARNING: 
+### ||| PRIVATE PARTS DOWN THERE ||| ###
+### |||	 EXPLICIT CONTENT	 ||| ###
+### VVV						  VVV ###
+
+#===============================================================================
+# #===============================================================================
+# # 
+# # #apix may be a issue ctrl
+# # #no idea what this does or is. apix
+# # #get_clash_map exists in EMMAP, in structure blured (defenetly is here and it is used!) already ctrl and may be a double if
+# # #it is different then the strctureblured one may be get rid of this.
+# #  #==============================================================================
+# #  #	def get_clash_map(self,emmap, apix):
+# #  #		#look note in gaussian_blur function for make_clash_map DAVE NEED TO CTRL IT
+# #	 # template_grid = emmap.make_clash_map(apix)
+# #  #		return template_grid
+# #  #==============================================================================
+# # 
+# # #=================TO DEL FOR THE MOMENT==============================================================
+# # #	 
+# # # #this is PAP
+# # # #CTRL how it performs with a hight number of component. May be possible to think at an alternative way that speed up the calculation if slow   
+# # #	 def get_overlay_comp_maplist(self, struct,template_grid):
+# # #		 #call blurue obj
+# # #		 blurrer = StructureBlurrer()
+# # #		 overlay_maplist = []
+# # #		 #split structure in its component struct is a list of structure. It is an Assembly Obj
+# # #		 ssplit = struct.structList
+# # #		 #split_into_chains()
+# # #		 for x in ssplit:
+# # #			 overlay_maplist.append(blurrer.make_atom_overlay_map1(template_grid, x))
+# # #		 return overlay_maplist
+# # # 
+# # # ## this is PAP.
+# # # ## this function are related to the clash score
+# # # ##	calculate the fraction of overlap. THIS IS THE "CLASH SCORE"
+# # # # it return the fraction of volume that overlap
+# # #	 def get_sm_score(self, struct, ncomp, template_grid, cvol, apix):
+# # #		 overlay_maplist = []
+# # #		 overlay_maplist = self.get_overlay_comp_maplist(struct,template_grid)
+# # #		 nc = range(ncomp)
+# # #		 cpair = list(itertools.combinations(nc,2))
+# # #		 #print cpair
+# # #		 score = 0.0
+# # #		 for i in cpair:
+# # #			 #print 'sum c1, sum c2, c1*c2'
+# # #			 #print overlay_maplist[i[0]].fullMap.sum(), overlay_maplist[i[1]].fullMap.sum(), (overlay_maplist[i[0]].fullMap * overlay_maplist[i[1]].fullMap).sum()
+# # #			 score = score + ((overlay_maplist[i[0]].fullMap * overlay_maplist[i[1]].fullMap).sum()*(apix**3)) / ((cvol[i[0]]+cvol[i[1]]))
+# # #		 return -score
+# # #===============================================================================
+# #===============================================================================
+# 
+#	 
+#	 #====================================NOT USED ANYWHERE=======================================
+#	 # def convert_bin_map(self, binMap):
+#	 #	 #????
+#	 #	 # WHAT IS THIS??????
+#	 #	 """For use with the binary score. Takes in a binary map and adds the binary map from this structure such that
+#	 #	 pixels under an atom with value:
+#	 #	  - -1 --> 2
+#	 #	  -  0 --> -2
+#	 #	  -  2 --> -5
+#	 #	 The original binary map from a density map will have pixels with value -1 above a specific threshold, and 0 below.
+#	 #	 binMap = binary map to be modified."""
+#	 #	 TotalScore = 0
+#	 #	 grid = self.get_grid_positions(binMap)
+#	 #	 protGrid = grid[0]
+#	 #	 box_edge_pen = grid[1]
+#	 #	 for point in protGrid:
+#	 #		 g = binMap.fullMap[point[2]][point[1]][point[0]]
+#	 #		 if g == -1:
+#	 #			 binMap.fullMap[point[2]][point[1]][point[0]] = 3
+#	 #		 elif g == 0:
+#	 #			 binMap.fullMap[point[2]][point[1]][point[0]] = -2
+#	 #		 elif g == -5:
+#	 #			 pass
+#	 #		 elif g == 2:
+#	 #			 binMap.fullMap[point[2]][point[1]][point[0]] = -5
+#	 #	 for x in range(binMap.x_size):
+#	 #		 for y in range(binMap.y_size):
+#	 #			 for z in range(binMap.z_size):
+#	 #				 if binMap[z][y][x] == 3:
+#	 #					 binMap[z][y][x] = 2
+#	 #	 return (binMap, box_edge_pen)
+#	 #===========================================================================
+# 
+# #===============================================================================
+# # WHAT IS THIS??????
+# #	 def clash_bin_map(self, densMap):
+# #		 ### ???? what is this and why is here if is map related????
+# #		 clashMap = densMap.make_clash_map()
+# #		 protGrid, box_edge_pen = self.getGridPositions(clashMap)
+# #		 for point in protGrid:
+# #			 clashMap.fullMap[point[2]][point[1]][point[0]] = 1
+# #		 return clashMap.fullMap, box_edge_pen
+# #===============================================================================
+#===============================================================================

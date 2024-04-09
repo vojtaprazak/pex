@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+import argparse, os
+from PEETPRMParser import PEETPRMFile
+
+
+parser = argparse.ArgumentParser(description=('Split into even and odd particles, using PEET parameter file.'))
+parser.add_argument('prmfile', help='The PEET parameter file')
+parser.add_argument('iteration', help='The iteration from which to make the marker files', type=int)
+parser.add_argument('outfile_dir', help='The directory in which to write files.')
+
+args = parser.parse_args()
+
+if not os.path.exists(args.outfile_dir):
+    os.mkdir(args.outfile_dir, 0o755)
+
+prm = PEETPRMFile(args.prmfile)
+
+prm.split_by_classID(args.iteration, args.outfile_dir+'/cls1/', classes=[1], splitForFSC=True, writeprm=True)
+prm.split_by_classID(args.iteration, args.outfile_dir+'/cls2/', classes=[2], splitForFSC=True, writeprm=True)

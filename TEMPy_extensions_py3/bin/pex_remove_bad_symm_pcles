@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Removes particles if there are issues with their symmetry partners.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when removing particles. 0 refers to the initial input files.')
+parser.add_argument('translate_tol', type=float, help='Minimum distance, in pixels, between particles before they are considered symmetry partners.')
+parser.add_argument('rotate_tol', type=float, help='Maximum angle, in degrees, that particles rotations are allowed to deviate from the correct symmetry-based values.')
+parser.add_argument('sym', type=int, help='Integer value, the expected symmetry of the particles. Currently assumes C-symmetry.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+parser.add_argument('--max_nghbrs', type=int, help=('default 30. Maximum number of particles that can be considered neighbours (and therefore be removed) to a single particle.'), \
+                    default=20)
+parser.add_argument('--no_offset_transfer', help='Turn off the transfer of offsets from motive lists to model files.', action="store_true")
+parser.add_argument('--silent', help='Turn off reports on numbers of particles.', action="store_true")
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+
+
+args = parser.parse_args()
+
+offset_mv = not args.no_offset_transfer
+verbose = not args.silent
+writeprm = not args.no_prm
+
+inp = PEETPRMFile(args.prmfile)
+inp.remove_bad_symm_pcles(args.iteration, args.outdir, args.translate_tol, args.rotate_tol, args.sym, no_of_nbrs=args.max_nghbrs,\
+                          offset_mv=offset_mv, writeprm=writeprm, verbose=verbose)
+

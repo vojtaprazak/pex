@@ -1,0 +1,187 @@
+#!/usr/bin/env python
+
+import glob
+import re, os, shutil
+from subprocess import check_output, Popen, PIPE
+import argparse, pprint
+from numpy import array, place
+from MapParser_f32_new import *
+
+
+def unblur(prefix, outfile_tmp, psize, exp_per_movie, pre_exp, acc_vol=300, just_get_exp=False, threshold=6):
+    # Replace square brackets in prefix with regexp friendly versions
+    pre = re.sub(r'\[', '[[]', prefix)
+    pre = re.sub(r'(?<!\[)\]', '[]]', pre)
+
+    # List files starting wih prefix and sort
+    filelist = glob.glob(pre+'*.mrc')
+    filelist.sort()
+    pp = pprint.PrettyPrinter(indent=4)
+    print("Files that will be combined:")
+    pp.pprint(filelist)
+
+    # Get number of frames from filelist and then create stackfile
+    nframes = len(filelist)
+    exp_per_frame = exp_per_movie/nframes
+    
+    create_stackfilelist(filelist, outfile_tmp+'.lst')
+    stack = check_output('newstack -mode 1 -filei '+outfile_tmp+'.lst '+outfile_tmp+'_prealign.mrc', shell=True)
+
+    print('Start pixel fixing')
+    old_stack = MapParser.readMRC(outfile_tmp+'_prealign.mrc')
+    hot_pixels = place(old_stack.fullMap, old_stack.fullMap >= threshold, [0])
+    old_stack.apix = psize
+    old_stack.write_to_MRC_file(outfile_tmp+'_prealign.mrc')
+    print('End pixel fixing')
+
+    
+    #procrb = Popen('/raid/45/lindsay/myprograms/mapmanip/thresholdimages_removebright.exe',
+    #             shell=True, stdin=PIPE)#,
+    #             #stdout=PIPE)
+    #procrb.stdin.write(outfile_tmp+'_prealign.mrc\n')
+    #procrb.stdin.write(outfile_tmp+'_prealign.mrc\n')
+    #procrb.stdin.write(str(threshold)+'\n')
+    
+    #threshold_output = procrb.communicate()[0]
+    #print threshold_output    
+    
+    # Run Unblur
+    print('Running Unblur...')
+    proc = Popen('unblur',
+                            shell=True,
+                            stdin=PIPE,
+                            stdout=PIPE)
+
+    proc.stdin.write(outfile_tmp+'_prealign.mrc\n') # Input stack
+    proc.stdin.write(str(nframes)+'\n')
+    proc.stdin.write(outfile_tmp+'_unblur.mrc\n')
+    proc.stdin.write(outfile_tmp+'_shifts.txt\n')
+    proc.stdin.write(str(psize)+'\n')
+    proc.stdin.write('YES\n')
+    proc.stdin.write(str(exp_per_frame)+'\n')
+    proc.stdin.write(str(acc_vol)+'\n')
+    proc.stdin.write(str(pre_exp)+'\n')
+    proc.stdin.write('NO\n')
+    proc.stdin.write('NO\n')
+
+    unblur_output = proc.communicate()[0]
+    # Return total exposure
+    return exp_per_movie
+
+
+# Create an .lst file for use with newstack for a given list of files
+def create_stackfilelist(filelist, outfile):
+    with open(outfile, 'w') as f:
+        f.write(str(len(filelist))+'\n')
+        for x in range(len(filelist)):
+            f.write(filelist[x]+'\n0\n')
+
+
+# Get all unique prefixes in a directory, and all the tilts associated with each prefix. Sorted by tilt order if sort_by_tilt is True,
+# else sorted by order taken. Returns a list of prefixes, and a nested list of all tilts for each prefix, in the same order as the prefix list.
+def get_tilts(dire, ext='.mrc', sort_by_tilt=True):
+    # Get a list of all the files in the directory ending with the given extension (.mrc by default)
+    all_files = glob.glob(dire+'/*'+ext)
+    # Regular expression to get the information from each file. Assumes that the format contains a section written as SSS[TTT], where SSS
+    # is a three digit number determining which number shot it is, and TTT is a float giving the tilt angle.
+    r = re.compile('(.*)([0-9][0-9][0-9])(\[-?[0-9]+\.[0-9]+\])(.*)')
+    sep = []
+    tilts = []
+    # Go through all files, compare to the reg exp and append the groups if it matches
+    for fi in all_files:
+        z = re.match(r, fi)
+        if z:
+            sep.append(z.groups())
+    # Collect the prefixes (first member of each reg exp group, stripped of path). Use 'set' to remove all the duplicates.
+    prefixes = [os.path.basename(x) for x in set(array(sep)[:,0])]
+    # Find the tilts for each prefix
+    for p in prefixes:
+        these_tilts = []
+        for s in sep:
+            if dire+'/'+p == s[0]:
+                # Get the shot number and tilt (second and third member of reg exp group)
+                these_tilts.append(tuple(s[1:3]))
+        # Remove duplicates
+        these_tilts = list(set(these_tilts))
+        if sort_by_tilt:
+            # Sort by tilt (float the tilt after removing square brackets)
+            these_tilts.sort(key=lambda x: float(x[1][1:-1]))
+        else:
+            # Sort by shot number
+            these_tilts.sort(key=lambda x: float(x[0]))
+        #print these_tilts
+        tilts.append(these_tilts)
+    return tilts, prefixes
+
+
+
+# Initialise and set argument parser for shell command line
+parser = argparse.ArgumentParser(description=("Combine movie files of a tomogram into stack files for each tilt, and run motioncorr on each stack."))
+parser.add_argument('--acc_vol', default=300, help='Acceleration voltage of the microscope.', type=float)
+parser.add_argument('--err_log', default='unblur_errors.log', help='File in which to write failed commands. Default is unblur_errors.log')
+parser.add_argument('dir', help='Directory containing files you wish to combine.')
+parser.add_argument('psize', help='Pixel size of images in Angstroms.', type=float)
+parser.add_argument('exp_per_movie', help='Exposure per movie stack in electrons/Angstroms.', type=float)
+
+
+args = parser.parse_args()
+
+# Get tilts by order taken
+tilts, prefixes = get_tilts(args.dir, sort_by_tilt=False)
+#print tilts
+pp = pprint.PrettyPrinter(indent=4)
+print('Prefixes: ')
+pp.pprint(prefixes)
+
+# Go through each prefix
+for j,p in enumerate(prefixes):
+    if os.path.exists(p+'tomo/'+p+'fullstack.st'):
+        print(p+'tomo/'+p+'fullstack.st already exists. Skipping...')
+    else:
+        # Make relevant directories
+        if not os.path.exists(p+'tomo'):
+            os.mkdir(p+'tomo', 0o755)
+        if not os.path.exists(p+'tomo/tmp'):
+            os.mkdir(p+'tomo/tmp', 0o755)
+        out_tilts = []
+        # Initialise pre exposure to 0 for this prefix
+        pre_exp = 0
+        # Go through the tilts for this prefix
+        for t in tilts[j]:
+            # Tilt without the square brackets
+            clean_t = t[1][1:-1]
+            unblur_out = p+'tomo/tmp/'+p+'tilt_'+clean_t
+            if os.path.exists(unblur_out+'_unblur.mrc'):
+                # Ru Unblur, add exposure from this stack to l
+                pre_exp += args.exp_per_movie
+                print(unblur_out + '_unblur.mrc already exists. Skipping...')
+            else:
+                print("Pre exposure applied to next stack: "+str(pre_exp))
+                pre_exp += unblur(args.dir+'/'+p+'???'+t[1], unblur_out, args.psize, args.exp_per_movie, pre_exp, acc_vol=args.acc_vol)
+            out_tilts.append((unblur_out+'_unblur.mrc', float(clean_t)))
+
+        # Build .rawtlt file, in tilt order
+        out_tilts.sort(key=lambda x: x[1])
+
+        with open(p+'tomo/'+p+'fullstack.rawtlt', 'w') as f:
+            for x in out_tilts:
+                f.write(str(x[1])+'\n')
+
+        # Build .lst file to build tilt stack using newstack
+        out_tilts = [x[0] for x in out_tilts]
+
+        create_stackfilelist(out_tilts, p+'tomo/tmp/'+p+'fullstack.lst')
+        try:
+            stack = check_output('newstack -mode 1 -scale 0,32000 -filei '+p+'tomo/tmp/'+p+'fullstack.lst '+p+'tomo/'+p+'fullstack.st', shell=True)
+        except:
+            # If newstack fails, record failure in log file and carry on. 
+            with open(args.err_log, 'a') as f:
+                err = "Failed on " + 'newstack -mode 1 -scale 0,32000 -filei '+p+'tomo/tmp/'+p+'fullstack.lst '+p+'tomo/'+p+'fullstack.st'
+                print(err)
+                f.write(err+'\n')
+
+    if os.path.exists(p+'tomo/'+p+'fullstack.st') and os.path.exists(p+'tomo/tmp'):
+        print(p+'tomo/'+p+'fullstack.st created. Removing '+p+'tomo/tmp directory...')           
+        shutil.rmtree(p+'tomo/tmp')
+
+

@@ -1,0 +1,332 @@
+##===============================================================================
+#     This file is part of TEMPy.
+#     
+#     TEMPy is a software designed to help the user in the manipulation 
+#     and analyses of macromolecular assemblies using 3D electron microscopy maps. 
+#     
+#     Copyright 2010-2014 TEMPy Inventors and Birkbeck College University of London.
+#                          The TEMPy Inventors are: Maya Topf, Daven Vasishtan, 
+#                           Arun Prasad Pandurangan, Irene Farabella, Agnel-Praveen Joseph,
+#                          Harpal Sahota
+# 
+# 
+#     TEMPy is available under Public Licence.
+#     
+#     Please cite your use of TEMPy in published work:
+#     
+#     Vasishtan D, Topf M. (2011) J Struct Biol 174:333-343. Scoring functions for cryoEM density fitting.
+#
+#===============================================================================
+
+from TEMPy.StructureBlurrer import StructureBlurrer
+from TEMPy.ScoringFunctions import ScoringFunctions
+from numpy import zeros
+
+class Cluster:
+	"""A class to clustering an ensemble of structure instance"""
+	
+	def __init__(self):
+		pass
+
+	def _print_results_cluster(self,models,class_num,number_top_mod,score,write=False):
+		"""
+		private function used in Cluster_Ensemble
+		"""
+		out_list=[]
+		if write==True:
+			outp = open("top"+str(number_top_mod)+str(score)+"_classes.txt", "w")
+			outp.write("pdb_name\tscore\tlrms\tclass\n")
+
+			for i in range(1,class_num+1):
+	   
+	# print the fits of each class ordered by the highest score 
+			  for ipdb in models:
+				 if (ipdb[-1] == i):
+					out_list.append([ipdb[0],ipdb[2],ipdb[3],ipdb[4]])
+					outp.write("%s\t%.5f\t%.3f\t%d\n" %(ipdb[0],ipdb[2],ipdb[3],ipdb[4]))
+			outp.close()
+		else:
+			for i in range(1,class_num+1):
+			  for ipdb in models:
+				 if (ipdb[-1] == i):
+					out_list.append([ipdb[0],ipdb[2],ipdb[3],ipdb[4]])
+		return out_list
+
+	def cluster_fit_ensemble_top_fit(self,ensemble_list,score,rms_cutoff,res_target_map,sigma_coeff,number_top_mod=0,write=False,targetMap=False):
+		"""
+		  
+			RMSD clustering of the multiple "fits" starting from the best scoring model accordingly with a chosen score.
+			Cluster the fits based on Calpha RMSD (starting from the best scoring model)			
+				
+				Arguments:
+					*ensemble_list*
+						Input list of Structure Instances
+					*score*
+						Scoring function to use. 
+						See ScoringFunctions class for a list of the available Scoring Function.
+						E.g. set score='CCC' to use the Cross-correlation coefficient.
+						
+						Score option are:
+						
+						(i)	'CCC' - Cross-correlation coefficient; 
+						
+						(ii)	'LAP' - Laplacian-filtered cross-correlation coefficient:  useful for maps with resolutions worse than 10-15 A;
+						
+						(iii)	'MI' - Mutual information score: a good and robust score but relatively slow to calculate; 
+						
+						(iv)	'ENV' - Envelope score: the fastest score to calculate due to binarisation of the map. 
+						
+						(v)	'NV' - Normal vector score: a vector-based surface superimposition score.
+						
+						(vi)	'CD' - Chamfer Distance: a score used in computer vision algorithms as a fast similarity metric 
+
+					*rms_cutoff*
+						float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).
+					*res_target_map*
+						the resolution, in Angstroms, of the target Map.
+					*sigma_coeff*
+						the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+						Default values is 0.356.
+				
+						Other values used :
+				
+							0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);
+					
+							0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)
+					
+							0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);
+					
+							0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);
+								
+							0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);
+								
+							1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).
+
+					*number_top_mod*
+						Number of Fits to cluster. Default is all.
+					*write*
+						True will write out a file that contains the list of the structure instances representing different fits scored and clustered.
+						note the lrms column is the Calpha RMSD of each fit from the first fit in its class
+		"""
+		blurrer = StructureBlurrer()
+		
+		scorer = ScoringFunctions()
+		
+		cluster=Cluster()
+
+		count=0
+		dict_ensembl={}
+		list_ordered=cluster.rank_fit_ensemble(ensemble_list,score,res_target_map,sigma_coeff,number_top_mod=0,write=False,targetMap=targetMap.copy())
+		#cluster fits by local rmsd
+		if number_top_mod==0:
+			ini_num = 0
+			end_num = len(list_ordered)
+			fit_class = 0
+			for ipdb in list_ordered:
+				print "model num %d: %s\n" %(list_ordered.index(ipdb)+1, ipdb[0])
+				ini_num1 = list_ordered.index(ipdb)
+				mod1=ipdb[1]
+				print 'next index ' + str(ini_num1)
+				if ipdb[-1] == 0:
+					fit_class+=1
+					for ipdb1 in list_ordered[ini_num1 : end_num]:
+						mod2=ipdb1[1]
+						if ipdb1[-1] == 0:
+							rmsd_val=float(mod1.RMSD_from_same_structure(mod2,CA=True))
+							ipdb1[3]=rmsd_val
+							print "rmsd of %s from best local fit (%s)= %.2f" %(ipdb1[0], ipdb[0], rmsd_val)
+							if rmsd_val < rms_cutoff:
+								ipdb1[-1] = fit_class
+							print 'class= ' + str(ipdb1[-1])
+						else: continue
+				else: continue
+			return cluster._print_results_cluster(list_ordered,fit_class,number_top_mod,score,write)
+		else:
+			x=int(number_top_mod)
+			ini_num = 0
+			end_num = len(list_ordered[:x])
+			fit_class = 0
+			for ipdb in list_ordered[:x]:
+				print "model num %d: %s\n" %(list_ordered.index(ipdb)+1, ipdb[0])
+				ini_num1 = list_ordered.index(ipdb)
+				mod1=ipdb[1]
+				print 'next index ' + str(ini_num1)
+				if ipdb[-1] == 0:
+					fit_class+=1
+					for ipdb1 in list_ordered[ini_num1 : end_num]:
+						mod2=ipdb1[1]
+						if ipdb1[-1] == 0:
+							rmsd_val=float(mod1.RMSD_from_same_structure(mod2,CA=True))
+							print "rms of %s from best local fit (%s)= %.2f" %(ipdb1[0], ipdb[0], rmsd_val)
+							ipdb1[3]=rmsd_val
+							if rmsd_val < rms_cutoff:
+								ipdb1[-1] = fit_class
+							print 'class= ' + str(ipdb1[-1])
+						else: continue
+				else: continue
+			return cluster._print_results_cluster(list_ordered[:x],fit_class,number_top_mod,score,write)
+		
+	def RMSD_ensemble(self,rank_fit_ensemble,ensemble_list,score):
+		"""
+			Calculates the pairwise RMSD matrix for all Structure Instance in the ensemble.
+		
+				Arguments:
+					*rank_fit_ensemble*
+						Ensemble of Structure Instance ranked using cluster.rank_fit_ensemble
+					*ensemble_list*
+						Input list of Structure Instances
+					*score*
+						Scoring function to use. 
+						See ScoringFunctions class for a list of the available Scoring Function.
+						E.g. set score='CCC' to use the Cross-correlation coefficient.
+						
+						Score option are:
+						
+						(i)	'CCC' - Cross-correlation coefficient; 
+						
+						(ii)	'LAP' - Laplacian-filtered cross-correlation coefficient:  useful for maps with resolutions worse than 10-15 A;
+						
+						(iii)	'MI' - Mutual information score: a good and robust score but relatively slow to calculate; 
+						
+						(iv)	'ENV' - Envelope score: the fastest score to calculate due to binarisation of the map. 
+						
+						(v)	'NV' - Normal vector score: a vector-based surface superimposition score.
+						
+						(vi)	'CD' - Chamfer Distance: a score used in computer vision algorithms as a fast similarity metric 
+
+				Return:
+					A numpy array
+		"""
+		list_rotate_models_dict={}
+		for i in ensemble_list:
+			list_rotate_models_dict[i[0]]=i[1]
+					
+		sorted_rank=rank_fit_ensemble
+		mxRMSD = zeros(shape=(len(sorted_rank),len(sorted_rank)))
+		for mod1 in sorted_rank:
+			for mod2 in sorted_rank:
+				
+				rmsd_val=float(list_rotate_models_dict[mod1[0]].RMSD_from_same_structure(list_rotate_models_dict[mod2[0]],CA=True))
+				m1=sorted_rank.index(mod1)
+				m2=sorted_rank.index(mod2)
+				mxRMSD[m1][m2]=rmsd_val
+		return mxRMSD
+
+
+	def rank_fit_ensemble(self,ensemble_list,score,res_target_map,sigma_coeff,number_top_mod=0,write=False,targetMap=False):
+		"""
+		  
+			RMSD clustering of the multiple "fits" starting from the best scoring model accordingly with a chosen score.
+			 Cluster the fits based on Calpha RMSD (starting from the best scoring model)			
+				Arguments:
+					*ensemble_list*
+						Input list of Structure Instances
+					*score*
+						Scoring function to use. 
+						See ScoringFunctions class for a list of the available Scoring Function.
+						E.g. set score='CCC' to use the Cross-correlation coefficient.
+						
+						Score option are:
+						
+						(i)	'CCC' - Cross-correlation coefficient; 
+						
+						(ii)	'LAP' - Laplacian-filtered cross-correlation coefficient:  useful for maps with resolutions worse than 10-15 A;
+						
+						(iii)	'MI' - Mutual information score: a good and robust score but relatively slow to calculate; 
+						
+						(iv)	'ENV' - Envelope score: the fastest score to calculate due to binarisation of the map. 
+						
+						(v)	'NV' - Normal vector score: a vector-based surface superimposition score.
+						
+						(vi)	'CD' - Chamfer Distance: a score used in computer vision algorithms as a fast similarity metric 
+
+					*rms_cutoff*
+						float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).
+					*res_target_map*
+						the resolution, in Angstroms, of the target Map.
+					*sigma_coeff*
+						the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+						Default values is 0.356.
+				
+						Other values used :
+				
+							0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);
+					
+							0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)
+					
+							0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);
+					
+							0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);
+								
+							0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);
+								
+							1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).
+
+					*number_top_mod*
+						Number of Fits to cluster. Default is all.
+					*write*
+						True will write out a file that contains the list of the structure instances representing different fits scored and clustered.
+						note the lrms column is the Calpha RMSD of each fit from the first fit in its class
+		"""
+		blurrer = StructureBlurrer()
+		
+		scorer = ScoringFunctions()
+		
+		cluster=Cluster()
+
+		count=0
+		dict_ensembl={}
+		list_to_order=[]
+		if not targetMap:
+			#targetMap = self.protMap(prot, min(resolution/4., 3.5), resolution)
+			print "WARNING:Need target map"
+		targetMap=targetMap.copy()
+		for mod1 in ensemble_list:
+			count+=1
+			name_mod=mod1[0]
+			mod=mod1[1]
+			if score=='CCC':
+				sim_map = blurrer.gaussian_blur(mod, res_target_map,densMap=targetMap,sigma_coeff=sigma_coeff)
+				score_mod=scorer.CCC(sim_map,targetMap) 
+				#'name_file','structure_instance','score','lrmsd','class'
+				list_to_order.append([name_mod,mod,score_mod,int(0),int(0)])
+			elif score=='LAP':
+				sim_map = blurrer.gaussian_blur(mod, res_target_map,densMap=targetMap,sigma_coeff=sigma_coeff)
+				score_mod=scorer.laplace_CCC(sim_map,targetMap) 
+				#'name_file','structure_instance','score','lrmsd','class'
+				list_to_order.append([name_mod,mod,score_mod,int(0),int(0)])
+			elif score=='MI':
+				sim_map = blurrer.gaussian_blur(mod, res_target_map,densMap=targetMap,sigma_coeff=sigma_coeff)
+				score_mod=scorer.MI(sim_map,targetMap)
+				list_to_order.append([name_mod,mod,score_mod,int(0),int(0)])			
+			elif score=='NV':
+				sim_map = blurrer.gaussian_blur(mod, res_target_map,densMap=targetMap,sigma_coeff=sigma_coeff)
+				min_thr=targetMap.get_primary_boundary(mod.get_prot_mass_from_atoms(), targetMap.min(), targetMap.max())				
+				points= round((targetMap.map_size())*0.01)
+				max_thr=targetMap.get_second_boundary(min_thr, points, min_thr, targetMap.max(),err_percent=1)
+
+				score_mod=scorer.normal_vector_score(targetMap,sim_map, min_thr, max_thr)
+				list_to_order.append([name_mod,mod,score_mod,int(0),int(0)])
+			elif score=='ENV':
+				 min_thr=targetMap.get_primary_boundary(mod.get_prot_mass_from_atoms(), targetMap.min(), targetMap.max())
+				 score_mod=scorer.envelope_score(targetMap,min_thr,mod)
+				 #'name_file','structure_instance','score','lrmsd','class'
+				 list_to_order.append([name_mod,mod,score_mod,int(0),int(0)])
+			elif score=='CD':
+				sim_map = blurrer.gaussian_blur(mod, res_target_map,densMap=targetMap,sigma_coeff=sigma_coeff)
+				min_thr=targetMap.get_primary_boundary(mod.get_prot_mass_from_atoms(), targetMap.min(), targetMap.max())
+				points= round((targetMap.map_size())*0.01)
+				max_thr=targetMap.get_second_boundary(min_thr, points, min_thr, targetMap.max(),err_percent=1)
+
+				score_mod=scorer.chamfer_distance(sim_map,targetMap, min_thr, max_thr, kdtree=None)
+		#sorting the input based on the score
+		if score=='NV':
+			list_ordered=sorted(list_to_order, key=lambda x: x[2],reverse=False)
+		else:
+			list_ordered=sorted(list_to_order, key=lambda x: x[2],reverse=True)
+		if number_top_mod==0:
+			return list_ordered
+		else:
+			x=int(number_top_mod)
+			return list_ordered[:x]
+		

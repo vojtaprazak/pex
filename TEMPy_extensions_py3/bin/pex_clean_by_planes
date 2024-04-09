@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import argparse
+from clean_by_plane import *
+from PEETModelParser import *
+from PEETMotiveList import *
+      
+parser = argparse.ArgumentParser(description=('Remove particles above or below planes designated by simple 2-point models. top_plane and/or bot_plane must be designated.'))
+parser.add_argument('csvfile', help='The name of the PEET motive list containing particles.')
+parser.add_argument('modfile', help='The name of the PEET model containing particles.')
+parser.add_argument('outtemp', help='Prefix for output motive list and model file.')
+
+parser.add_argument('--top_plane', help='Two point model describing a flat plane orthogonal to y-axis, above which particles are removed.')
+parser.add_argument('--bot_plane', help='Two point model describing a flat plane orthogonal to y-axis, below which particles are removed.')
+
+
+args = parser.parse_args()
+new_csv = PEETMotiveList(args.csvfile)
+new_mod = PEETmodel(args.modfile)
+
+if args.top_plane:
+    new_csv, new_mod = clean_by_y_orth_plane(new_csv, new_mod, args.top_plane, remove='above')
+if args.bot_plane:
+    new_csv, new_mod = clean_by_y_orth_plane(new_csv, new_mod, args.bot_plane, remove='below')
+
+new_csv.write_PEET_motive_list(args.outtemp+'.csv')
+new_mod.write_model(args.outtemp+'.mod')

@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>11. Scoring Functions &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="12. Clustering multiple fits in a cryoEM map" href="Cluster.html" />
+    <link rel="prev" title="10. Generation an Ensemble of Structure Instance" href="EnsembleGeneration.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="Cluster.html" title="12. Clustering multiple fits in a cryoEM map"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="EnsembleGeneration.html" title="10. Generation an Ensemble of Structure Instance"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-ScoringFunctions">
+<span id="scoring-functions"></span><h1>11. Scoring Functions<a class="headerlink" href="#module-ScoringFunctions" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ScoringFunctions.ScoringFunctions">
+<em class="property">class </em><tt class="descclassname">ScoringFunctions.</tt><tt class="descname">ScoringFunctions</tt><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class implementing various scoring functions used in density fitting. 
+Reference:
+Vasishtan and Topf (2011) Scoring functions for cryoEM density fitting.
+J Struct Biol 174:333-343.</p>
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.CCC">
+<tt class="descname">CCC</tt><big>(</big><em>map_target</em>, <em>map_probe</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.CCC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.CCC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate cross-correlation between two Map instances.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>CCC score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.CCC_local">
+<tt class="descname">CCC_local</tt><big>(</big><em>map_target</em>, <em>map_probe</em>, <em>map_target_threshold=0</em>, <em>map_probe_threshold=0</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.CCC_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.CCC_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate cross-correlation about mean between two Map instances, for the overlap region.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare.</dd>
+<dt><em>map_target_threshold,map_probe_threshold</em></dt>
+<dd>EMMap threshold 
+use calcualte_map_threshold to calculate map_target_threshold and map_probe_threshold.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>mean CCC score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.CCC_mask_zero">
+<tt class="descname">CCC_mask_zero</tt><big>(</big><em>map_target</em>, <em>map_probe</em>, <em>map_target_threshold=0</em>, <em>map_probe_threshold=0</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.CCC_mask_zero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.CCC_mask_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate cross-correlation about zero for the overlap region between two Map instances.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare.</dd>
+<dt><em>map_target_threshold,map_probe_threshold</em></dt>
+<dd>EMMap threshold 
+use calcualte_map_threshold to calculate map_target_threshold and map_probe_threshold.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>mean CCC score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.LSF">
+<tt class="descname">LSF</tt><big>(</big><em>map_target</em>, <em>map_probe</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.LSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.LSF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate least-squares between two Map instances.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>least-squares value</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.MI">
+<tt class="descname">MI</tt><big>(</big><em>map_target</em>, <em>map_probe</em>, <em>layers=20</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.MI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.MI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the mutual information score between two Map instances.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><blockquote class="first">
+<div><dl class="docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare.</dd>
+<dt><em>layers</em></dt>
+<dd>Number of layers used to bin the map. Default is 20  as in Shatsky et al., 2008.</dd>
+</dl>
+</div></blockquote>
+<dl class="last docutils">
+<dt>Return:</dt>
+<dd>MI score</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.SCCC">
+<tt class="descname">SCCC</tt><big>(</big><em>map_target</em>, <em>resolution_densMap</em>, <em>sigma_map</em>, <em>structure_instance</em>, <em>rigid_body_structure</em>, <em>write=False</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.SCCC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.SCCC" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Calculate Segment based cross-correlation from Pandurangan et al. 2013,J Struct Biol. 2013 Dec 12
+It is a local CCC around a selection of atoms.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>map_target</em></dt>
+<dd>Target Map Instance.</dd>
+<dt><em>resolution_densMap</em></dt>
+<dd>Parameter need for Structure Blurrer.
+Resolution of the target map.</dd>
+<dt><em>sigma_map</em></dt>
+<dd><p class="first">Parameter need for Structure Blurrer.
+The sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+Default values is 0.356.</p>
+<p>Other values used :</p>
+<blockquote class="last">
+<div><p>0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</p>
+<p>0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, the default in Chimera (Petterson et al, 2004);</p>
+<p>0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</p>
+<p>0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</p>
+</div></blockquote>
+</dd>
+<dt><em>structure_instance</em></dt>
+<dd>Structure instance to compare</dd>
+<dt><em>rigid_body_structure</em></dt>
+<dd>Rigid-body Structure instance.</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<dl class="docutils">
+<dt>.        Return:</dt>
+<dd>SCCC score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.chamfer_distance">
+<tt class="descname">chamfer_distance</tt><big>(</big><em>map_target</em>, <em>map_probe</em>, <em>primary_boundary</em>, <em>secondary_boundary</em>, <em>kdtree=None</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.chamfer_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.chamfer_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the chamfer distance Score between two Map instances. 
+NOT RACCOMANDED.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare.</dd>
+<dt><em>primary_boundary</em></dt>
+<dd>is the value returned by get_primary_boundary for map_probe</dd>
+<dt><em>secondary_boundary</em>  </dt>
+<dd>is the value returned by get_second_boundary for map_probe</dd>
+<dt><em>kdtree</em> </dt>
+<dd>If set True it is possible to choose between the option of kdtree in numpy 
+The one that is py-based is a better choice.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.envelope_score">
+<tt class="descname">envelope_score</tt><big>(</big><em>map_target</em>, <em>primary_boundary</em>, <em>structure_instance</em>, <em>norm=True</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.envelope_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.envelope_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the envelope score between a target Map and a Structure Instances.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target</em></dt>
+<dd>Target Map Instance.</dd>
+<dt><em>primary_boundary</em> </dt>
+<dd>Value specified is calculated with primary_boundary of the map object.</dd>
+<dt><em>structure_instance</em></dt>
+<dd>Structure Instance to compare.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Envelope score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.envelope_score_map">
+<tt class="descname">envelope_score_map</tt><big>(</big><em>map_target</em>, <em>map_probe</em>, <em>map_target_threshold=0</em>, <em>map_probe_threshold=0</em>, <em>norm=True</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.envelope_score_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.envelope_score_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the envelope score between two Map instance using numoy array.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare.</dd>
+<dt><em>map_target_threshold,map_probe_threshold</em></dt>
+<dd>EMMap threshold 
+use calcualte_map_threshold to calculate map_target_threshold and map_probe_threshold.</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>Envelope score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.get_partial_DLSF">
+<tt class="descname">get_partial_DLSF</tt><big>(</big><em>num_of_points</em>, <em>map_target</em>, <em>map_probe</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.get_partial_DLSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.get_partial_DLSF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the DLSF score between two Map instances.
+The DLSF is similar to the LSF; 
+whereas the LSF compares absolute density values, 
+the DLSF compares the difference between pairs of values.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>the two Map instances to compare.</dd>
+<dt><em>num_of_points</em></dt>
+<dd>number of significant points.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>DLSF score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.laplace_CCC">
+<tt class="descname">laplace_CCC</tt><big>(</big><em>map_target</em>, <em>map_probe</em>, <em>prefil=(False</em>, <em>False)</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.laplace_CCC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.laplace_CCC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Laplacian cross-correlation between two Map instances.
+Based on (Chacon and Wriggers, 2002).</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>Map instances to compare.</dd>
+<dt><em>prefil</em></dt>
+<dd>2-tuple of boolean values, one for each map respectively.
+True if Map instance is already Laplacian-filtered. False otherwise.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Laplacian cross-correlation score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.mapComparison">
+<tt class="descname">mapComparison</tt><big>(</big><em>map_target</em>, <em>map_probe</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.mapComparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.mapComparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the properties (sampling rate, box size and origin) of two maps 
+Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>Map instances to compare.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>True if the map properties are the same between two maps, False otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ScoringFunctions.ScoringFunctions.normal_vector_score">
+<tt class="descname">normal_vector_score</tt><big>(</big><em>map_target</em>, <em>map_probe</em>, <em>primary_boundary</em>, <em>secondary_boundary</em>, <em>Filter=None</em><big>)</big><a class="reference internal" href="_modules/ScoringFunctions.html#ScoringFunctions.normal_vector_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ScoringFunctions.ScoringFunctions.normal_vector_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Normal Vector Score between two Map instances.
+Based on 3SOM algorithm (Ceulemans and Russell, 2004)</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>map_target, map_probe</em></dt>
+<dd>EMMap instances to compare. map_target is the target map.</dd>
+<dt><em>primary_boundary, secondary_boundary</em></dt>
+<dd>need to run get_primary_boundary and get_second_boundary based on map_target.</dd>
+<dt><em>Filter</em></dt>
+<dd><p class="first">Filter to use:</p>
+<blockquote class="last">
+<div><p>i Sobel Filter</p>
+<p>ii Laplace Filter</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Normal vector score.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="Cluster.html" title="12. Clustering multiple fits in a cryoEM map"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="EnsembleGeneration.html" title="10. Generation an Ensemble of Structure Instance"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

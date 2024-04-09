@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14. Plotting and Output Functions &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="15. Core Modules : Vector" href="Vector.html" />
+    <link rel="prev" title="13. Consensus Scoring of multiple fits in a cryoEM map" href="Consensus.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="Vector.html" title="15. Core Modules : Vector"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Consensus.html" title="13. Consensus Scoring of multiple fits in a cryoEM map"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="plotting-and-output-functions">
+<h1>14. Plotting and Output Functions<a class="headerlink" href="#plotting-and-output-functions" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-ShowPlot"></span><dl class="class">
+<dt id="ShowPlot.Plot">
+<em class="property">class </em><tt class="descclassname">ShowPlot.</tt><tt class="descname">Plot</tt><a class="reference internal" href="_modules/ShowPlot.html#Plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to create analysis output</p>
+<dl class="method">
+<dt id="ShowPlot.Plot.PrintOutChimeraAttributeFileSCCC_Score">
+<tt class="descname">PrintOutChimeraAttributeFileSCCC_Score</tt><big>(</big><em>code_structure</em>, <em>sccc_list</em>, <em>listRB</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.PrintOutChimeraAttributeFileSCCC_Score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.PrintOutChimeraAttributeFileSCCC_Score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print out a Chimera attribute file that can be used for visual inspection of the information after Segment based cross-correlation (SCCC) calculation.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>code_structure</em></dt>
+<dd>name of the structure instance</dd>
+<dt><em>sccc_list</em></dt>
+<dd>SCCC score for each of the segment.</dd>
+<dt><em>listRB</em></dt>
+<dd>list of segment used for the SCCC calculation.</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.PrintOutChimeraCmdClusterAnalysis">
+<tt class="descname">PrintOutChimeraCmdClusterAnalysis</tt><big>(</big><em>cluster_output</em>, <em>path_dir</em>, <em>targetMap_location</em>, <em>file_name='chimera_cluster_color'</em>, <em>load_map=True</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.PrintOutChimeraCmdClusterAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.PrintOutChimeraCmdClusterAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Print out a Chimera command file that can be used for visual inspection of the information after the hierarchical clustering analysis.&#8221;.</dt>
+<dd><dl class="first last docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>cluster_output</em></dt>
+<dd>List that contains the model and the related cluster index.</dd>
+<dt><em>path_dir</em></dt>
+<dd>path to ensemble directory</dd>
+<dt><em>targetMap_location</em></dt>
+<dd>path to target map location</dd>
+<dt><em>file_name</em></dt>
+<dd>Output file name</dd>
+<dt><em>load_map</em></dt>
+<dd>True will add the loading option to the command file.</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.PrintOutClusterAnalysis">
+<tt class="descname">PrintOutClusterAnalysis</tt><big>(</big><em>cluster_output</em>, <em>file_name='cluster.out'</em>, <em>write=False</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.PrintOutClusterAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.PrintOutClusterAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Print our a txt file that contains the clustering information after hierarchical clustering analysis.&#8221;.</dt>
+<dd><dl class="first last docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>cluster_output</em></dt>
+<dd>List that contains the model and the related cluster index.</dd>
+<dt><em>file_name</em></dt>
+<dd>Output file name</dd>
+<dt><em>write</em></dt>
+<dd>True will save the file.</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.SCCCHeatMap_fromSCCCList">
+<tt class="descname">SCCCHeatMap_fromSCCCList</tt><big>(</big><em>sccc_list</em>, <em>trans=False</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.SCCCHeatMap_fromSCCCList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.SCCCHeatMap_fromSCCCList" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return a matrix from a list of score.txt files as:</dt>
+<dd>x= Structure Instances and y= Structure Instances segments scored</dd>
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>sccc_list</em></dt>
+<dd>list of list of SCCC scores</dd>
+<dt><em>trans</em></dt>
+<dd>True will transpose the matrix.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.SCCCHeatMap_fromSCCCfiles">
+<tt class="descname">SCCCHeatMap_fromSCCCfiles</tt><big>(</big><em>list_file</em>, <em>trans=False</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.SCCCHeatMap_fromSCCCfiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.SCCCHeatMap_fromSCCCfiles" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return a matrix from a list of score.txt files as:</dt>
+<dd>x= Structure Instances and y= Structure Instances segments scored</dd>
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>list_file</em></dt>
+<dd>list of files</dd>
+<dt><em>trans</em></dt>
+<dd>True will transpose the matrix.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.ShowGeneralMatrix">
+<tt class="descname">ShowGeneralMatrix</tt><big>(</big><em>mxGen</em>, <em>file_name='HeatMap'</em>, <em>save=False</em>, <em>range=(0</em>, <em>1)</em>, <em>cmap=&lt;matplotlib.colors.LinearSegmentedColormap instance at 0x10d8a0830&gt;</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.ShowGeneralMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.ShowGeneralMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Heat Map plot of a matrix.
+Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>mxGen</em></dt>
+<dd>Generic Matrix. Use SCCCHeatMap_fromSCCCfiles or SCCCHeatMap_fromSCCCList to generate a matrix from a set of segment assessed with SCCC score.</dd>
+<dt><em>name</em></dt>
+<dd>Output file name (.pdf)</dd>
+<dt><em>save</em></dt>
+<dd>True will save a pdf file of the plot.</dd>
+<dt><em>range</em></dt>
+<dd>set the min and max score.</dd>
+<dt><em>cmap</em></dt>
+<dd>color palette to use. Choose form the one available in matplotlib or use cmp_Rainbow.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.ShowHierarchicalClusterings">
+<tt class="descname">ShowHierarchicalClusterings</tt><big>(</big><em>ranked_ensemble</em>, <em>mxRMSD</em>, <em>rms_cutoff</em>, <em>name='HierClustPlt'</em>, <em>save=False</em>, <em>cluster_index=False</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.ShowHierarchicalClusterings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.ShowHierarchicalClusterings" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Plot the Calpha RMSD hierarchical clustering of the multiple &#8220;fits&#8221;.</dt>
+<dd><dl class="first last docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>ranked_ensemble</em></dt>
+<dd>Input list of Structure Instances. It is list of fits obtained with Cluster.rank_fit_ensemble function.</dd>
+<dt><em>mxRMSD</em></dt>
+<dd>Pairwise RMSD matrix for all Structure Instance in the ensemble obtained as one Cluster.RMSD_ensemble function.</dd>
+<dt><em>rms_cutoff</em></dt>
+<dd>float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).
+Suggested value the mean of the pairwise RMSD matrix.</dd>
+<dt><em>name</em></dt>
+<dd>Output file name (.pdf)</dd>
+<dt><em>save</em></dt>
+<dd>True will save a pdf file of the plot.</dd>
+<dt><em>cluster_index</em></dt>
+<dd>True will return a list that contains the model and the related cluster index.</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.ShowRMSDmatrix">
+<tt class="descname">ShowRMSDmatrix</tt><big>(</big><em>mxRMSD</em>, <em>name='RMSDmatrix'</em>, <em>save=False</em><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.ShowRMSDmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.ShowRMSDmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Plot the pairwise RMSD matrix for all Structure Instance in the ensemble.</dt>
+<dd><dl class="first last docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>mxRMSD</em></dt>
+<dd>Pairwise RMSD matrix for all Structure Instance in the ensemble obtained as one Cluster.RMSD_ensemble function.</dd>
+<dt><em>name</em></dt>
+<dd>Output file name (.pdf)</dd>
+<dt><em>save</em></dt>
+<dd>True will save a pdf file of the plot.</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShowPlot.Plot.cmp_Rainbow">
+<tt class="descname">cmp_Rainbow</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ShowPlot.html#Plot.cmp_Rainbow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ShowPlot.Plot.cmp_Rainbow" title="Permalink to this definition">¶</a></dt>
+<dd><p>return rainbow color map.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="Vector.html" title="15. Core Modules : Vector"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Consensus.html" title="13. Consensus Scoring of multiple fits in a cryoEM map"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

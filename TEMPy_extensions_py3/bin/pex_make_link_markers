@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETParticleAnalysis import pcle_links
+from PEETMotiveList import *
+from PEETModelParser import *
+
+
+parser = argparse.ArgumentParser(description=('Make chimera marker file using a PEET motive list and model file.'))
+parser.add_argument('motl', help='The PEET motive list containing orientations of particles.')
+parser.add_argument('model', help='The IMOD model file containing positions of particles.')
+parser.add_argument('apix', type=float, help='The sampling, in Angstroms/pixel, of the tomogram.')
+parser.add_argument('max_dist', type=float, help='The furthest distance at which particles are considered neighbours, in Angstroms')
+parser.add_argument('outfile', help='The desired name of the output file.')
+parser.add_argument('--max_nbrs', type=int, help='The maximum number of neighbours a particle can have. Default=30.', default='30')
+parser.add_argument('--head', help='The size of the head of each pin, in pixels.', default='8.0')
+
+args = parser.parse_args()
+this_motl = PEETMotiveList(args.motl)
+this_model = PEETmodel(args.model)
+
+pcle_links(this_motl, this_model, args.max_dist, args.apix, maxnbrs=args.max_nbrs, outfile=args.outfile, head_radius=args.head)

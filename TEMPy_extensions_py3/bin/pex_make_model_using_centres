@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+import argparse
+from make_model_using_centres_new import *
+
+
+parser = argparse.ArgumentParser(description=('Make new motive list and model files with each particle pointing to'
+                                              'the closest of a set of given points'))
+parser.add_argument('particle_model', help='The IMOD model containing the picked particles.')
+parser.add_argument('centres_model', help='The IMOD model containing the given centres to which the particles should point toward.')
+parser.add_argument('outfile', help='The template for the output files.')
+
+args = parser.parse_args()
+
+make_model(args.particle_model, args.centres_model, args.outfile)

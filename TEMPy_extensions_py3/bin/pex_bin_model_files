@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Make new motive lists and models with particle positions binned. Note that tomograms still need to be'
+					      ' separately binned and modified in the parameter file.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('bin_value', type=float, help='Bin value. Particle positions are divided by this number.')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when removing particles. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+parser.add_argument('--no_offset_transfer', help='Turn off the transfer of offsets from motive lists to model files.', action="store_true")
+
+
+args = parser.parse_args()
+
+writeprm = not args.no_prm
+offset_mv = not args.no_offset_transfer
+
+inp = PEETPRMFile(args.prmfile)
+inp.bin_all(args.bin_value, args.iteration, args.outdir, writeprm=writeprm, offset_mv=offset_mv)
+

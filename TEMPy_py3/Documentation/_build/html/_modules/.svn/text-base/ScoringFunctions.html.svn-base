@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ScoringFunctions &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ScoringFunctions</h1><div class="highlight"><pre>
+<span class="c">#===============================================================================</span>
+<span class="c"># 	This file is part of TEMPy.</span>
+<span class="c"># 	</span>
+<span class="c"># 	TEMPy is a free software designed to help the user in the manipulation </span>
+<span class="c"># 	and analyses of macromolecular assemblies using 3D electron microscopy maps. </span>
+<span class="c"># 	</span>
+<span class="c">#     Copyright (C) 2013 Irene Farabella, Daven Vasishtan, Arun Prasad Pandurangan, </span>
+<span class="c">#     				   Agnel-Praveen Joseph, Harpal Sahota and Maya Topf.</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is free software: you can redistribute it and/or modify</span>
+<span class="c">#     it under the terms of the GNU General Public License as published by</span>
+<span class="c">#     the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#     (at your option) any later version.</span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is distributed in the hope that it will be useful,</span>
+<span class="c">#     but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#     GNU General Public License for more details.</span>
+<span class="c"># </span>
+<span class="c">#     You should have received a copy of the GNU General Public License</span>
+<span class="c">#     along with TEMPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#     </span>
+<span class="c">#     Please cite your use of TEMPy in published work:</span>
+<span class="c"># </span>
+<span class="c">#     I. Farabella ,D.Vasishtan, A. P. Pandurangan, H. Sahota and M. Topf .</span>
+<span class="c">#     TEMPy: Tool for Scoring and Assessment into 3D EM Maps using Python </span>
+<span class="c">#     XXXXX</span>
+<span class="c">#===============================================================================</span>
+
+<span class="kn">from</span> <span class="nn">TEMPy.StructureBlurrer</span> <span class="kn">import</span> <span class="n">StructureBlurrer</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="nb">sum</span> <span class="k">as</span> <span class="n">numsum</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">square</span><span class="p">,</span><span class="n">sqrt</span><span class="p">,</span><span class="n">absolute</span><span class="p">,</span><span class="n">histogram</span>
+
+
+<div class="viewcode-block" id="ScoringFunctions"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions">[docs]</a><span class="k">class</span> <span class="nc">ScoringFunctions</span><span class="p">:</span>
+	<span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">	</span>
+<span class="sd">	A class implementing various scoring functions used in density fitting. </span>
+<span class="sd">	Reference:</span>
+<span class="sd">	Vasishtan and Topf (2011) Scoring functions for cryoEM density fitting.</span>
+<span class="sd">	J Struct Biol 174:333-343.</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">pass</span>
+
+	<span class="k">def</span> <span class="nf">_overlap_map_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">map_target</span><span class="p">,</span><span class="n">map_target_threshold</span><span class="p">,</span><span class="n">map_probe</span><span class="p">,</span><span class="n">map_probe_threshold</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">			mask maps with 2 cut-off map_target_threshold and map_probe_threshold (vol thr.)</span>
+<span class="sd">			</span>
+<span class="sd">			return:</span>
+<span class="sd">			mask array where both are true.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">binmap1</span><span class="o">=</span><span class="n">map_target</span><span class="o">.</span><span class="n">fullMap</span><span class="o">&gt;</span><span class="nb">float</span><span class="p">(</span><span class="n">map_target_threshold</span><span class="p">)</span>
+		<span class="n">binmap2</span><span class="o">=</span><span class="n">map_probe</span><span class="o">.</span><span class="n">fullMap</span><span class="o">&gt;</span><span class="nb">float</span><span class="p">(</span><span class="n">map_probe_threshold</span><span class="p">)</span>
+		<span class="n">mask_array</span><span class="o">=</span><span class="p">(</span><span class="n">binmap1</span><span class="o">*</span><span class="n">binmap2</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span>
+		<span class="k">return</span> <span class="n">mask_array</span>
+	
+	<span class="c">#add by AJP</span>
+	<span class="k">def</span> <span class="nf">calculate_map_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">map_target</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">map_target</span><span class="o">.</span><span class="n">header</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+			<span class="c">#amin = map_target.min()</span>
+			<span class="c">#amax = map_target.max()</span>
+			<span class="n">amean</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+			<span class="n">rms</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+			<span class="n">vol_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">amean</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mf">1.5</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">rms</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c">#amin = map.header[19]</span>
+			<span class="c">#amax = map.header[20]</span>
+			<span class="n">amean</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span>
+			<span class="n">rms</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="mi">57</span><span class="p">]</span>
+			<span class="n">vol_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">amean</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mf">1.5</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">rms</span><span class="p">))</span>
+		
+		<span class="k">return</span> <span class="n">vol_threshold</span>
+		
+
+<div class="viewcode-block" id="ScoringFunctions.mapComparison"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.mapComparison">[docs]</a>	<span class="k">def</span> <span class="nf">mapComparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Compare the properties (sampling rate, box size and origin) of two maps </span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				Map instances to compare.</span>
+<span class="sd">		Return:</span>
+<span class="sd">			True if the map properties are the same between two maps, False otherwise.</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">map_target</span><span class="o">.</span><span class="n">apix</span> <span class="o">-</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">apix</span> <span class="o">&lt;</span> <span class="mf">1E-6</span><span class="p">)</span> <span class="ow">and</span> <span class="n">map_target</span><span class="o">.</span><span class="n">box_size</span><span class="p">()</span> <span class="o">==</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">box_size</span><span class="p">()</span> <span class="ow">and</span> <span class="n">map_target</span><span class="o">.</span><span class="n">origin</span> <span class="o">==</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">origin</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">True</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">False</span>
+</div>
+	<span class="k">def</span> <span class="nf">_matchMaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+		<span class="c">## NOTE: CAN&#39;T WORK, NEEDS A WAY OF SCORING DIFFERENT MAPS</span>
+		<span class="c">## he tried to resample 1 map on to the other (and the the 2 on 1)</span>
+		
+		<span class="c">#m1 = map_target.copy()</span>
+		<span class="c">#m2 = map_probe.copy()</span>
+		<span class="c">#if m1.apix == m2.apix:</span>
+		<span class="c">#	ex_origin_shift = (0,0,0)</span>
+		<span class="c">#elif m1.apix &gt; m2.apix:</span>
+		<span class="c">#	m2 = m2.resample_by_apix(m1.apix)</span>
+		<span class="c">#	#ex_origin_shift = m1.centre()-m2.centre()</span>
+		<span class="c">#	m2 = m2.resize_map(m1.box_size())</span>
+		<span class="c">#else:</span>
+		<span class="c">#	m1 = m1.resample_by_apix(m2.apix)</span>
+		<span class="c">#	#ex_origin_shift = m2.centre()-m1.centre()</span>
+		<span class="c">#	m1 = m1.resize_map(m2.box_size())</span>
+		<span class="c">##print m1</span>
+		<span class="c">##print m2</span>
+		<span class="c">#if m1.box_size() != m2.box_size():</span>
+		<span class="c">#	m2 = m2.resize_map(m1.box_size())</span>
+		<span class="c">#origin_shift = [y-x for x,y in zip(m2.origin, m1.origin)]</span>
+		<span class="c">#m2 = m2.shift_map(origin_shift)#shift_map</span>
+		<span class="c">#m2.origin = m1.origin[:]</span>
+		<span class="c">##return m1, m2</span>
+		<span class="k">return</span> <span class="s">&quot;Warning: can&#39;t match the map at the moment, use map with same box size.&quot;</span> <span class="c">#comment all out!</span>
+	
+<div class="viewcode-block" id="ScoringFunctions.CCC"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.CCC">[docs]</a>	<span class="k">def</span> <span class="nf">CCC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate cross-correlation between two Map instances.</span>
+<span class="sd">				</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">		Return:</span>
+<span class="sd">			CCC score</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="k">return</span> <span class="p">(</span><span class="n">map_target</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span><span class="o">*</span><span class="n">map_probe</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span><span class="o">.</span><span class="n">getMap</span><span class="p">())</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;can&#39;t Match the map&quot;</span>
+			<span class="c">#m1,m2 = self.matchMaps(map_target, map_probe)</span>
+			<span class="c">#return (m1.normalise().getMap()*m2.normalise().getMap()).mean()</span>
+
+		<span class="c">### Correlation coefficient about mean for the overlap mask</span></div>
+<div class="viewcode-block" id="ScoringFunctions.CCF_mask_mean"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.CCF_mask_mean">[docs]</a>	<span class="k">def</span> <span class="nf">CCF_mask_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span><span class="n">map_probe</span><span class="p">,</span><span class="n">map_target_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">map_probe_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate cross-correlation about mean between two Map instances, for the overlap region.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">			*map_target_threshold,map_probe_threshold*</span>
+<span class="sd">				EMMap threshold </span>
+<span class="sd">				use calcualte_map_threshold to calculate map_target_threshold and map_probe_threshold.				</span>
+<span class="sd">		Return:</span>
+<span class="sd">			mean CCC score</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">map_target_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_target_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_target</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">map_probe_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_probe_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_probe</span><span class="p">)</span>
+			<span class="n">mask_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlap_map_array</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span><span class="n">map_target_threshold</span><span class="p">,</span><span class="n">map_probe</span><span class="p">,</span><span class="n">map_probe_threshold</span><span class="p">)</span>
+			<span class="n">map_target_mask</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">mask_array</span><span class="p">]</span>
+			<span class="n">map_target_mask</span> <span class="o">=</span> <span class="n">map_target_mask</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">map_target_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">map_target_mask</span><span class="p">))</span>
+			<span class="n">map_probe_mask</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">mask_array</span><span class="p">]</span>
+			<span class="n">map_probe_mask</span> <span class="o">=</span> <span class="n">map_probe_mask</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">map_probe_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">map_probe_mask</span><span class="p">))</span>
+			<span class="k">return</span> <span class="n">absolute</span><span class="p">((</span><span class="n">map_target_mask</span> <span class="o">*</span> <span class="n">map_probe_mask</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="n">map_target_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">*</span><span class="n">square</span><span class="p">(</span><span class="n">map_probe_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+			<span class="c">#return (map_target_mask * map_probe_mask).sum()/sqrt(square(map_target_mask).sum()*square(map_probe_mask).sum())</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;can&#39;t Match the map&quot;</span>
+						<span class="c">#m1,m2 = self.matchMaps(map_target, map_probe)</span>
+						<span class="c">#return (m1.normalise().getMap()*m2.normalise().getMap()).mean()</span>
+
+
+	<span class="c">### Correlation coefficient about zero for the overlap mask</span></div>
+<div class="viewcode-block" id="ScoringFunctions.CCF_mask_zero"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.CCF_mask_zero">[docs]</a>	<span class="k">def</span> <span class="nf">CCF_mask_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span><span class="n">map_probe</span><span class="p">,</span><span class="n">map_target_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">map_probe_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate cross-correlation about zero for the overlap region between two Map instances.</span>
+<span class="sd">								</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">			*map_target_threshold,map_probe_threshold*</span>
+<span class="sd">				EMMap threshold </span>
+<span class="sd">				use calcualte_map_threshold to calculate map_target_threshold and map_probe_threshold.				</span>
+<span class="sd">		Return:</span>
+<span class="sd">			mean CCC score</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">map_target_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_target_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_target</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">map_probe_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_probe_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_probe</span><span class="p">)</span>
+			<span class="n">mask_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlap_map_array</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span><span class="n">map_target_threshold</span><span class="p">,</span><span class="n">map_probe</span><span class="p">,</span><span class="n">map_probe_threshold</span><span class="p">)</span>
+			<span class="n">map_target_mask</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">mask_array</span><span class="p">]</span>
+			<span class="n">map_probe_mask</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">mask_array</span><span class="p">]</span>
+			<span class="k">return</span> <span class="p">(</span><span class="n">map_target_mask</span> <span class="o">*</span> <span class="n">map_probe_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="n">map_target_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">*</span><span class="n">square</span><span class="p">(</span><span class="n">map_probe_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;can&#39;t Match the map&quot;</span>
+						<span class="c">#m1,m2 = self.matchMaps(map_target, map_probe)</span>
+						<span class="c">#return (m1.normalise().getMap()*m2.normalise().getMap()).mean()</span>
+
+
+</div>
+<div class="viewcode-block" id="ScoringFunctions.LSF"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.LSF">[docs]</a>	<span class="k">def</span> <span class="nf">LSF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate least-squares between two Map instances.</span>
+<span class="sd">		</span>
+<span class="sd">				</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">		Return:</span>
+<span class="sd">			least-squares value</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="k">return</span> <span class="p">((</span><span class="n">map_target</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span><span class="o">-</span><span class="n">map_probe</span><span class="o">.</span><span class="n">getMap</span><span class="p">())</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;can&#39;t Match the map&quot;</span>
+</div>
+<div class="viewcode-block" id="ScoringFunctions.laplace_CCC"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.laplace_CCC">[docs]</a>	<span class="k">def</span> <span class="nf">laplace_CCC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">,</span> <span class="n">prefil</span><span class="o">=</span><span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">)):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate Laplacian cross-correlation between two Map instances.</span>
+<span class="sd">		Based on (Chacon and Wriggers, 2002).</span>
+<span class="sd">				</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				Map instances to compare.</span>
+<span class="sd">			*prefil*</span>
+<span class="sd">				2-tuple of boolean values, one for each map respectively.</span>
+<span class="sd">				True if Map instance is already Laplacian-filtered. False otherwise.</span>
+<span class="sd">		Return:</span>
+<span class="sd">			Laplacian cross-correlation score</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">prefil</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="n">map_target</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">laplace_filtered</span><span class="p">()</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">prefil</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="n">map_probe</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">laplace_filtered</span><span class="p">()</span>
+		<span class="n">map_target</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+		<span class="n">map_probe</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CCC</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ScoringFunctions.normal_vector_score"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.normal_vector_score">[docs]</a>	<span class="k">def</span> <span class="nf">normal_vector_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">,</span> <span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate the Normal Vector Score between two Map instances.</span>
+<span class="sd">		Based on 3SOM algorithm (Ceulemans and Russell, 2004) </span>
+<span class="sd">		</span>
+<span class="sd">				</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare. map_target is the target map.</span>
+<span class="sd">			*primary_boundary, secondary_boundary*</span>
+<span class="sd">				need to run get_primary_boundary and get_second_boundary based on map_target.</span>
+<span class="sd">		Return:</span>
+<span class="sd">			Normal vector score.</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="c">#map_target, map_probe = self.matchMaps(map_target, map_probe)</span>
+			<span class="k">return</span> <span class="s">&quot;can&#39;t Match the map&quot;</span>
+		<span class="c">#print &quot;fff&quot;, primary_boundary, secondary_boundary</span>
+		<span class="k">if</span> <span class="n">primary_boundary</span> <span class="o">&gt;</span> <span class="n">secondary_boundary</span><span class="p">:</span>
+			<span class="n">temp_thr</span> <span class="o">=</span> <span class="n">secondary_boundary</span>
+			<span class="n">secondary_boundary</span> <span class="o">=</span> <span class="n">primary_boundary</span>
+			<span class="n">primary_boundary</span> <span class="o">=</span> <span class="n">temp_thr</span>
+		<span class="c">#print &quot;after&quot;, primary_boundary, secondary_boundary</span>
+		<span class="n">points</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">)</span>
+		<span class="c">#print points</span>
+		<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+			<span class="n">n_vec</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">get_normal_vector</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+			<span class="n">o_vec</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">get_normal_vector</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+			<span class="k">try</span><span class="p">:</span>
+			<span class="c">#print n_vec, o_vec, n_vec.arg(o_vec)</span>
+				<span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">n_vec</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="n">o_vec</span><span class="p">)))</span>
+			<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+				<span class="k">print</span> <span class="s">&#39;Error: Angle between &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_vec</span><span class="p">)</span> <span class="o">+</span><span class="s">&#39;, &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">o_vec</span><span class="p">)</span> <span class="o">+</span><span class="s">&#39; for point </span><span class="si">%d</span><span class="s">, </span><span class="si">%d</span><span class="s">, </span><span class="si">%d</span><span class="s"> cannot be calculated.&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+			<span class="c">#	return</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;There are no points to be scored! The threshold values or the number of points to be considered needs to be changed.&quot;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">return</span> <span class="mi">0</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="ScoringFunctions.get_partial_DLSF"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.get_partial_DLSF">[docs]</a>	<span class="k">def</span> <span class="nf">get_partial_DLSF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_of_points</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate the DLSF score between two Map instances.</span>
+<span class="sd">		The DLSF is similar to the LSF; </span>
+<span class="sd">		whereas the LSF compares absolute density values, </span>
+<span class="sd">		the DLSF compares the difference between pairs of values. </span>
+<span class="sd">	</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				the two Map instances to compare.</span>
+<span class="sd">			*num_of_points*</span>
+<span class="sd">				number of significant points.</span>
+<span class="sd">		Return:</span>
+<span class="sd">			DLSF score		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="c">#map_target, map_probe = self.matchMaps(map_target, map_probe)</span>
+			<span class="k">return</span> <span class="s">&quot;can&#39;t Match the map&quot;</span>
+		<span class="c">#print &quot;fff&quot;, primary_boundary, secondary_boundary</span>
+
+		<span class="n">map_target_sig_pairs</span><span class="o">=</span><span class="n">map_target</span><span class="o">.</span><span class="n">_get_random_significant_pairs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_of_points</span><span class="p">))</span>
+		<span class="n">otherMap</span><span class="o">=</span><span class="n">map_probe</span>
+		<span class="n">score</span> <span class="o">=</span> <span class="mf">0.0</span>
+		<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">map_target_sig_pairs</span><span class="p">:</span>
+			<span class="n">z1</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">y1</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+			<span class="n">x1</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+			<span class="n">z2</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+			<span class="n">y2</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+			<span class="n">x2</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+			<span class="n">dens</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+			<span class="n">prot_dens</span> <span class="o">=</span> <span class="n">otherMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">z1</span><span class="p">][</span><span class="n">y1</span><span class="p">][</span><span class="n">x1</span><span class="p">]</span> <span class="o">-</span> <span class="n">otherMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">z2</span><span class="p">][</span><span class="n">y2</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span>
+			<span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">dens</span><span class="o">-</span><span class="n">prot_dens</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+		<span class="k">return</span> <span class="n">score</span><span class="o">/</span><span class="n">map_target</span><span class="o">.</span><span class="n">fullMap</span><span class="o">.</span><span class="n">size</span>
+		</div>
+<div class="viewcode-block" id="ScoringFunctions.MI"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.MI">[docs]</a>	<span class="k">def</span> <span class="nf">MI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">		</span>
+<span class="sd">		Calculate the mutual information score between two Map instances.</span>
+<span class="sd">					 </span>
+<span class="sd">						</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">			*layers*</span>
+<span class="sd">				Number of layers used to bin the map. Default is 20  as in Shatsky et al., 2008.</span>
+<span class="sd">	   	Return:</span>
+<span class="sd">			MI score</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="n">m1</span><span class="p">,</span> <span class="n">m2</span> <span class="o">=</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;Can&#39;t Match&quot;</span>
+			<span class="c">#m1,m2 = self.matchMaps(map_target, map_probe)</span>
+		<span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">m1_levels</span> <span class="o">=</span> <span class="p">(</span><span class="n">m1</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">m1</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="n">layers</span>
+		<span class="n">m2_levels</span> <span class="o">=</span> <span class="p">(</span><span class="n">m2</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">m2</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="n">layers</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>
+				<span class="n">m1_level_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">m1</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">m1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">m1_levels</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">m1</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">m1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">m1_levels</span><span class="p">))</span>
+				<span class="n">m2_level_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">m2</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">m2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="o">*</span><span class="n">m2_levels</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">m2</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">m2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">m2_levels</span><span class="p">))</span>
+				<span class="n">comb_level_map</span> <span class="o">=</span> <span class="n">m1_level_map</span><span class="o">*</span><span class="n">m2_level_map</span>
+				<span class="n">p_m1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m1_level_map</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">/</span><span class="n">m1_level_map</span><span class="o">.</span><span class="n">size</span>
+				<span class="n">p_m2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m2_level_map</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">/</span><span class="n">m2_level_map</span><span class="o">.</span><span class="n">size</span>
+				<span class="n">p_comb</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">comb_level_map</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">/</span><span class="n">comb_level_map</span><span class="o">.</span><span class="n">size</span>
+				<span class="k">if</span> <span class="n">p_comb</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="n">mi_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="c">#print p_comb, p_m1, p_m2, p_comb/(p_m1*p_m2), log(p_comb/(p_m1*p_m2),2)</span>
+					<span class="n">mi_score</span> <span class="o">=</span> <span class="n">p_comb</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">p_comb</span><span class="o">/</span><span class="p">(</span><span class="n">p_m1</span><span class="o">*</span><span class="n">p_m2</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+				<span class="n">score</span> <span class="o">+=</span> <span class="n">mi_score</span>
+		<span class="k">return</span> <span class="n">score</span>
+	</div>
+	<span class="k">def</span> <span class="nf">_NMI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Normalized Mutual Information from Martin et al. 2005.</span>
+<span class="sd">		</span>
+<span class="sd">		*not implemented yet*</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c">#call all normaliz as in </span>
+		<span class="c">#Martin LC, Gloor GB, Dunn SD, Wahl LM. Using information theory to search for co-evolving residues in proteins. Bioinformatics 2005 21(22):4116-4124.</span>
+				
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="n">m1</span><span class="p">,</span> <span class="n">m2</span> <span class="o">=</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;Can&#39;t Match&quot;</span>
+			<span class="c">#m1,m2 = self.matchMaps(map_target, map_probe)</span>
+		<span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">combo_entropy</span><span class="o">=</span><span class="mi">0</span>
+		<span class="n">m1_levels</span> <span class="o">=</span> <span class="p">(</span><span class="n">m1</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">m1</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="n">layers</span>
+		<span class="n">m2_levels</span> <span class="o">=</span> <span class="p">(</span><span class="n">m2</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">m2</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="n">layers</span>
+		<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>
+				<span class="n">m1_level_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">m1</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">m1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">m1_levels</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">m1</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">m1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">m1_levels</span><span class="p">))</span>
+				<span class="n">m2_level_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">m2</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">m2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="o">*</span><span class="n">m2_levels</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">m2</span><span class="o">.</span><span class="n">getMap</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">m2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">+</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">m2_levels</span><span class="p">))</span>
+				<span class="n">comb_level_map</span> <span class="o">=</span> <span class="n">m1_level_map</span><span class="o">*</span><span class="n">m2_level_map</span>
+				<span class="n">p_m1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m1_level_map</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">/</span><span class="n">m1_level_map</span><span class="o">.</span><span class="n">size</span>
+				<span class="n">p_m2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m2_level_map</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">/</span><span class="n">m2_level_map</span><span class="o">.</span><span class="n">size</span>
+				<span class="n">p_comb</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">comb_level_map</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">/</span><span class="n">comb_level_map</span><span class="o">.</span><span class="n">size</span>
+				<span class="k">if</span> <span class="n">p_comb</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="n">mi_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">mi_score</span> <span class="o">=</span> <span class="n">p_comb</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">p_comb</span><span class="o">/</span><span class="p">(</span><span class="n">p_m1</span><span class="o">*</span><span class="n">p_m2</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+				<span class="n">score</span> <span class="o">+=</span> <span class="n">mi_score</span>
+				<span class="n">combo_entropy</span><span class="o">+=</span><span class="n">p_comb</span>
+		<span class="k">return</span> <span class="n">score</span>
+
+		<span class="k">print</span> <span class="s">&quot;not implemented yet&quot;</span>
+		
+	<span class="k">def</span> <span class="nf">_APC_MI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Average Product Correction Mutual information from Dunn et al. 2008.</span>
+<span class="sd">		</span>
+<span class="sd">		*not implemented yet*</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c">#Dunn SD, Wahl LM, Gloor GB. Mutual information without the influence of phylogeny or entropy dramatically improves residue contact prediction. Bioinformatics 2008 24(3):333-340.</span>
+		<span class="k">print</span> <span class="s">&quot;not implemented yet&quot;</span>
+		
+	<span class="k">def</span> <span class="nf">_hausdorff_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">,</span> <span class="n">kdtree</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		This is for the chamdef distance def chamfer_distance, min max density value that define the surface of the protein</span>
+<span class="sd">		</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">		</span>
+<span class="sd">			*kdtree* (there are 2 of them in numpy one Cbased on py-based, the latter is better, ctrl) this have to be one of the input.</span>
+<span class="sd">					kdtree from map_target </span>
+<span class="sd">			*primary_boundary, secondary_boundary*  need to run get_primary_boundary and get_second_boundary for map_probe</span>
+<span class="sd">			</span>
+<span class="sd">			NOTE: if you keep the kdtree as parametre out os less time consuming as building it takes time.</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">points</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">points</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c">#kdtree give 2 list 0=distance 1=actual points</span>
+		
+
+<div class="viewcode-block" id="ScoringFunctions.chamfer_distance"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.chamfer_distance">[docs]</a>	<span class="k">def</span> <span class="nf">chamfer_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">,</span> <span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">,</span> <span class="n">kdtree</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">		</span>
+<span class="sd">		Calculate the chamfer distance Score between two Map instances. </span>
+<span class="sd">		NOT RACCOMANDED.	  </span>
+<span class="sd">						</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">			*primary_boundary*</span>
+<span class="sd">				is the value returned by get_primary_boundary for map_probe</span>
+<span class="sd">			*secondary_boundary*  </span>
+<span class="sd">				is the value returned by get_second_boundary for map_probe</span>
+<span class="sd">			*kdtree* </span>
+<span class="sd">				If set True it is possible to choose between two option of kdtree in numpy </span>
+<span class="sd">				The one that is py-based is a better choice.</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="n">m1</span><span class="p">,</span> <span class="n">m2</span> <span class="o">=</span> <span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;can&#39;t match&quot;</span>
+			<span class="c">#m1,m2 = matchMaps(map_target, map_probe)</span>
+		<span class="k">if</span> <span class="n">kdtree</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hausdorff_list</span><span class="p">(</span><span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">,</span> <span class="n">kdtree</span><span class="p">,</span> <span class="n">m2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">kdtree</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">makeKDTree</span><span class="p">(</span><span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">)</span>
+			<span class="c">#if you don&#39;t assine it wil be build one kdtree</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hausdorff_list</span><span class="p">(</span><span class="n">primary_boundary</span><span class="p">,</span> <span class="n">secondary_boundary</span><span class="p">,</span> <span class="n">kdtree</span><span class="p">,</span> <span class="n">m2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="c">#mean distance to the nearest neighbour </span>
+
+
+<span class="c">#MODIFIED by IF and DV</span>
+<span class="c">#3-01-2014</span>
+</div>
+<div class="viewcode-block" id="ScoringFunctions.envelope_score"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.envelope_score">[docs]</a>	<span class="k">def</span> <span class="nf">envelope_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">map_target</span><span class="p">,</span> <span class="n">primary_boundary</span><span class="p">,</span> <span class="n">structure_instance</span><span class="p">,</span><span class="n">norm</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate the envelope score between a target Map and a Structure Instances.</span>
+<span class="sd">		</span>
+<span class="sd">				</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			*map_target*</span>
+<span class="sd">				Target Map Instance.</span>
+<span class="sd">			*primary_boundary* </span>
+<span class="sd">				Value specified is calculated with primary_boundary of the map object.</span>
+<span class="sd">			*structure_instance*</span>
+<span class="sd">				Structure Instance to compare.</span>
+<span class="sd">		Return:</span>
+<span class="sd">			Envelope score</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">binMap</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">make_bin_map</span><span class="p">(</span><span class="n">primary_boundary</span><span class="p">)</span>
+		<span class="n">max_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">))</span>
+		<span class="n">min_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+	
+		<span class="n">blurrer</span> <span class="o">=</span> <span class="n">StructureBlurrer</span><span class="p">()</span>
+		<span class="n">struct_binMap</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">make_atom_overlay_map1</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">structure_instance</span><span class="p">)</span>
+		<span class="n">grid</span> <span class="o">=</span> <span class="n">struct_binMap</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">1.1</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">:</span>
+			<span class="n">g</span> <span class="o">=</span> <span class="n">binMap</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">g</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+				<span class="n">binMap</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+			<span class="k">elif</span> <span class="n">g</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">binMap</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+		<span class="c">#score=binMap.fullMap.sum()</span>
+		<span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
+			<span class="n">norm_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">score</span><span class="o">-</span><span class="n">min_score</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">max_score</span><span class="o">-</span><span class="n">min_score</span><span class="p">))</span>
+			<span class="k">return</span> <span class="n">norm_score</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">score</span>
+</div>
+<div class="viewcode-block" id="ScoringFunctions.map_envelope_score"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.map_envelope_score">[docs]</a>	<span class="k">def</span> <span class="nf">map_envelope_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">,</span><span class="n">map_target_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">map_probe_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">norm</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate the envelope score between two Map instance.</span>
+<span class="sd">		</span>
+<span class="sd">	 	Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">			*map_target_threshold,map_probe_threshold*</span>
+<span class="sd">				EMMap threshold </span>
+<span class="sd">				use calcualte_map_threshold to calculate map_target_threshold and map_probe_threshold.				</span>
+<span class="sd">		Return:</span>
+<span class="sd">			Envelope score</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">map_target_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_target_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_target</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">map_probe_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_probe_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_probe</span><span class="p">)</span>
+
+		<span class="n">binMap</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">make_bin_map</span><span class="p">(</span><span class="n">map_target_threshold</span><span class="p">)</span>
+		<span class="n">max_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">))</span>
+		<span class="n">min_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+		<span class="n">struct_binMap</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">make_bin_map</span><span class="p">(</span><span class="n">map_probe_threshold</span><span class="p">)</span>
+		<span class="c">#grid = struct_binMap.get_pos(-0.9,-1.1)</span>
+		<span class="n">grid</span> <span class="o">=</span> <span class="n">struct_binMap</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="o">-</span><span class="mf">1.1</span><span class="p">,</span><span class="o">-</span><span class="mf">0.9</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">:</span>
+			<span class="n">g</span> <span class="o">=</span> <span class="n">binMap</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">g</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+				<span class="n">binMap</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+			<span class="k">elif</span> <span class="n">g</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">binMap</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+		<span class="c">#score=binMap.fullMap.sum()</span>
+		<span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
+			<span class="n">norm_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">score</span><span class="o">-</span><span class="n">min_score</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">max_score</span><span class="o">-</span><span class="n">min_score</span><span class="p">))</span>
+			<span class="k">return</span> <span class="n">norm_score</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">score</span>
+</div>
+<div class="viewcode-block" id="ScoringFunctions.map_envelope_score_v2"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.map_envelope_score_v2">[docs]</a>	<span class="k">def</span> <span class="nf">map_envelope_score_v2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">,</span><span class="n">map_target_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">map_probe_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">norm</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		</span>
+<span class="sd">		Calculate the envelope score between two Map instance using numoy array. </span>
+<span class="sd">		</span>
+<span class="sd">	 	Arguments:</span>
+<span class="sd">			*map_target, map_probe*</span>
+<span class="sd">				EMMap instances to compare.</span>
+<span class="sd">			*map_target_threshold,map_probe_threshold*</span>
+<span class="sd">				EMMap threshold </span>
+<span class="sd">				use calcualte_map_threshold to calculate map_target_threshold and map_probe_threshold.				</span>
+<span class="sd">		Return:</span>
+<span class="sd">			Envelope score</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapComparison</span><span class="p">(</span><span class="n">map_target</span><span class="p">,</span> <span class="n">map_probe</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">map_target_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_target_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_target</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">map_probe_threshold</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+				<span class="n">map_probe_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calculate_map_threshold</span><span class="p">(</span><span class="n">map_probe</span><span class="p">)</span>
+
+		<span class="n">binMap</span> <span class="o">=</span> <span class="n">map_target</span><span class="o">.</span><span class="n">make_bin_map</span><span class="p">(</span><span class="n">map_target_threshold</span><span class="p">)</span>
+		<span class="n">max_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">))</span>
+		<span class="n">min_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">numsum</span><span class="p">(</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+		<span class="n">struct_binMap</span> <span class="o">=</span> <span class="n">map_probe</span><span class="o">.</span><span class="n">make_bin_map</span><span class="p">(</span><span class="n">map_probe_threshold</span><span class="p">)</span>
+		<span class="n">newMap</span><span class="o">=</span><span class="n">binMap</span><span class="o">.</span><span class="n">fullMap</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">struct_binMap</span><span class="o">.</span><span class="n">fullMap</span>
+		<span class="n">hist_array</span><span class="o">=</span><span class="n">histogram</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+		<span class="n">score</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">hist_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">hist_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span><span class="o">-</span><span class="p">(</span><span class="n">hist_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+		<span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
+			<span class="n">norm_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">score</span><span class="o">-</span><span class="n">min_score</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">max_score</span><span class="o">-</span><span class="n">min_score</span><span class="p">))</span>
+			<span class="k">return</span> <span class="n">norm_score</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">score</span>
+
+
+<span class="c">#added by IF</span>
+<span class="c"># 19-12-2013</span>
+<span class="c">#ORIGINAL form PAP</span>
+<span class="c">#Modified by IF and PAP 17-2-2014</span>
+</div>
+<div class="viewcode-block" id="ScoringFunctions.SCCC"><a class="viewcode-back" href="../ScoringFunctions.html#ScoringFunctions.ScoringFunctions.SCCC">[docs]</a>	<span class="k">def</span> <span class="nf">SCCC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">map_target</span><span class="p">,</span><span class="n">resolution_densMap</span><span class="p">,</span><span class="n">sigma_map</span><span class="p">,</span><span class="n">structure_instance</span><span class="p">,</span><span class="n">rigid_body_structure</span><span class="p">,</span><span class="n">write</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Calculate Segment based cross-correlation from Pandurangan et al. 2013,J Struct Biol. 2013 Dec 12</span>
+<span class="sd">        It is a local CCC around a selection of atoms.  </span>
+<span class="sd">                </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *map_target*</span>
+<span class="sd">                Target Map Instance.</span>
+<span class="sd">            *resolution_densMap*</span>
+<span class="sd">                Parameter need for Structure Blurrer.</span>
+<span class="sd">                Resolution of the target map. </span>
+<span class="sd">            *sigma_map*</span>
+<span class="sd">                Parameter need for Structure Blurrer.</span>
+<span class="sd">                The sigma value (multiplied by the resolution) that controls the width of the Gaussian. </span>
+<span class="sd">                Default values is 0.356.</span>
+<span class="sd">                </span>
+<span class="sd">                Other values used :</span>
+<span class="sd">                </span>
+<span class="sd">                    0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, the default in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</span>
+<span class="sd">                                </span>
+<span class="sd">                    0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                                </span>
+<span class="sd">                    1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</span>
+<span class="sd">            *structure_instance*</span>
+<span class="sd">                Structure instance to compare</span>
+<span class="sd">            *rigid_body_structure*</span>
+<span class="sd">                Rigid-body Structure instance.</span>
+<span class="sd">.		Return:</span>
+<span class="sd">			SCCC score</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+		<span class="n">blurrer</span> <span class="o">=</span> <span class="n">StructureBlurrer</span><span class="p">()</span>
+		<span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+		<span class="n">outline</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+		<span class="n">whole_fit_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">structure_instance</span><span class="p">,</span> <span class="n">resolution_densMap</span><span class="p">,</span> <span class="n">densMap</span><span class="o">=</span><span class="n">map_target</span><span class="p">,</span> <span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_map</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+		<span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">rigid_body_structure</span><span class="p">,</span> <span class="n">resolution_densMap</span><span class="p">,</span> <span class="n">densMap</span><span class="o">=</span><span class="n">map_target</span><span class="p">,</span> <span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_map</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+		<span class="n">minDens</span> <span class="o">=</span> <span class="n">sim_map</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+		<span class="n">sim_mask_array</span> <span class="o">=</span> <span class="n">sim_map</span><span class="o">.</span><span class="n">_get_maskArray</span><span class="p">(</span><span class="n">minDens</span><span class="p">)</span>
+		<span class="c">#Apply the mask to em and simulated maps</span>
+		<span class="n">mask_emMap</span><span class="o">=</span><span class="n">map_target</span><span class="o">.</span><span class="n">_get_maskMap</span><span class="p">(</span><span class="n">sim_mask_array</span><span class="p">)</span>
+		<span class="n">mask_simMap</span> <span class="o">=</span> <span class="n">whole_fit_map</span><span class="o">.</span><span class="n">_get_maskMap</span><span class="p">(</span><span class="n">sim_mask_array</span><span class="p">)</span>
+		<span class="n">sse_lccf</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">CCC</span><span class="p">(</span><span class="n">mask_emMap</span><span class="p">,</span><span class="n">mask_simMap</span><span class="p">)</span>
+			<span class="c">#return the overall score</span>
+		<span class="k">if</span> <span class="n">write</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+			<span class="n">outline</span><span class="o">+=</span><span class="s">&#39;SCCC for segment </span><span class="si">%f</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">sse_lccf</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">outline</span>
+		<span class="k">return</span> <span class="n">sse_lccf</span>
+			
+
+
+
+
+<span class="c">### |||		 WARNING: </span>
+<span class="c">### ||| PRIVATE PARTS DOWN THERE ||| ###</span>
+<span class="c">### |||	 EXPLICIT CONTENT	 ||| ###</span>
+<span class="c">### VVV						  VVV ###</span>
+
+<span class="c">#===============================================================================</span>
+<span class="c"># #===============================================================================</span>
+<span class="c"># # </span>
+<span class="c"># # #apix may be a issue ctrl</span>
+<span class="c"># # #no idea what this does or is. apix</span>
+<span class="c"># # #get_clash_map exists in EMMAP, in structure blured (defenetly is here and it is used!) already ctrl and may be a double if</span>
+<span class="c"># # #it is different then the strctureblured one may be get rid of this.</span>
+<span class="c"># #  #==============================================================================</span>
+<span class="c"># #  #	def get_clash_map(self,emmap, apix):</span>
+<span class="c"># #  #		#look note in gaussian_blur function for make_clash_map DAVE NEED TO CTRL IT</span>
+<span class="c"># #	 # template_grid = emmap.make_clash_map(apix)</span>
+<span class="c"># #  #		return template_grid</span>
+<span class="c"># #  #==============================================================================</span>
+<span class="c"># # </span>
+<span class="c"># # #=================TO DEL FOR THE MOMENT==============================================================</span>
+<span class="c"># # #	 </span>
+<span class="c"># # # #this is PAP</span>
+<span class="c"># # # #CTRL how it performs with a hight number of component. May be possible to think at an alternative way that speed up the calculation if slow   </span>
+<span class="c"># # #	 def get_overlay_comp_maplist(self, struct,template_grid):</span>
+<span class="c"># # #		 #call blurue obj</span>
+<span class="c"># # #		 blurrer = StructureBlurrer()</span>
+<span class="c"># # #		 overlay_maplist = []</span>
+<span class="c"># # #		 #split structure in its component struct is a list of structure. It is an Assembly Obj</span>
+<span class="c"># # #		 ssplit = struct.structList</span>
+<span class="c"># # #		 #split_into_chains()</span>
+<span class="c"># # #		 for x in ssplit:</span>
+<span class="c"># # #			 overlay_maplist.append(blurrer.make_atom_overlay_map1(template_grid, x))</span>
+<span class="c"># # #		 return overlay_maplist</span>
+<span class="c"># # # </span>
+<span class="c"># # # ## this is PAP.</span>
+<span class="c"># # # ## this function are related to the clash score</span>
+<span class="c"># # # ##	calculate the fraction of overlap. THIS IS THE &quot;CLASH SCORE&quot;</span>
+<span class="c"># # # # it return the fraction of volume that overlap</span>
+<span class="c"># # #	 def get_sm_score(self, struct, ncomp, template_grid, cvol, apix):</span>
+<span class="c"># # #		 overlay_maplist = []</span>
+<span class="c"># # #		 overlay_maplist = self.get_overlay_comp_maplist(struct,template_grid)</span>
+<span class="c"># # #		 nc = range(ncomp)</span>
+<span class="c"># # #		 cpair = list(itertools.combinations(nc,2))</span>
+<span class="c"># # #		 #print cpair</span>
+<span class="c"># # #		 score = 0.0</span>
+<span class="c"># # #		 for i in cpair:</span>
+<span class="c"># # #			 #print &#39;sum c1, sum c2, c1*c2&#39;</span>
+<span class="c"># # #			 #print overlay_maplist[i[0]].fullMap.sum(), overlay_maplist[i[1]].fullMap.sum(), (overlay_maplist[i[0]].fullMap * overlay_maplist[i[1]].fullMap).sum()</span>
+<span class="c"># # #			 score = score + ((overlay_maplist[i[0]].fullMap * overlay_maplist[i[1]].fullMap).sum()*(apix**3)) / ((cvol[i[0]]+cvol[i[1]]))</span>
+<span class="c"># # #		 return -score</span>
+<span class="c"># # #===============================================================================</span>
+<span class="c"># #===============================================================================</span>
+<span class="c"># </span>
+<span class="c">#	 </span>
+<span class="c">#	 #====================================NOT USED ANYWHERE=======================================</span>
+<span class="c">#	 # def convert_bin_map(self, binMap):</span>
+<span class="c">#	 #	 #????</span>
+<span class="c">#	 #	 # WHAT IS THIS??????</span>
+<span class="c">#	 #	 &quot;&quot;&quot;For use with the binary score. Takes in a binary map and adds the binary map from this structure such that</span>
+<span class="c">#	 #	 pixels under an atom with value:</span>
+<span class="c">#	 #	  - -1 --&gt; 2</span>
+<span class="c">#	 #	  -  0 --&gt; -2</span>
+<span class="c">#	 #	  -  2 --&gt; -5</span>
+<span class="c">#	 #	 The original binary map from a density map will have pixels with value -1 above a specific threshold, and 0 below.</span>
+<span class="c">#	 #	 binMap = binary map to be modified.&quot;&quot;&quot;</span>
+<span class="c">#	 #	 TotalScore = 0</span>
+<span class="c">#	 #	 grid = self.get_grid_positions(binMap)</span>
+<span class="c">#	 #	 protGrid = grid[0]</span>
+<span class="c">#	 #	 box_edge_pen = grid[1]</span>
+<span class="c">#	 #	 for point in protGrid:</span>
+<span class="c">#	 #		 g = binMap.fullMap[point[2]][point[1]][point[0]]</span>
+<span class="c">#	 #		 if g == -1:</span>
+<span class="c">#	 #			 binMap.fullMap[point[2]][point[1]][point[0]] = 3</span>
+<span class="c">#	 #		 elif g == 0:</span>
+<span class="c">#	 #			 binMap.fullMap[point[2]][point[1]][point[0]] = -2</span>
+<span class="c">#	 #		 elif g == -5:</span>
+<span class="c">#	 #			 pass</span>
+<span class="c">#	 #		 elif g == 2:</span>
+<span class="c">#	 #			 binMap.fullMap[point[2]][point[1]][point[0]] = -5</span>
+<span class="c">#	 #	 for x in range(binMap.x_size):</span>
+<span class="c">#	 #		 for y in range(binMap.y_size):</span>
+<span class="c">#	 #			 for z in range(binMap.z_size):</span>
+<span class="c">#	 #				 if binMap[z][y][x] == 3:</span>
+<span class="c">#	 #					 binMap[z][y][x] = 2</span>
+<span class="c">#	 #	 return (binMap, box_edge_pen)</span>
+<span class="c">#	 #===========================================================================</span>
+<span class="c"># </span>
+<span class="c"># #===============================================================================</span>
+<span class="c"># # WHAT IS THIS??????</span>
+<span class="c"># #	 def clash_bin_map(self, densMap):</span>
+<span class="c"># #		 ### ???? what is this and why is here if is map related????</span>
+<span class="c"># #		 clashMap = densMap.make_clash_map()</span>
+<span class="c"># #		 protGrid, box_edge_pen = self.getGridPositions(clashMap)</span>
+<span class="c"># #		 for point in protGrid:</span>
+<span class="c"># #			 clashMap.fullMap[point[2]][point[1]][point[0]] = 1</span>
+<span class="c"># #		 return clashMap.fullMap, box_edge_pen</span>
+<span class="c"># #===============================================================================</span>
+<span class="c">#===============================================================================</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

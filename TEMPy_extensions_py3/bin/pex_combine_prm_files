@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from subprocess import check_output
+import os
+from PEETPRMParser import PEETPRMFile
+import argparse
+
+
+
+def combine_parameter_files(prm_list, outfile_dir):
+
+    if not os.path.isdir(outfile_dir):
+        os.makedirs(outfile_dir)
+    
+    param = PEETPRMFile(prm_list[0])
+    new_prm = param.deepcopy()
+
+    new_motls = param.prm_dict['initMOTL'] 
+    new_models = param.prm_dict['fnModParticle']
+    new_toms = param.prm_dict['fnVolume']
+    new_trange = param.prm_dict['tiltRange']
+
+    for x in range(1, len(prm_list)):
+        param = PEETPRMFile(prm_list[x])
+        new_motls.extend(param.prm_dict['initMOTL'])
+        new_models.extend(param.prm_dict['fnModParticle'])
+        new_toms.extend(param.prm_dict['fnVolume'])
+        new_trange.extend(param.prm_dict['tiltRange'])
+
+    new_prm.prm_dict['initMOTL'] = new_motls
+    new_prm.prm_dict['fnModParticle'] = new_models
+    new_prm.prm_dict['fnVolume'] = new_toms
+    new_prm.prm_dict['tiltRange'] = new_trange
+    new_prm.write_prm_file(outfile_dir + '/' + 'combined.prm')
+
+
+
+parser = argparse.ArgumentParser(description=("Combines multiple parameter files into one."))
+
+parser.add_argument('prm_files', help = 'Min 2, separated by commas.', default = 0)
+parser.add_argument('out_dir')
+parser.add_argument('--cls_numbers', help = 'numbers of clsNN directories', default = 0)
+args = parser.parse_args()
+
+if args.cls_numbers != 0:
+    import glob
+    cn = args.cls_numbers.replace(',', ' ').split()
+    plist = [glob.glob('cls%s/*.prm' % x)[0] for x in cn]
+    print('\n').join(plist)
+else:
+    plist = args.prm_files.replace(',', ' ').split()
+plist = [os.path.realpath(x) for x in plist]
+
+combine_parameter_files(plist, args.out_dir)

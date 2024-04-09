@@ -1,0 +1,124 @@
+##===============================================================================
+#     This file is part of TEMPy.
+#     
+#     TEMPy is a software designed to help the user in the manipulation 
+#     and analyses of macromolecular assemblies using 3D electron microscopy maps. 
+#     
+#     Copyright 2010-2014 TEMPy Inventors and Birkbeck College University of London.
+#                          The TEMPy Inventors are: Maya Topf, Daven Vasishtan, 
+#                           Arun Prasad Pandurangan, Irene Farabella, Agnel-Praveen Joseph,
+#                          Harpal Sahota
+# 
+# 
+#     TEMPy is available under Public Licence.
+#     
+#     Please cite your use of TEMPy in published work:
+#     
+#     Vasishtan D, Topf M. (2011) J Struct Biol 174:333-343. Scoring functions for cryoEM density fitting.
+#
+#===============================================================================
+import sys
+import scipy.cluster.hierarchy as hier
+try:
+    import matplotlib.gridspec as gridspec
+    import matplotlib.pyplot as plt
+except ImportError:
+    sys.stderr.write('to run this module please install matplotlib\n')
+    sys.exit()
+
+import scipy.spatial.distance as ssd
+from numpy import zeros
+from numpy import array
+
+class Plot:
+    """A class to create analysis output"""
+    
+    def __init__(self):
+        pass
+    
+    def ShowHierarchicalClusterings(self,ranked_ensemble,mxRMSD,cutoff,name='HierClustPlt',save=False,list_score=False):
+    
+        mxscore = zeros(shape=(len(ranked_ensemble),1))
+        for k in range(len(ranked_ensemble)):
+            mxscore[k]=float('%.3f'%(ranked_ensemble[k][2]))
+        fig = plt.figure(figsize=(4, 4),dpi=300)
+        heatmapGS = gridspec.GridSpec(1,2,wspace=0.0,hspace=0.0,width_ratios=[1,1])
+        denAX = fig.add_subplot(heatmapGS[0,0])
+        axdendro = fig.add_axes()
+        #see why @http://stackoverflow.com/questions/18952587/use-distance-matrix-in-scipy-cluster-hierarchy-linkage
+    
+        mxRMSD_cond = ssd.squareform(mxRMSD)
+        linkageMatrixZ = hier.linkage(mxRMSD_cond,method='complete')
+        labels=[ranked_ensemble[x][0].replace("mod_","") for x in range(len(ranked_ensemble))]     
+        hier_dendo=hier.dendrogram(linkageMatrixZ,color_threshold=cutoff,orientation='right',get_leaves=True,distance_sort=True,show_leaf_counts=True,show_contracted=True,labels=labels)
+        denAX.get_xaxis().set_ticks([])
+        heatmapAX = fig.add_subplot(heatmapGS[0,1])
+        index = hier_dendo['leaves']
+        cluster_dendro= hier_dendo['ivl']
+        #reorder matrix
+        mxscore = mxscore[index,:]
+        axi = heatmapAX.imshow(mxscore,interpolation='nearest',cmap=plt.cm.Blues,origin='lower')
+        ax = axi.get_axes()
+        ax.get_xaxis().set_ticks([])
+        ax.get_yaxis().set_ticks([])
+        heatmapAX.get_xaxis().set_ticks([])
+        heatmapAX.get_yaxis().set_ticks([])
+        #plt.show(block=False)
+        #plt.ion()
+        plt.show()
+        if save==True:
+            fig.savefig(str(name)+'.pdf')
+        if list_score==True:
+            ind = hier.fcluster(linkageMatrixZ, cutoff, 'distance')
+            ind=ind.ravel()
+            ind=ind[index,]
+            return zip(mxscore.ravel().tolist(),cluster_dendro,ind)
+
+    def ShowRMSDmatrix(self,mxRMSD):
+        fig = plt.figure(figsize=(6, 3.2))
+        ax = fig.add_subplot(111)
+        ax.set_title('RMSD matrix')
+        plt.imshow(mxRMSD,interpolation='nearest',cmap=plt.cm.coolwarm,origin='lower')
+        ax.set_aspect('equal')
+        cax = fig.add_axes([0.12, 0.1, 0.78, 0.8])
+        cax.get_xaxis().set_visible(False)
+        cax.get_yaxis().set_visible(False)
+        cax.patch.set_alpha(0)
+        cax.set_frame_on(False)
+        plt.colorbar(orientation='vertical')
+        #plt.ion()
+        plt.show()
+
+    def PrintOutClusterAnalysis(self,cluster_output,file_name='cluster.out',write=False):
+    
+        line="model\tscore\tclusterRMSD\n"
+        for x in cluster_output:
+            line+='%s\t%s\t%s\n'%(x[1],x[0],x[-1])
+        print line
+        if write==True:
+            file_out=open(file_name,'w')
+            file_out.write(line)
+            file_out.close()
+    
+    def PrintOutChimeraAttributeFileSCCC_Score(self,code_structure,sccc_list,listRB):
+
+        outfile = open(code_structure+'_attribute.txt','w')
+        outfile.write('attribute: sccc\n')    
+        outfile.write('match mode: 1-to-1\n')
+        outfile.write('recipient: residues\n')
+        sccc_list_3f=[str('%.3f'%score) for score in sccc_list]
+        line_out=''
+        for line1,line2 in zip(listRB,sccc_list_3f):
+            tokens=[item for sublist in line1 for item in sublist]
+            check = 0
+            for i in range(len(tokens)/2):
+                start = int(tokens[i*2])
+                end = int(tokens[i*2+1])
+                if check == 0:
+                    for res in range(int(start),int(end+1)):
+                        line_out+= '\t:%s\t%s\n'%(res,line2)
+                else:
+                    for res in range(int(start),int(end+1)):
+                        line_out+='\t:%s\t%s\n'%(res,line2)
+                check += 1
+        outfile.write(line_out)

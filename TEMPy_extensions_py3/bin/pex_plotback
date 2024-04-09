@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import argparse
+from replace_pcles import *
+from MapParser_f32_new import MapParser
+from PEETPRMParser import *
+      
+parser = argparse.ArgumentParser(description=('Plot back an average into a tomogram using PEET motive lists and model files.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use. 0 refers to the initial input files.')
+parser.add_argument('tomo_num', type=int, help='Number value, the tomogram to plotback.')
+parser.add_argument('average', help='Name of input MRC file - normally a segmented average from a PEET run.')
+parser.add_argument('outfile', help='Name of output MRC file.')
+parser.add_argument('--tomo_size', nargs=3, metavar=('x','y','z'), help='Size of tomogram in pixels, in x,y,z order. Used if original tomograms are not available', default=(0,0,0), type=int)
+args = parser.parse_args()
+prm = PEETPRMFile(args.prmfile)
+tomo = prm.prm_dict['fnVolume'][args.tomo_num-1]
+if sum(args.tomo_size) != 0:
+	tomo_size = args.tomo_size
+	print(tomo_size)
+else:
+	tomo_size = list(MapParser.readMRCHeader(tomo)[:3])
+csv_file = prm.get_MOTLs_from_ite(args.iteration)[args.tomo_num-1]
+mod_file = prm.prm_dict['fnModParticle'][args.tomo_num-1]
+
+replace_pcles(args.average, tomo_size, csv_file, mod_file, args.outfile)
+

@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPicker import linear_sampling
+from PEETModelParser import PEETmodel
+from PEETParticleAnalysis import csvfile_to_chim_markers
+
+parser = argparse.ArgumentParser(description=("Create lines of oriented picked particles based on a PEET model describing the lines. The PEET model must contain "
+                                              "two points for each desired line, positioned on each end. Outputs PEET model and motive list files (.mod and .csv), as well as a Chimera marker file (.cmm). "
+                                              "Since the Chimera marker file is in pixel coordinates, the tomogram must be displayed in Chimera in a similar manner to match positions. "
+                                              "This can be achieved by changing the voxel size to 1 and the origin to 0 (under Volume Viewer --> Coordinates)."))
+
+parser.add_argument('line_model', help="A PEET model file containing two points for each end of the line. The points must be in order (the first two points "
+                    "correspond to the first line, the second two to the second line, etc.)")
+parser.add_argument('sampling', help="Distance between points desired points, in pixels).", type=float)
+parser.add_argument('outfile', help='The desired prefix of the output files. Extensions will be added by the program.')
+parser.add_argument('--non_random', help="Do not randomise particles around y-axis", action="store_false")
+
+
+args = parser.parse_args()
+
+m = len(PEETmodel(args.line_model).get_all_points())
+if m%2 != 0:
+    print('ERROR! '+ args.line_model + ' contains '+str(m)+' points. pex_linear_pick requires an even number of points.') 
+else:
+    linear_sampling(PEETmodel(args.line_model), args.sampling, args.outfile, rand_orient=args.non_random)
+    csvfile_to_chim_markers(args.outfile+'.csv', args.outfile+'.mod', args.outfile+'.cmm')

@@ -1,0 +1,30 @@
+==========================
+Installation on Linux & Mac OSX 
+==========================
+
+**Dependencies**
+ 
+Download TEMpy0.1.tgz from http://XXXXX 
+  
+In order to make full use of the library in your own python code you will need:
+ 
+1. Python (.=2.X) (http://www.python.org) 
+2. NumPy version 1.X or greater (http://numpy.scipy.org) **on my mac 1.6.1**
+3. Scipy (http://www.scipy.org/) **on my mac 0.10.0**
+4. BioPython (http://biopython.org) 
+ 
+Default installation of these packages requires root (Linux & Mac OSX) privileges. 
+An appropriate version of Python is very likely to be available by default on recent Linux and Mac OSX systems and the NumPy, SciPy and BioPython modules can be also installed 
+in user directories provided appropriate options are specified in the installation commands and appropriate 
+paths set. Please read the installation instructions for these packages carefully. 
+
+**Installation**
+
+| tar xvfz TEMpy0.1.tgz 
+| cd TEMpy0.1 
+| python test.py  
+
+**NOTE TO SELF: test.py TO DO.** 
+The last command tests if TEMpy0.1 and dependencies are installed correctly then this will report “OK””. 
+Otherwise, some error message will be generated. Most problems are likely to arise from incorrect 
+installation of some of the dependancies and this should be clear from the message.

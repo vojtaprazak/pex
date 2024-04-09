@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+
+import argparse
+from bildmaker import make_bild_from_prm
+      
+parser = argparse.ArgumentParser(description=('Create a .bild file (that can be opened in Chimera) that represents the angular distribution of the particles in a given .prm file.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('iteration', type=int, help='Number value. The particles from this iteration will be depicted. 0 refers to the initial input files.')
+parser.add_argument('outfile', help='Output name for .bild file.')
+parser.add_argument('--non_combined', help="Create a seperate .bild file for each tomogram/.csv file in the run.", action="store_false")
+parser.add_argument('--axis', nargs=3, metavar=('x','y','z'), help='The axis of each particle to depict. Default is 0,1,0 (y-axis).', default=(0,1,0), type=float)
+
+
+args = parser.parse_args()
+
+make_bild_from_prm(args.prmfile, args.iteration, args.outfile, combined=args.non_combined, dummy=args.axis)
+

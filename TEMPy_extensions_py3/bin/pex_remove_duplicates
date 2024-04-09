@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Removes overlapping particles. The particle with the highest cross-correlation is the one that is kept. '
+                                              'Optional removal of particles below a given cross correlation threshold.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('max_dist', type=float, help='Minimum distance, in pixels, between particles before they are considered overlapped.')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when removing particles. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+
+parser.add_argument('--ccc_clean', help='Turn on removal of particles based on their cross-correlation. Threshold determined by --min_ccc and --stdev_units.', action="store_true")
+parser.add_argument('--use_absolute_ccc', help=('Use the value of min_ccc/max_ccc directly, rather than number of standard deviations above the mean.'), action="store_true")
+parser.add_argument('--min_ccc', type=float, help=('default 1. Cross-correlation threshold. Particles with a correlation below mean(ccc)+cccmin*std(ccc) '
+                                                   'will be removed (ie. if ccmin = 1, particles with a cc value less than 1 standard '
+                                                   'deviation above the mean are removed).'), default=1.0)
+parser.add_argument('--max_ccc', type=float, help=('default 100. Cross-correlation threshold. Particles with a correlation above mean(ccc)+cccmin*std(ccc) '
+                                                   'will be removed (ie. if ccmin = 1, particles with a cc value more than 1 standard '
+                                                   'deviation above the mean are removed).'), default=100.0)
+parser.add_argument('--keep_intraclass', help=('Keep neighbours if they have the same class ID.'), action="store_false")
+
+parser.add_argument('--max_nghbrs', type=int, help=('default 30. Maximum number of particles that can be considered neighbours (and therefore be removed) to a single particle.'), \
+                    default=30)
+
+parser.add_argument('--no_offset_transfer', help='Turn off the transfer of offsets from motive lists to model files.', action="store_true")
+parser.add_argument('--silent', help='Turn off reports on numbers of particles.', action="store_true")
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+
+
+args = parser.parse_args()
+
+stdev = not args.use_absolute_ccc
+offset_mv = not args.no_offset_transfer
+verbose = not args.silent
+writeprm = not args.no_prm
+
+inp = PEETPRMFile(args.prmfile)
+inp.clean_pcles(args.max_dist, args.iteration, args.outdir, clean_ccc=args.ccc_clean, cccmin=args.min_ccc, cccmax=args.max_ccc, stdev_units=stdev,\
+                          no_of_nbrs=args.max_nghbrs, offset_mv=offset_mv, writeprm=writeprm, verbose=verbose, intraclass_rm=args.keep_intraclass)
+

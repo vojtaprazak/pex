@@ -1,0 +1,241 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10. Generation an Ensemble of Structure Instance &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="11. Scoring Functions" href="ScoringFunctions.html" />
+    <link rel="prev" title="9. Parser for Transformation Matrices" href="TransformParser.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="ScoringFunctions.html" title="11. Scoring Functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="TransformParser.html" title="9. Parser for Transformation Matrices"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="generation-an-ensemble-of-structure-instance">
+<h1>10. Generation an Ensemble of Structure Instance<a class="headerlink" href="#generation-an-ensemble-of-structure-instance" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-EnsembleGeneration"></span><dl class="class">
+<dt id="EnsembleGeneration.EnsembleGeneration">
+<em class="property">class </em><tt class="descclassname">EnsembleGeneration.</tt><tt class="descname">EnsembleGeneration</tt><a class="reference internal" href="_modules/EnsembleGeneration.html#EnsembleGeneration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EnsembleGeneration.EnsembleGeneration" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to create ensemble of structure instance</p>
+<dl class="method">
+<dt id="EnsembleGeneration.EnsembleGeneration.anglar_sweep">
+<tt class="descname">anglar_sweep</tt><big>(</big><em>structure_instance</em>, <em>axis</em>, <em>translation_vector</em>, <em>no_of_structs</em>, <em>loc_rotation_angle</em>, <em>output_template</em>, <em>atom_com_ind=False</em>, <em>write=False</em>, <em>filename=None</em><big>)</big><a class="reference internal" href="_modules/EnsembleGeneration.html#EnsembleGeneration.anglar_sweep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EnsembleGeneration.EnsembleGeneration.anglar_sweep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an ensemble of Structure Instance</p>
+<p>NOTE - Chose the number of structures for the ensemble accordingly with the angular increment step (loc_rotation_angle/no_of_structs) and
+translational increment step (translation_vector/no_of_structs) required. 
+Default setting is around the center of mass.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>structure_instance</em></dt>
+<dd>Input Structure Instructure_instance</dd>
+<dt><em>axis</em></dt>
+<dd>3-tuple, axis for translation</dd>
+<dt><em>translation_vector</em></dt>
+<dd>3-ple, vector for translation</dd>
+<dt><em>no_of_structs</em></dt>
+<dd>int, number of structures to output</dd>
+<dt><em>loc_rotation_angle</em></dt>
+<dd>tuple, rotation angle for local rotation (degrees)</dd>
+<dt><em>output_template</em></dt>
+<dd>string, prefix name for outputted pdb files</dd>
+<dt><em>atom_com_ind</em></dt>
+<dd>int, index of atom to rotate around. If False, rotates around centre of mass</dd>
+<dt><em>write</em></dt>
+<dd>True will write out each Structure Instance in the ensemble as single PDB.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>list of Structure Instance in which each item is [structure_instance_name,structure_instance]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EnsembleGeneration.EnsembleGeneration.loadEnsemble">
+<tt class="descname">loadEnsemble</tt><big>(</big><em>path_dir</em>, <em>file_name_flag</em>, <em>hetatm=False</em>, <em>water=False</em>, <em>verbose=False</em>, <em>pdb=True</em><big>)</big><a class="reference internal" href="_modules/EnsembleGeneration.html#EnsembleGeneration.loadEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EnsembleGeneration.EnsembleGeneration.loadEnsemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an ensemble of Structure Instance from the directory path_dir.
+Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>path_dir</em></dt>
+<dd>directory name</dd>
+<dt><em>file_name_flag</em></dt>
+<dd>name or suffix of the files.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="EnsembleGeneration.EnsembleGeneration.randomise_structs">
+<tt class="descname">randomise_structs</tt><big>(</big><em>structure_instance</em>, <em>no_of_structs</em>, <em>max_trans</em>, <em>max_rot</em>, <em>v_grain=30</em>, <em>rad=False</em>, <em>write=False</em><big>)</big><a class="reference internal" href="_modules/EnsembleGeneration.html#EnsembleGeneration.randomise_structs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EnsembleGeneration.EnsembleGeneration.randomise_structs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an ensemble of Structure Instance.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>structure_instance</em></dt>
+<dd>Input Structure Instance</dd>
+<dt><em>no_of_structs</em></dt>
+<dd>int, number of structures to output</dd>
+<dt><em>max_trans</em></dt>
+<dd>Maximum translation permitted</dd>
+<dt><em>max_rot</em></dt>
+<dd>Maximum rotation permitted (in degree if rad=False)</dd>
+<dt><em>v_grain</em></dt>
+<dd>Graning Level for the generation of random vectors (default=30)</dd>
+<dt><em>write</em></dt>
+<dd>True will write out each structure_instanceure Instance in the ensemble as single PDB.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>list of Structure Instance in which each item is [structure_instance_name,structure_instance]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="EnsembleGeneration.EnsembleGeneration.spiral_sweep">
+<tt class="descname">spiral_sweep</tt><big>(</big><em>structure_instance</em>, <em>axis</em>, <em>dist</em>, <em>no_of_structs</em>, <em>loc_ang_range</em>, <em>loc_axis</em>, <em>output_template</em>, <em>atom_com_ind=False</em>, <em>write=False</em><big>)</big><a class="reference internal" href="_modules/EnsembleGeneration.html#EnsembleGeneration.spiral_sweep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#EnsembleGeneration.EnsembleGeneration.spiral_sweep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an ensemble of Structure Instance</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><blockquote class="first">
+<div><blockquote>
+<div><dl class="docutils">
+<dt><em>structure_instance</em></dt>
+<dd>Input Structure Instance</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt><em>axis</em></dt>
+<dd>3-ple, axis for translation</dd>
+<dt><em>dist</em></dt>
+<dd>int, translation range (Angstroms)</dd>
+<dt><em>no_of_structs</em></dt>
+<dd>int, number of structures to output</dd>
+<dt><em>loc_axis</em></dt>
+<dd>3-ple, axis for local rotation around centre of mass</dd>
+<dt><em>loc_ang_range</em></dt>
+<dd>tuple, rotation range for local rotation (degrees)</dd>
+<dt><em>output_template</em></dt>
+<dd>string, prefix name for outputted pdb files</dd>
+<dt><em>atom_com_ind</em></dt>
+<dd><blockquote class="first">
+<div>int, index of atom to rotate around. If False, rotates around centre of mass.</div></blockquote>
+<dl class="last docutils">
+<dt><em>write</em></dt>
+<dd>True will write out each Structure Instance in the ensemble as single PDB.</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="last docutils">
+<dt>Return:</dt>
+<dd>list of Structure Instance in which each item is [structure_instance_name,structure_instance]</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="ScoringFunctions.html" title="11. Scoring Functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="TransformParser.html" title="9. Parser for Transformation Matrices"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
