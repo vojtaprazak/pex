@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPicker import get_spherical_pick_from_model
+from PEETModelParser import PEETmodel
+from PEETParticleAnalysis import csvfile_to_chim_markers
+
+parser = argparse.ArgumentParser(description=("Create spheres of oriented picked particles based on a PEET model describing the spheres. The PEET model must contain "
+                                              "two points for each desired sphere, positioned on opposing poles (ie. so that the distance between the points is equal "
+                                              "to the diameter of the sphere. Outputs PEET model and motive list files (.mod and .csv), as well as a Chimera marker file (.cmm). "
+                                              "Since the marker file is in pixel coordinates, the tomogram must be displayed in Chimera in a similar manner to match positions. "
+                                              "This can be achieved by changing the voxel size to 1 and the origin to 0 (under Volume Viewer --> Coordinates)."))
+
+parser.add_argument('--diameter', type=float, default=0, help="The expected diameter of the particle in voxels. ONLY USE THIS if you have a PEET model file that specifies the centre of each sphere, rather than the poles.") 
+parser.add_argument('pole_model', help="A PEET model file containing two pole points for each sphere of particles desired. The points must be in order (the first two points "
+                    "correspond to the first sphere, the second two to the second sphere, etc.)")
+parser.add_argument('N', help="Number of points to place between vertices on icosphere. Must be positive integer. Will produce 10N^2+20N+12 particles on the sphere (ie. N=3 will produce 162 particles"
+                    " per sphere).", type=int)
+parser.add_argument('outfile', help='The desired prefix of the output files. Extensions will be added by the program."')
+
+
+args = parser.parse_args()
+
+get_spherical_pick_from_model(PEETmodel(args.pole_model), args.N, args.outfile, rad=args.diameter)
+csvfile_to_chim_markers(args.outfile+'.csv', args.outfile+'.mod', args.outfile+'.cmm')
+
+

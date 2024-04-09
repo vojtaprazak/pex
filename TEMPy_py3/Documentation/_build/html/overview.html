@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. How to use TEMPy &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="3. Parser for Structure Instance" href="StructureParser.html" />
+    <link rel="prev" title="1. Installation on Linux &amp; Mac OSX" href="installation.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="StructureParser.html" title="3. Parser for Structure Instance"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="1. Installation on Linux &amp; Mac OSX"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="how-to-use-tempy">
+<h1>2. How to use TEMPy<a class="headerlink" href="#how-to-use-tempy" title="Permalink to this headline">¶</a></h1>
+<p>TEMPy is an object-oriented Python library designed to help the user in the manipulation and analysis of
+macromolecular assemblies, especially in the context of 3D electron microscopy density maps.
+It is designed with a set of functionalities that assess the goodness-of-fit between a given atomic model
+and a density map or between two maps using a variety of different scoring functions.
+It can also generate various ensembles of alternative fits, which has been shown to access one of the
+best-fitting models. In the future, TEMPy will also include a suite of functions for density ﬁtting.</p>
+<div class="section" id="working-with-structure-and-map-instance">
+<h2>2.1. Working with Structure and Map instance<a class="headerlink" href="#working-with-structure-and-map-instance" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="load-a-structure-instance">
+<h3>2.1.1. Load a Structure instance<a class="headerlink" href="#load-a-structure-instance" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to fetch a Structure instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.StructureParser</span> <span class="kn">import</span> <span class="n">PDBParser</span>
+
+<span class="s">&#39;fetch a structure PDB file&#39;</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">fetch_PDB</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">,</span><span class="n">hetatm</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">water</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong>: It is possible to create structure object either from a PDB file or from a mmCIF file.</p>
+<p>For mmCIF file the last version Biopython (&gt;1.40b) is required.</p>
+<p>The following example show how to create a Structure instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.StructureParser</span> <span class="kn">import</span> <span class="n">PDBParser</span>
+
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="load-a-map-instance">
+<h3>2.1.2. Load a Map instance<a class="headerlink" href="#load-a-map-instance" title="Permalink to this headline">¶</a></h3>
+<p>The following example show how to create a Map instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.MapParser</span> <span class="kn">import</span> <span class="n">readMRC</span>
+
+<span class="c"># Generate Structure instance from File:</span>
+
+<span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename</span><span class="p">)</span> <span class="c">#read target map</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="convoluting-a-structure-instance-into-an-map-instance">
+<h3>2.1.3. Convoluting a Structure instance into an Map instance<a class="headerlink" href="#convoluting-a-structure-instance-into-an-map-instance" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to create a 20Å resolution simulated map from a Structure instance using target map informations as a template:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.StructureBlurrer</span> <span class="kn">import</span> <span class="n">gaussian_blur</span>
+
+<span class="c">#Generate a Map instance based on a Gaussian blurring of a protein</span>
+
+<span class="n">blurrer</span> <span class="o">=</span> <span class="n">StructureBlurrer</span><span class="p">()</span>
+<span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">structure_instance</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">target_map</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong> To compare with a target map use <em>densMap=target_map</em>; unless specified the Map instance dimensions will be based on the Structure instance.</p>
+</div>
+<div class="section" id="translate-a-structure-instance">
+<h3>2.1.4. Translate a Structure instance<a class="headerlink" href="#translate-a-structure-instance" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to translate a Structure instance by 4.3Å in the x-direction, 1Å in y and -55Å in z (translation vector):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+<span class="c"># print the starting Centre of mass of the Structure instance</span>
+<span class="n">structure_instance</span><span class="o">.</span><span class="n">CoM</span>
+<span class="c"># translate the Structure instance</span>
+<span class="c"># note, this overwrites the existing position</span>
+<span class="n">structure_instance</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mi">55</span><span class="p">)</span>
+<span class="c"># print the transformed Centre of mass of the Structure instance</span>
+<span class="n">structure_instance</span><span class="o">.</span><span class="n">CoM</span>
+<span class="c"># reset transformation</span>
+<span class="n">structure_instance</span><span class="o">.</span><span class="n">reset_position</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="selection-and-manipulation-of-structure-instance-segments">
+<span id="id1"></span><h3>2.1.5. Selection and Manipulation of Structure instance Segments<a class="headerlink" href="#selection-and-manipulation-of-structure-instance-segments" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to do a selection from a list of segments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># select two segments: 1st from residues 130 to 166, 2nd from residues 235 to 280</span>
+<span class="n">rigid_segment_list</span><span class="o">=</span><span class="p">[[</span><span class="mi">130</span><span class="p">,</span><span class="mi">166</span><span class="p">],[</span><span class="mi">235</span><span class="p">,</span><span class="mi">280</span><span class="p">]]</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+<span class="c">#create a list of Structure objects based on the rigid segment list</span>
+<span class="n">list_segments</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">break_into_segments</span><span class="p">(</span><span class="n">rigid_segment_list</span><span class="p">)</span>
+<span class="c"># First segment from residues 130 to 166</span>
+<span class="n">list_segments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>It is possible to add the selected segments to an existing Structure instance as follow:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">structure_instance</span><span class="o">.</span><span class="n">combine_structures</span><span class="p">(</span><span class="n">list_segments</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternative, it is possible to combine a list of selected segments in a unique Structure instance (rigid body):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">structure_instance</span><span class="o">.</span><span class="n">combine_SSE_structures</span><span class="p">(</span><span class="n">list_segments</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively the user can read a  <em>rigid body file</em> in <a class="reference external" href="http://topf-group.ismb.lon.ac.uk/flex-em/">Flex-EM</a> format using residue numbers.
+Each line describes one rigid body by specifying the initial and final residue of each of the segments in that rigid body
+(eg, &#8216;2 6 28 30&#8217; means that residues 2-6 and 28-30 will be included in the same rigid body).:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.StructureParser</span> <span class="kn">import</span> <span class="n">PDBParser</span>
+<span class="kn">from</span> <span class="nn">RigidBodyParser</span> <span class="kn">import</span> <span class="n">RBParser</span>
+
+<span class="n">rb_file</span><span class="o">=</span><span class="s">&quot;rigid.txt&quot;</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+<span class="n">listRB_structure_instances</span><span class="o">=</span><span class="n">RBParser</span><span class="o">.</span><span class="n">read_FlexEM_RIBFIND_files</span><span class="p">(</span><span class="n">rb_file</span><span class="p">,</span><span class="n">structure_instance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We recommend to use the <a class="reference external" href="http://ribfind.ismb.lon.ac.uk">RIBFIND server</a>  for identifying different sets of Rigid Bodies in the protein structure.</p>
+</div>
+<div class="section" id="map-manipulations">
+<h3>2.1.6. Map Manipulations<a class="headerlink" href="#map-manipulations" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to rotate a Map instance around centre of mass of a structure_instance and write the rotated Map instance as a MRC file.
+In this example the Map instance is rotated round the xy-plane (axis x,y,z =  0,0,1) of 45 degree:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename</span><span class="p">)</span> <span class="c">#read target map</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+
+<span class="n">target_map_rotate</span> <span class="o">=</span> <span class="n">target_map</span><span class="o">.</span><span class="n">rotate_by_axis_angle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">structure_instance</span><span class="o">.</span><span class="n">CoM</span><span class="p">)</span>
+<span class="n">target_map_rotate</span><span class="o">.</span><span class="n">write_to_MRC_file</span><span class="p">(</span><span class="n">path_out</span><span class="o">+</span><span class="s">&#39;/Test/rotated_map_filename.mrc&#39;</span><span class="p">)</span> <span class="c"># Writing out to MRC file</span>
+</pre></div>
+</div>
+<p>It is possible to translate a Map instance; the translation uses fourier-shifting so that the movements are periodic.
+Here an example in which a Map instance is translated by +5.2 Å in the x-direction, 5 Å in y and 1 Å in z:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">target_map_translate</span> <span class="o">=</span> <span class="n">target_map</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ensemble-generation">
+<h2>2.2. Ensemble Generation<a class="headerlink" href="#ensemble-generation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="generate-a-random-ensemble">
+<h3>2.2.1. Generate a Random Ensemble<a class="headerlink" href="#generate-a-random-ensemble" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to generate an ensemble of 10 Structure instances rotated within 0 and 90° and translated within 0 to 5 Å:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">EnsembleGeneration</span> <span class="kn">import</span>  <span class="o">*</span>
+
+<span class="n">EnsembleGeneration</span><span class="o">=</span><span class="n">EnsembleGeneration</span><span class="p">()</span>
+
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+<span class="n">ensemble_list</span><span class="o">=</span><span class="n">EnsembleGeneration</span><span class="o">.</span><span class="n">randomise_structs</span><span class="p">(</span><span class="n">structure_instance</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-an-angular-sweep-ensemble">
+<h3>2.2.2. Generate an Angular Sweep Ensemble<a class="headerlink" href="#generate-an-angular-sweep-ensemble" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to generate an ensemble of 10 Structure instances using angular sweeps with a rotation angle of 100° around a specified rotation axis using a translation vector as before:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">EnsembleGeneration</span> <span class="kn">import</span>  <span class="o">*</span>
+
+<span class="n">EnsembleGeneration</span><span class="o">=</span><span class="n">EnsembleGeneration</span><span class="p">()</span>
+
+<span class="n">translation_vector</span><span class="o">=</span><span class="p">[</span><span class="mf">4.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mi">55</span><span class="p">]</span>
+<span class="n">rotation_angle</span><span class="o">=</span> <span class="mi">110</span>
+<span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mf">0.21949010788898163</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.80559787935161753</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.55030527207975843</span><span class="p">]</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+<span class="n">ensemble_list</span><span class="o">=</span><span class="n">EnsembleGeneration</span><span class="o">.</span><span class="n">anglar_sweep</span><span class="p">(</span><span class="n">structure_instance</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span> <span class="n">translation_vector</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">,</span> <span class="s">&#39;structure_instance_angular_sweep&#39;</span><span class="p">,</span> <span class="n">atom_com_ind</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong> It is advisable to chose the number of structures for the ensemble accordingly with the angular increment step (rotation angle/number of structures) and/or the translational increment step (translation vector/number of structures) to have a more homogeneous ensemble.</p>
+</div>
+</div>
+<div class="section" id="scoring-fits">
+<h2>2.3. Scoring Fits<a class="headerlink" href="#scoring-fits" title="Permalink to this headline">¶</a></h2>
+<p>For more information on the performance of the difference Scoring Functions please read:</p>
+<p><strong>Vasishtan and Topf (2011) Scoring functions for cryoEM density fitting. J Struct Biol 174:333-343.</strong></p>
+<div class="section" id="cross-correlation-function-ccc">
+<h3>2.3.1. Cross-correlation function (CCC)<a class="headerlink" href="#cross-correlation-function-ccc" title="Permalink to this headline">¶</a></h3>
+<p>The most commonly-used method of scoring the goodness-of-fit.</p>
+<p>The following example shows how to calculate the CCC score between two Map instances:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.ScoringFunctions</span> <span class="kn">import</span> <span class="n">ScoringFunctions</span>
+<span class="kn">from</span> <span class="nn">TEMPy.MapParser</span> <span class="kn">import</span> <span class="n">MapParser</span>
+
+<span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+
+<span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename_target</span><span class="p">)</span>
+<span class="n">probe_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename_probe</span><span class="p">)</span>
+
+<span class="n">scorer</span><span class="o">.</span><span class="n">CCC</span><span class="p">(</span><span class="n">probe_map</span><span class="p">,</span><span class="n">target_map</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong> CCC about the mean calculation and CCC about zero calculation also available.</p>
+</div>
+<div class="section" id="laplacian-filtered-ccc-lap">
+<h3>2.3.2. Laplacian-filtered CCC (LAP)<a class="headerlink" href="#laplacian-filtered-ccc-lap" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to calculate the Laplacian cross-correlation score between two Map instances:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.ScoringFunctions</span> <span class="kn">import</span> <span class="n">ScoringFunctions</span>
+<span class="kn">from</span> <span class="nn">TEMPy.MapParser</span> <span class="kn">import</span> <span class="n">MapParser</span>
+
+<span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+
+<span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename_target</span><span class="p">)</span>
+<span class="n">probe_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename_probe</span><span class="p">)</span>
+
+<span class="n">scorer</span><span class="o">.</span><span class="n">laplace_CCC</span><span class="p">(</span><span class="n">mapprobe</span><span class="p">,</span><span class="n">maptarget</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="segment-based-cross-correlation-score-sccc">
+<h3>2.3.3. Segment Based cross-correlation score (SCCC)<a class="headerlink" href="#segment-based-cross-correlation-score-sccc" title="Permalink to this headline">¶</a></h3>
+<p>Used to quantify and compare the local quality of fits.</p>
+<p>For more information:</p>
+<p><strong>Pandurangan AP, Shakeel S, Butcher SJ, Topf M. (2014) Combined approaches to flexible fitting and assessment in virus capsids undergoing conformational change. J Struct Biol. 185, 427-439.</strong></p>
+<p>The following example shows how to calculate the SCCC score:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.StructureParser</span> <span class="kn">import</span> <span class="n">PDBParser</span>
+<span class="kn">from</span> <span class="nn">TEMPy.MapParser</span> <span class="kn">import</span> <span class="n">MapParser</span>
+
+<span class="n">sim_res</span><span class="o">=</span><span class="mi">20</span> <span class="c">#Target resolution of the outputted map.</span>
+<span class="n">sim_sigma_coeff</span><span class="o">=</span><span class="mf">0.187</span> <span class="c">#Sigma width of the Gaussian used to blur the atomic structure.</span>
+<span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+
+<span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename_target</span><span class="p">)</span> <span class="c">#read target map</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+
+
+<span class="n">rigid_body1</span><span class="o">=</span><span class="p">[[</span><span class="mi">340</span><span class="p">,</span><span class="mi">349</span> <span class="p">]]</span>
+<span class="n">rigid_body2</span><span class="o">=</span><span class="p">[[</span><span class="mi">362</span><span class="p">,</span><span class="mi">368</span> <span class="p">]]</span>
+<span class="n">rigid_body3</span><span class="o">=</span><span class="p">[[</span><span class="mi">8</span><span class="p">,</span><span class="mi">12</span><span class="p">],[</span><span class="mi">16</span><span class="p">,</span><span class="mi">21</span><span class="p">],</span> <span class="p">[</span><span class="mi">29</span><span class="p">,</span><span class="mi">32</span><span class="p">],</span> <span class="p">[</span><span class="mi">103</span><span class="p">,</span><span class="mi">107</span><span class="p">],[</span><span class="mi">131</span><span class="p">,</span><span class="mi">137</span><span class="p">],</span> <span class="p">[</span><span class="mi">360</span><span class="p">,</span><span class="mi">361</span><span class="p">]]</span>
+<span class="n">rigid_body4</span><span class="o">=</span><span class="p">[[</span><span class="mi">151</span><span class="p">,</span><span class="mi">156</span><span class="p">],[</span><span class="mi">161</span><span class="p">,</span><span class="mi">167</span><span class="p">],[</span> <span class="mi">170</span><span class="p">,</span><span class="mi">171</span><span class="p">],[</span><span class="mi">177</span><span class="p">,</span><span class="mi">179</span><span class="p">],[</span><span class="mi">299</span><span class="p">,</span><span class="mi">302</span><span class="p">],[</span><span class="mi">331</span><span class="p">,</span><span class="mi">332</span><span class="p">]]</span>
+<span class="n">rigid_body5</span><span class="o">=</span><span class="p">[[</span><span class="mi">239</span><span class="p">,</span> <span class="mi">242</span><span class="p">],[</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">251</span><span class="p">]]</span>
+
+<span class="n">list_all_rigid_body</span><span class="o">=</span><span class="p">[</span><span class="n">rigid_body1</span><span class="p">,</span><span class="n">rigid_body2</span><span class="p">,</span><span class="n">rigid_body3</span><span class="p">,</span><span class="n">rigid_body4</span><span class="p">,</span><span class="n">rigid_body5</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">rigid_body</span> <span class="ow">in</span> <span class="n">list_all_rigid_body</span><span class="p">:</span>
+        <span class="n">rigid_body_structure_break</span><span class="o">=</span><span class="n">structure_instance</span><span class="o">.</span><span class="n">break_into_segments</span><span class="p">(</span><span class="n">rigid_body</span><span class="p">)</span>
+        <span class="n">rigid_body_structure_instance</span><span class="o">=</span><span class="n">structure_instance</span><span class="o">.</span><span class="n">combine_SSE_structures</span><span class="p">(</span><span class="n">rigid_body_structure_break</span><span class="p">)</span> <span class="c"># create a Structure instance of selected segments.</span>
+        <span class="n">score_SCCC</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">SCCC</span><span class="p">(</span><span class="n">target_map</span><span class="p">,</span><span class="mf">6.6</span><span class="p">,</span><span class="n">sim_sigma_coeff</span><span class="p">,</span><span class="n">structure_instance</span><span class="p">,</span><span class="n">rigid_body_structure_instance</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">score_SCCC</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong> Different ways of segment selection are implemented in TEMPy. See <a class="reference internal" href="#selection-and-manipulation-of-structure-instance-segments"><em>Selection and Manipulation of Structure instance Segments</em></a> for more information.
+In this example the segment selection is defined from a rigid body list.</p>
+</div>
+<div class="section" id="mutual-information-score-mi">
+<h3>2.3.4. Mutual information score (MI)<a class="headerlink" href="#mutual-information-score-mi" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to calculate the MI score:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.ScoringFunctions</span> <span class="kn">import</span> <span class="n">ScoringFunctions</span>
+<span class="kn">from</span> <span class="nn">TEMPy.MapParser</span> <span class="kn">import</span> <span class="n">MapParser</span>
+
+<span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+
+<span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename_target</span><span class="p">)</span>
+<span class="n">probe_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename_probe</span><span class="p">)</span>
+
+<span class="n">score_MI</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">MI</span><span class="p">(</span><span class="n">probe_map</span><span class="p">,</span><span class="n">target_map</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">score_MI</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="envelope-score-env">
+<h3>2.3.5. Envelope score (ENV)<a class="headerlink" href="#envelope-score-env" title="Permalink to this headline">¶</a></h3>
+<p>The fastest of the available scores and so it could be used to screen possible ﬁts in large assemblies.</p>
+<p>The following example shows how to calculate the ENV score:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.StructureParser</span> <span class="kn">import</span> <span class="n">PDBParser</span>
+<span class="kn">from</span> <span class="nn">TEMPy.MapParser</span> <span class="kn">import</span> <span class="n">MapParser</span>
+
+<span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+
+<span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">target_map</span><span class="p">)</span> <span class="c">#read target map</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+
+<span class="n">min_thr</span><span class="o">=</span><span class="n">target_map</span><span class="o">.</span><span class="n">get_min_threshold</span><span class="p">(</span><span class="n">structure_instance</span><span class="o">.</span><span class="n">get_prot_mass_from_atoms</span><span class="p">(),</span> <span class="n">target_map</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">target_map</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="c">#minimum density value based on protein molecular weight.</span>
+<span class="n">score_ENV</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">envelope_score</span><span class="p">(</span><span class="n">target_map</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">structure_instance</span><span class="p">,</span><span class="n">norm</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">score_ENV</span>
+</pre></div>
+</div>
+<p><em>NOTE</em> The correct definition of the volume threshold can affect the performance of this score</p>
+</div>
+<div class="section" id="normal-vector-score-nv">
+<h3>2.3.6. Normal vector score (NV)<a class="headerlink" href="#normal-vector-score-nv" title="Permalink to this headline">¶</a></h3>
+<p>Calculates the average angular difference between the vectors representing the surface of the target and probe maps.
+The score goes from 0 to pi. 0 is the best scores, i.e. there is no difference in the direction of all corresponding normal vectors between the target and probe maps.
+The normal vector score does not rely heavily on the absolute (coordinate) positions of the calculated surface voxels.
+It can be used in conjunction with Sobel Filter.</p>
+<p>The following example shows how to calculate the NV score:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">TEMPy.StructureParser</span> <span class="kn">import</span> <span class="n">PDBParser</span>
+<span class="kn">from</span> <span class="nn">TEMPy.MapParser</span> <span class="kn">import</span> <span class="n">MapParser</span>
+<span class="kn">from</span> <span class="nn">TEMPy.StructureBlurrer</span> <span class="kn">import</span> <span class="n">StructureBlurrer</span>
+
+<span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+<span class="n">blurrer</span> <span class="o">=</span> <span class="n">StructureBlurrer</span><span class="p">()</span>
+
+<span class="n">target_map</span><span class="o">=</span><span class="n">MapParser</span><span class="o">.</span><span class="n">readMRC</span><span class="p">(</span><span class="n">map_filename</span><span class="p">)</span> <span class="c">#read target map</span>
+<span class="n">structure_instance</span><span class="o">=</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">read_PDB_file</span><span class="p">(</span><span class="s">&#39;structure_id&#39;</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">)</span>
+<span class="n">probe_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">structure_instance</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">target_map</span><span class="p">)</span>
+
+<span class="n">points</span><span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">target_map</span><span class="o">.</span><span class="n">map_size</span><span class="p">())</span><span class="o">*</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">first_bound</span><span class="o">=</span><span class="n">target_map</span><span class="o">.</span><span class="n">get_primary_boundary</span><span class="p">(</span><span class="n">structure_instance</span><span class="o">.</span><span class="n">get_prot_mass_from_atoms</span><span class="p">(),</span> <span class="n">target_map</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">target_map</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="n">second_bound</span><span class="o">=</span><span class="n">target_map</span><span class="o">.</span><span class="n">get_second_boundary</span><span class="p">(</span><span class="n">first_bound</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">first_bound</span><span class="p">,</span> <span class="n">target_map</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">err_percent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">scorer</span><span class="o">.</span><span class="n">normal_vector_score</span><span class="p">(</span><span class="n">target_map</span><span class="p">,</span><span class="n">probe_map</span><span class="p">,</span> <span class="n">first_bound</span><span class="p">,</span> <span class="n">second_bound</span><span class="p">)</span>
+<span class="n">scorer</span><span class="o">.</span><span class="n">normal_vector_score</span><span class="p">(</span><span class="n">target_map</span><span class="p">,</span><span class="n">probe_map</span><span class="p">,</span> <span class="n">first_bound</span><span class="p">,</span> <span class="n">second_bound</span><span class="p">,</span><span class="n">Filter</span><span class="o">=</span><span class="s">&#39;Sobel&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong> Using too small (0.187×resolution) or large (0.5×resolution) sigma values to produce the probe map may disrupt the accuracy of the normal vector score.</p>
+</div>
+</div>
+<div class="section" id="code-snippets">
+<h2>2.4. Code snippets<a class="headerlink" href="#code-snippets" title="Permalink to this headline">¶</a></h2>
+<p>The distribution includes an example directory that
+contains a number of code snippets that show how to use certain
+aspects of TEMPy to retrieve informations regarding the Structure
+and Map instances.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">2. How to use TEMPy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-structure-and-map-instance">2.1. Working with Structure and Map instance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ensemble-generation">2.2. Ensemble Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scoring-fits">2.3. Scoring Fits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-snippets">2.4. Code snippets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="StructureParser.html" title="3. Parser for Structure Instance"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="1. Installation on Linux &amp; Mac OSX"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

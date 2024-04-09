@@ -1,0 +1,1162 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Index &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="#" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="Vector.html#Vector.altTorsion">altTorsion() (in module Vector)</a>
+  </dt>
+
+      
+  <dt><a href="EnsembleGeneration.html#EnsembleGeneration.EnsembleGeneration.anglar_sweep">anglar_sweep() (EnsembleGeneration.EnsembleGeneration method)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.Vector.arg">arg() (Vector.Vector method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="Vector.html#Vector.axis_angle_to_euler">axis_angle_to_euler() (in module Vector)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.axis_angle_to_matrix">axis_angle_to_matrix() (in module Vector)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure">BioPy_Structure (class in ProtRep_Biopy)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom">BioPyAtom (class in ProtRep_Biopy)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.box_size">box_size() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.break_into_segments">break_into_segments() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.calculate_centre_of_mass">calculate_centre_of_mass() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.CCC">CCC() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.CCF_mask_mean">CCF_mask_mean() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.CCF_mask_zero">CCF_mask_zero() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.centre">centre() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.chamfer_distance">chamfer_distance() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.change_init_position">change_init_position() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.change_init_position">(ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      </dl></dd>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.change_origin">change_origin() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="Cluster.html#Cluster.Cluster">Cluster (class in Cluster)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="Cluster.html#module-Cluster">(module)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="Cluster.html#Cluster.Cluster.cluster_fit_ensemble_top_fit">cluster_fit_ensemble_top_fit() (Cluster.Cluster method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.combine_SSE_structures">combine_SSE_structures() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.combine_structures">combine_structures() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.copy">copy() (EMMap.Map method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.copy">(ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.copy">(ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+        
+  <dt><a href="Vector.html#Vector.Vector.copy">(Vector.Vector method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="Vector.html#Vector.Vector.cross">cross() (Vector.Vector method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="Vector.html#Vector.Vector.dist">dist() (Vector.Vector method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.distance_from_atom">distance_from_atom() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.distance_from_init_position">distance_from_init_position() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.Vector.dot">dot() (Vector.Vector method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#module-EMMap">EMMap (module)</a>
+  </dt>
+
+      
+  <dt><a href="EnsembleGeneration.html#EnsembleGeneration.EnsembleGeneration">EnsembleGeneration (class in EnsembleGeneration)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="EnsembleGeneration.html#module-EnsembleGeneration">(module)</a>
+  </dt>
+
+      </dl></dd>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.envelope_score">envelope_score() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.euler_to_matrix">euler_to_matrix() (in module Vector)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="StructureParser.html#StructureParser.mmCIFParser.fetch_mmCIF">fetch_mmCIF() (StructureParser.mmCIFParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureParser.html#StructureParser.PDBParser.fetch_PDB">fetch_PDB() (StructureParser.PDBParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.find_same_atom">find_same_atom() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.fourier_filter">fourier_filter() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.fourier_transform">fourier_transform() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur">gaussian_blur() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur_box">gaussian_blur_box() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur_real_space">gaussian_blur_real_space() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur_real_space_box">gaussian_blur_real_space_box() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_atom">get_atom() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_atom_list">get_atom_list() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_backbone">get_backbone() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_chain">get_chain() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_chain_list">get_chain_list() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_com">get_com() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="MapParser.html#MapParser.MapParser.get_endian">get_endian() (MapParser.MapParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_extreme_values">get_extreme_values() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_id_no">get_id_no() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_line_between_points">get_line_between_points() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_mass">get_mass() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_name">get_name() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_normal_vector">get_normal_vector() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.get_partial_DLSF">get_partial_DLSF() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_pos">get_pos() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_pos_mass">get_pos_mass() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_pos_mass_list">get_pos_mass_list() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_pos_vector">get_pos_vector() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_primary_boundary">get_primary_boundary() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_atoms">get_prot_mass_from_atoms() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_res">get_prot_mass_from_res() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_res">get_res() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_res_no">get_res_no() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_residue">get_residue() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_second_boundary">get_second_boundary() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_selection">get_selection() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_selection_less_than">get_selection_less_than() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_selection_more_than">get_selection_more_than() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_significant_points">get_significant_points() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_torsion_angles">get_torsion_angles() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_vector_list">get_vector_list() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.get_vectors">get_vectors() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_x">get_x() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_y">get_y() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_z">get_z() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.getMap">getMap() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.hard_sphere">hard_sphere() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.hard_sphere_box">hard_sphere_box() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.header_to_binary">header_to_binary() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.laplace_CCC">laplace_CCC() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.laplace_filtered">laplace_filtered() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="TransformParser.html#TransformParser.TransformParser.load_matrix">load_matrix() (TransformParser.TransformParser method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EnsembleGeneration.html#EnsembleGeneration.EnsembleGeneration.loadEnsemble">loadEnsemble() (EnsembleGeneration.EnsembleGeneration method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.LSF">LSF() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.make_atom_overlay_map">make_atom_overlay_map() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.make_atom_overlay_map1">make_atom_overlay_map1() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.make_bin_map">make_bin_map() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.make_clash_map">make_clash_map() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.makeKDTree">makeKDTree() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map">Map (class in EMMap)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.map_envelope_score">map_envelope_score() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.map_envelope_score_v2">map_envelope_score_v2() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.map_grid_position">map_grid_position() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.map_rotate_by_axis_angle">map_rotate_by_axis_angle() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.map_size">map_size() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.mapComparison">mapComparison() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.mapGridPosition">mapGridPosition() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="MapParser.html#MapParser.MapParser">MapParser (class in MapParser)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="MapParser.html#module-MapParser">(module)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="EMMap.html#EMMap.Map.matrix_transform">matrix_transform() (EMMap.Map method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.matrix_transform">(ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.matrix_transform">(ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+        
+  <dt><a href="Vector.html#Vector.Vector.matrix_transform">(Vector.Vector method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="EMMap.html#EMMap.Map.max">max() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.mean">mean() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.median">median() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.MI">MI() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.min">min() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureParser.html#StructureParser.mmCIFParser">mmCIFParser (class in StructureParser)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.Vector.mod">mod() (Vector.Vector method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.no_of_chains">no_of_chains() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.normal_vector_score">normal_vector_score() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.normalise">normalise() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.origin_change_maps">origin_change_maps() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="StructureParser.html#StructureParser.PDBParser">PDBParser (class in StructureParser)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.pixel_centre">pixel_centre() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ShowPlot.html#ShowPlot.Plot">Plot (class in ShowPlot)</a>
+  </dt>
+
+      
+  <dt><a href="ShowPlot.html#ShowPlot.Plot.PrintOutChimeraAttributeFileSCCC_Score">PrintOutChimeraAttributeFileSCCC_Score() (ShowPlot.Plot method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ShowPlot.html#ShowPlot.Plot.PrintOutClusterAnalysis">PrintOutClusterAnalysis() (ShowPlot.Plot method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.protMap">protMap() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer.protMapBox">protMapBox() (StructureBlurrer.StructureBlurrer method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#module-ProtRep_Biopy">ProtRep_Biopy (module)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="Vector.html#Vector.random_vector">random_vector() (in module Vector)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.randomise_position">randomise_position() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EnsembleGeneration.html#EnsembleGeneration.EnsembleGeneration.randomise_structs">randomise_structs() (EnsembleGeneration.EnsembleGeneration method)</a>
+  </dt>
+
+      
+  <dt><a href="Cluster.html#Cluster.Cluster.rank_fit_ensemble">rank_fit_ensemble() (Cluster.Cluster method)</a>
+  </dt>
+
+      
+  <dt><a href="RigidBodyParser.html#RigidBodyParser.RBParser.RBfileToRBlist">RBfileToRBlist() (RigidBodyParser.RBParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="RigidBodyParser.html#RigidBodyParser.RBParser">RBParser (class in RigidBodyParser)</a>
+  </dt>
+
+      
+  <dt><a href="RigidBodyParser.html#RigidBodyParser.RBParser.read_FlexEM_RIBFIND_files">read_FlexEM_RIBFIND_files() (RigidBodyParser.RBParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureParser.html#StructureParser.mmCIFParser.read_mmCIF_file">read_mmCIF_file() (StructureParser.mmCIFParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureParser.html#StructureParser.PDBParser.read_PDB_file">read_PDB_file() (StructureParser.PDBParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="MapParser.html#MapParser.MapParser.readMRC">readMRC() (MapParser.MapParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="MapParser.html#MapParser.MapParser.readMRCHeader">readMRCHeader() (MapParser.MapParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="MapParser.html#MapParser.MapParser.readSitus">readSitus() (MapParser.MapParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="MapParser.html#MapParser.MapParser.readXPLOR">readXPLOR() (MapParser.MapParser static method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.rename_chains">rename_chains() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.renumber_atoms">renumber_atoms() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.renumber_residues">renumber_residues() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.reorder_residues">reorder_residues() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.represent_normal_vectors">represent_normal_vectors() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.resample_by_apix">resample_by_apix() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.resample_by_box_size">resample_by_box_size() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.reset_position">reset_position() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.reset_position">(ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="EMMap.html#EMMap.Map.resize_map">resize_map() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.Vector.reverse">reverse() (Vector.Vector method)</a>
+  </dt>
+
+      
+  <dt><a href="RigidBodyParser.html#module-RigidBodyParser">RigidBodyParser (module)</a>
+  </dt>
+
+      
+  <dt><a href="Cluster.html#Cluster.Cluster.RMSD_ensemble">RMSD_ensemble() (Cluster.Cluster method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.RMSD_from_init_position">RMSD_from_init_position() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.RMSD_from_same_structure">RMSD_from_same_structure() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.rotate_by_axis_angle">rotate_by_axis_angle() (EMMap.Map method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.rotate_by_axis_angle">(ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="EMMap.html#EMMap.Map.rotate_by_euler">rotate_by_euler() (EMMap.Map method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.rotate_by_euler">(ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="EMMap.html#EMMap.Map.rotate_by_matrix">rotate_by_matrix() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="TransformParser.html#TransformParser.TransformParser.save_npy_matrix">save_npy_matrix() (TransformParser.TransformParser method)</a>
+  </dt>
+
+      
+  <dt><a href="TransformParser.html#TransformParser.TransformParser.save_npz_matrix">save_npz_matrix() (TransformParser.TransformParser method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.scale_map">scale_map() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions.SCCC">SCCC() (ScoringFunctions.ScoringFunctions method)</a>
+  </dt>
+
+      
+  <dt><a href="ScoringFunctions.html#ScoringFunctions.ScoringFunctions">ScoringFunctions (class in ScoringFunctions)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ScoringFunctions.html#module-ScoringFunctions">(module)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.set_x">set_x() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.set_y">set_y() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.set_z">set_z() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.shift_origin">shift_origin() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ShowPlot.html#ShowPlot.Plot.ShowHierarchicalClusterings">ShowHierarchicalClusterings() (ShowPlot.Plot method)</a>
+  </dt>
+
+      
+  <dt><a href="ShowPlot.html#module-ShowPlot">ShowPlot (module)</a>
+  </dt>
+
+      
+  <dt><a href="ShowPlot.html#ShowPlot.Plot.ShowRMSDmatrix">ShowRMSDmatrix() (ShowPlot.Plot method)</a>
+  </dt>
+
+      
+  <dt><a href="EnsembleGeneration.html#EnsembleGeneration.EnsembleGeneration.spiral_sweep">spiral_sweep() (EnsembleGeneration.EnsembleGeneration method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.split_into_chains">split_into_chains() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      
+  <dt><a href="EMMap.html#EMMap.Map.std">std() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="StructureBlurrer.html#StructureBlurrer.StructureBlurrer">StructureBlurrer (class in StructureBlurrer)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="StructureBlurrer.html#module-StructureBlurrer">(module)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="StructureParser.html#module-StructureParser">StructureParser (module)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.threshold_map">threshold_map() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.Vector.times">times() (Vector.Vector method)</a>
+  </dt>
+
+      
+  <dt><a href="Vector.html#Vector.Vector.to_atom">to_atom() (Vector.Vector method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="Vector.html#Vector.torsion">torsion() (in module Vector)</a>
+  </dt>
+
+      
+  <dt><a href="TransformParser.html#TransformParser.TransformParser">TransformParser (class in TransformParser)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="TransformParser.html#module-TransformParser">(module)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="EMMap.html#EMMap.Map.translate">translate() (EMMap.Map method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.translate">(ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.translate">(ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+        
+  <dt><a href="Vector.html#Vector.Vector.translate">(Vector.Vector method)</a>
+  </dt>
+
+      </dl></dd>
+  </dl></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="Vector.html#Vector.Vector.unit">unit() (Vector.Vector method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.update_header">update_header() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="Vector.html#Vector.Vector">Vector (class in Vector)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="Vector.html#module-Vector">(module)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.vectorise">vectorise() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.vectorise_point">vectorise_point() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.write_to_MRC_file">write_to_MRC_file() (EMMap.Map method)</a>
+  </dt>
+
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.write_to_PDB">write_to_PDB() (ProtRep_Biopy.BioPy_Structure method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.write_to_PDB">(ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+      </dl></dd>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.writeTerm">writeTerm() (ProtRep_Biopy.BioPyAtom method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.x_origin">x_origin() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.x_size">x_size() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.y_origin">y_origin() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.y_size">y_size() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.z_origin">z_origin() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="EMMap.html#EMMap.Map.z_size">z_size() (EMMap.Map method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+
+   
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="#" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

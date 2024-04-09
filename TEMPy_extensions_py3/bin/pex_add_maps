@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import argparse
+from MapParser import *
+      
+parser = argparse.ArgumentParser(description=('Combine two MRC files by adding them together.'))
+parser.add_argument('file1', help='Name of input MRC file')
+parser.add_argument('file2', help='Name of input MRC file')
+parser.add_argument('outfile', help='Name of output MRC file')
+parser.add_argument('--w1', type=float, help='Weight to apply to first map. Default is 1.', default=1.0)
+parser.add_argument('--w2', type=float, help='Weight to apply to second map. Default is 1.', default=1.0)
+
+
+args = parser.parse_args()
+
+m1 = MapParser.readMRC(args.file1)
+m2 = MapParser.readMRC(args.file2)
+m1.fullMap = m1.fullMap*args.w1 + m2.fullMap*args.w2
+m1.write_to_MRC_file(args.outfile)

@@ -1,0 +1,871 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Class to define and manipulate protein structures &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="5. Parser for Density Map Instance" href="MapParser.html" />
+    <link rel="prev" title="3. Parser for Structure Instance" href="StructureParser.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="MapParser.html" title="5. Parser for Density Map Instance"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="StructureParser.html" title="3. Parser for Structure Instance"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="class-to-define-and-manipulate-protein-structures">
+<h1>4. Class to define and manipulate protein structures<a class="headerlink" href="#class-to-define-and-manipulate-protein-structures" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-ProtRep_Biopy"></span><dl class="class">
+<dt id="ProtRep_Biopy.BioPyAtom">
+<em class="property">class </em><tt class="descclassname">ProtRep_Biopy.</tt><tt class="descname">BioPyAtom</tt><big>(</big><em>atom</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representing an atom, as read from a PDB file using Biopython.</p>
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.change_init_position">
+<tt class="descname">change_init_position</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.change_init_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.change_init_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change initial position co-ordinates of atom to current position.</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>new initial position co-ordinates of atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.copy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Copy of the Atom instance.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.distance_from_atom">
+<tt class="descname">distance_from_atom</tt><big>(</big><em>atom</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.distance_from_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.distance_from_atom" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Distance from another atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.distance_from_init_position">
+<tt class="descname">distance_from_init_position</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.distance_from_init_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.distance_from_init_position" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Distance from initial position.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_id_no">
+<tt class="descname">get_id_no</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_id_no"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_id_no" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return: </dt>
+<dd>string of atom serial number.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_mass">
+<tt class="descname">get_mass</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_mass" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Atom mass.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_name">
+<tt class="descname">get_name</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>atom name (ie. &#8216;CA&#8217; or &#8216;O&#8217;)</p>
+<dl class="docutils">
+<dt>Return: </dt>
+<dd>atom name.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_pos_mass">
+<tt class="descname">get_pos_mass</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_pos_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_pos_mass" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>An array containing Vector instances containing 3D coordinates of the atom and and its corresponding mass.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_pos_vector">
+<tt class="descname">get_pos_vector</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_pos_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_pos_vector" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Vector instance containing 3D coordinates of the atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_res">
+<tt class="descname">get_res</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_res"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_res" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>three letter residue code corresponding to the atom (i.e &#8216;ARG&#8217;).</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_res_no">
+<tt class="descname">get_res_no</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_res_no"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_res_no" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>residue number corresponding to the atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_x">
+<tt class="descname">get_x</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_x" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>x co-ordinate of atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_y">
+<tt class="descname">get_y</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_y" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return: </dt>
+<dd>y co-ordinate of atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.get_z">
+<tt class="descname">get_z</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.get_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.get_z" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>z co-ordinate of atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.map_grid_position">
+<tt class="descname">map_grid_position</tt><big>(</big><em>densMap</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.map_grid_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.map_grid_position" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Arguments:   </dt>
+<dd><dl class="first last docutils">
+<dt><em>densMap</em></dt>
+<dd>EM map object consisting the 3D grid of density values.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>The co-ordinates and density value of the grid point in a density map closest to this atom.
+Return 0 if atom is outside of map.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.matrix_transform">
+<tt class="descname">matrix_transform</tt><big>(</big><em>rot_mat</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.matrix_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.matrix_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform atom using a 3x3 matrix</p>
+<dl class="docutils">
+<dt>Arguments:   </dt>
+<dd><dl class="first last docutils">
+<dt><em>rot_mat</em></dt>
+<dd>a 3x3 matrix instance.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Transformed position of atom object</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.reset_position">
+<tt class="descname">reset_position</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.reset_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.reset_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate atom back in its initial position.</p>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>initial position co-ordinates of atom.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.set_x">
+<tt class="descname">set_x</tt><big>(</big><em>mod</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.set_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.set_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the x co-ordinate of an atom based on the argument.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>mod</em></dt>
+<dd>float value</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new x co-ordinate</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.set_y">
+<tt class="descname">set_y</tt><big>(</big><em>mod</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.set_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.set_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the y co-ordinate of an atom based on the argument.</p>
+<dl class="docutils">
+<dt>Arguments:   </dt>
+<dd><dl class="first last docutils">
+<dt><em>mod</em></dt>
+<dd>float value</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new y co-ordinate</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.set_z">
+<tt class="descname">set_z</tt><big>(</big><em>mod</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.set_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.set_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the z co-ordinate of an atom based on the argument.</p>
+<dl class="docutils">
+<dt>Arguments:   </dt>
+<dd><dl class="first last docutils">
+<dt><em>mod</em></dt>
+<dd>float value</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>new x co-ordinate</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.translate">
+<tt class="descname">translate</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate the atom.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>x, y, z</em></dt>
+<dd>distance in Angstroms in respective directions to move atom.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>Translate atom object.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPyAtom.write_to_PDB">
+<tt class="descname">write_to_PDB</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPyAtom.write_to_PDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPyAtom.write_to_PDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a PDB ATOM record based in the atom attributes to a file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ProtRep_Biopy.BioPy_Structure">
+<em class="property">class </em><tt class="descclassname">ProtRep_Biopy.</tt><tt class="descname">BioPy_Structure</tt><big>(</big><em>atomList</em>, <em>filename='Unknown'</em>, <em>header=''</em>, <em>footer=''</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representing a bjectStructure o, as read from a PDB file using Bio.PDB in Biopython.</p>
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.RMSD_from_init_position">
+<tt class="descname">RMSD_from_init_position</tt><big>(</big><em>CA=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.RMSD_from_init_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.RMSD_from_init_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return RMSD of structure from initial position after translation.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>CA</em></dt>
+<dd>True will consider only CA atoms.
+False will consider all atoms.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>RMSD in angstrom</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.RMSD_from_same_structure">
+<tt class="descname">RMSD_from_same_structure</tt><big>(</big><em>otherStruct</em>, <em>CA=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.RMSD_from_same_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.RMSD_from_same_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the RMSD between two structure instances.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>otherStruct</em></dt>
+<dd>Structure instance to compare, containing the same number of atoms as the target instance.</dd>
+<dt><em>CA</em></dt>
+<dd>True will consider only CA atoms.
+False will consider all atoms.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>RMSD in angstrom</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.break_into_segments">
+<tt class="descname">break_into_segments</tt><big>(</big><em>rigid_list</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.break_into_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.break_into_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of Structure instance based on the rigid body list.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>rigid list</em></dt>
+<dd><p class="first">list of rigid body defined as:</p>
+<blockquote>
+<div>[[riA,rfA],..,[riB,rfB]]</div></blockquote>
+<p>where :</p>
+<blockquote class="last">
+<div>riA is the starting residues number of segment A.
+rfA is the final residues number of segment A.</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>List of TEMPy Structure instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.calculate_centre_of_mass">
+<tt class="descname">calculate_centre_of_mass</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.calculate_centre_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.calculate_centre_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:    </dt>
+<dd>Center of mass of structure as a Vector instance.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.change_init_position">
+<tt class="descname">change_init_position</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.change_init_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.change_init_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change initial position of structure to current position.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.combine_SSE_structures">
+<tt class="descname">combine_SSE_structures</tt><big>(</big><em>structList</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.combine_SSE_structures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.combine_SSE_structures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine a list of Structure instance into one and return a new Structure instance.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>structList</em></dt>
+<dd>list of Structure instance</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>New Structure Instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.combine_structures">
+<tt class="descname">combine_structures</tt><big>(</big><em>structList</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.combine_structures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.combine_structures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a list of Structure instance to the existing structure.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>structList</em></dt>
+<dd>list of Structure instance</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>New Structure Instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.copy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Copy of Structure instance.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.find_same_atom">
+<tt class="descname">find_same_atom</tt><big>(</big><em>atom_index</em>, <em>otherStruct</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.find_same_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.find_same_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find if an atom exists in the compared structure, based on atom index.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>atom_index</em></dt>
+<dd>atom number</dd>
+<dt><em>otherStruct</em></dt>
+<dd>a structure object to compare</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>If a match is found, it returns the atom object; else it returns a string reporting the mismatch.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_CAonly">
+<tt class="descname">get_CAonly</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_CAonly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_CAonly" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Structure instance with only the backbone atoms in structure.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_atom">
+<tt class="descname">get_atom</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return specific atom in Structure instance.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>index</em></dt>
+<dd>Index of the atom</dd>
+</dl>
+</dd>
+<dt>Return: </dt>
+<dd>Returns an Atom instance.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_atom_list">
+<tt class="descname">get_atom_list</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_atom_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_atom_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>An array containing Atom instances of positions of all atoms as:
+[(RES 1 A: x,y,z), ... ,(RES2 1 A: x1,y1,z1)].</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_backbone">
+<tt class="descname">get_backbone</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_backbone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_backbone" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Structure instance with only the backbone atoms in structure.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_chain">
+<tt class="descname">get_chain</tt><big>(</big><em>chainID</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_chain" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>New Structure instance with only the requested chain.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_chain_list">
+<tt class="descname">get_chain_list</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_chain_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_chain_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>A list of chain ID.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_extreme_values">
+<tt class="descname">get_extreme_values</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_extreme_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_extreme_values" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>A 6-tuple containing the minimum and maximum of x, y and z co-ordinates of the structure.
+Given in order (min_x, max_x, min_y, max_y, min_z, max_z).</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_pos_mass_list">
+<tt class="descname">get_pos_mass_list</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_pos_mass_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_pos_mass_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Array containing Vector instances of positions of all atoms and mass.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_atoms">
+<tt class="descname">get_prot_mass_from_atoms</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_prot_mass_from_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates Mass (kDa) of the Structure instance, from average mass. Atoms based
+use get_prot_mass_from_res is more accurate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_res">
+<tt class="descname">get_prot_mass_from_res</tt><big>(</big><em>Termini=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_prot_mass_from_res"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_res" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates Mass (kDa) of the Structure instance, from average mass</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_residue">
+<tt class="descname">get_residue</tt><big>(</big><em>resNo</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the residue corresponding to the residue number.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>resNo</em></dt>
+<dd>Residues number</dd>
+</dl>
+</dd>
+<dt>Return: </dt>
+<dd>Returns a Residues instance.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_selection">
+<tt class="descname">get_selection</tt><big>(</big><em>startRes</em>, <em>finishRes</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a new Structure instance for the selected residues range without considering residues chain.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>startRes</em></dt>
+<dd>Start residue number</dd>
+<dt><em>finishRes</em></dt>
+<dd>End residue number</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>New Structure instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_selection_less_than">
+<tt class="descname">get_selection_less_than</tt><big>(</big><em>endRes</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_selection_less_than"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_selection_less_than" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a Structure instance comprising all residues with their residue numbers less than endRes.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>endRes</em></dt>
+<dd>a residue number</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>A Structure instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_selection_more_than">
+<tt class="descname">get_selection_more_than</tt><big>(</big><em>startRes</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_selection_more_than"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_selection_more_than" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a Structure instance comprising all residues with their residue numbers greater than startRes.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>startRes</em></dt>
+<dd>a residue number</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>A Structure instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_torsion_angles">
+<tt class="descname">get_torsion_angles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_torsion_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_torsion_angles" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>List of torsion angles in Structure instance.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.get_vector_list">
+<tt class="descname">get_vector_list</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.get_vector_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.get_vector_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return:</dt>
+<dd>Array containing 3D Vector instances of positions of all atoms.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.matrix_transform">
+<tt class="descname">matrix_transform</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.matrix_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.matrix_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform Structure using a 3x3 transformation matrix</p>
+<dl class="docutils">
+<dt>Arguments:   </dt>
+<dd><dl class="first last docutils">
+<dt><em>rot_mat</em></dt>
+<dd>a 3x3 matrix instance.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Transformed position of Structure object</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.no_of_chains">
+<tt class="descname">no_of_chains</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.no_of_chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.no_of_chains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return:
+the number of chains in the Structure object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.randomise_position">
+<tt class="descname">randomise_position</tt><big>(</big><em>max_trans</em>, <em>max_rot</em>, <em>v_grain=30</em>, <em>rad=False</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.randomise_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.randomise_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomise the position of the Structure instance using random rotations and translations.</p>
+<dl class="docutils">
+<dt>Arguments:   </dt>
+<dd><dl class="first last docutils">
+<dt><em>max_trans</em></dt>
+<dd>Maximum translation permitted</dd>
+<dt><em>max_rot</em></dt>
+<dd>Maximum rotation permitted (in degree if rad=False)</dd>
+<dt><em>v_grain</em></dt>
+<dd>Graning Level for the generation of random vetors (default=30)</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>Transformed position of Structure object</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.rename_chains">
+<tt class="descname">rename_chains</tt><big>(</big><em>chain_list=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.rename_chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.rename_chains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename chain name based on the list of new chain names</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>chain_list</em></dt>
+<dd>List of chain names
+If False rename in alphabetical order.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.renumber_atoms">
+<tt class="descname">renumber_atoms</tt><big>(</big><em>start_num=1</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.renumber_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.renumber_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber the atoms in the structure. 
+After renumbering the starting atom number will be 1 unless start_num</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.renumber_residues">
+<tt class="descname">renumber_residues</tt><big>(</big><em>startRes=1</em>, <em>missingRes=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.renumber_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.renumber_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber the structure starting from startRes.
+Missing number list to add.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>startRes</em></dt>
+<dd>Starting residue number for renumbering</dd>
+<dt><em>missingRes</em></dt>
+<dd>A list of missing residue numbers to add</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.reorder_residues">
+<tt class="descname">reorder_residues</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.reorder_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.reorder_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Order residues in atom list by residue number. 
+(NOTE: Does not check for chain information - split by chain first).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.reset_position">
+<tt class="descname">reset_position</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.reset_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.reset_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate structure back into initial position.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.rotate_by_axis_angle">
+<tt class="descname">rotate_by_axis_angle</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em>, <em>turn</em>, <em>x_trans=0</em>, <em>y_trans=0</em>, <em>z_trans=0</em>, <em>rad=False</em>, <em>com=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.rotate_by_axis_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.rotate_by_axis_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the Structure instance around its centre.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>turn</em></dt>
+<dd>angle (in radians if rad == True, else in degrees) to rotate map.</dd>
+<dt><em>x,y,z</em></dt>
+<dd>axis to rotate about, ie. x,y,z =  0,0,1 rotates the structure round the xy-plane.</dd>
+<dt><em>x_trans, y_trans, z_trans</em></dt>
+<dd>extra translational movement if required.</dd>
+<dt><em>com</em></dt>
+<dd>centre of mass around which to rotate the structure. If False, rotates around centre of mass of structure.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.rotate_by_euler">
+<tt class="descname">rotate_by_euler</tt><big>(</big><em>x_turn</em>, <em>y_turn</em>, <em>z_turn</em>, <em>x_trans=0</em>, <em>y_trans=0</em>, <em>z_trans=0</em>, <em>rad=False</em>, <em>com=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.rotate_by_euler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.rotate_by_euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate this Structure instance around its centre.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>x_turn,y_turn,z_turn</em></dt>
+<dd>Euler angles (in radians if rad == True, else in degrees) used to rotate structure, in order XYZ.</dd>
+<dt><em>x_trans, y_trans, z_trans</em></dt>
+<dd>extra translational movement if required.</dd>
+<dt><em>com</em></dt>
+<dd>centre of mass around which to rotate the structure. If False, rotates around centre of mass of structure.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.split_into_chains">
+<tt class="descname">split_into_chains</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.split_into_chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.split_into_chains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the structure into separate chains and returns the list of Structure instance for each chain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.translate">
+<tt class="descname">translate</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate the structure.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>x, y, z</em></dt>
+<dd>distance in Angstroms in respective directions to move structure.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>Translated Structure instance</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.vectorise">
+<tt class="descname">vectorise</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.vectorise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.vectorise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.write_to_PDB">
+<tt class="descname">write_to_PDB</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.write_to_PDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.write_to_PDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write Structure instance to PDB file.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>filename</em></dt>
+<dd>output filename.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProtRep_Biopy.BioPy_Structure.write_to_PDB2">
+<tt class="descname">write_to_PDB2</tt><big>(</big><em>filename</em>, <em>hetatom=False</em><big>)</big><a class="reference internal" href="_modules/ProtRep_Biopy.html#BioPy_Structure.write_to_PDB2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ProtRep_Biopy.BioPy_Structure.write_to_PDB2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write Structure instance to PDB file.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>filename</em></dt>
+<dd>output filename.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="MapParser.html" title="5. Parser for Density Map Instance"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="StructureParser.html" title="3. Parser for Structure Instance"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+## TEMPY is a Python library designed to help the user manipulate and analyse atomic structures and density maps from 3D EM. 
+## Copyright (c) 2013 Daven Vasishtan,Irene Farabella, Arun Prasad Pandurangan, Harpal Sahota, Frank Alber and Maya Topf
+
+#from numpy import ndarray,array,append
+#from math import *
+#from random import randrange
+#from os import system
+#from time import time
+#import urllib
+# -- Local imports -- #
+import scipy.cluster.hierarchy as hier
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+#import matplotlib.image as mpimg
+#from matplotlib.colors import LinearSegmentedColormap
+import scipy.spatial.distance as ssd
+from numpy import zeros
+
+#from TEMPy.EMMap import Map
+#from TEMPy.ProtRep_Biopy import BioPy_Structure,BioPyAtom
+
+class Plot:
+    """A class to create ensemble of structure instance"""
+    
+    def __init__(self):
+        pass
+    
+    def ShowHierarchicalClusterings(self,ranked_ensemble,mxRMSD,cutoff):
+    
+        mxscore = zeros(shape=(len(ranked_ensemble),1))
+        for k in range(len(ranked_ensemble)):
+            mxscore[k]=float('%.3f'%(ranked_ensemble[k][1]))
+        fig = plt.figure()
+        heatmapGS = gridspec.GridSpec(1,2,wspace=0.0,hspace=0.0,width_ratios=[1,1])
+        denAX = fig.add_subplot(heatmapGS[0,0])
+        axdendro = fig.add_axes()
+        #see why @http://stackoverflow.com/questions/18952587/use-distance-matrix-in-scipy-cluster-hierarchy-linkage
+    
+        mxRMSD_cond = ssd.squareform(mxRMSD)
+        linkageMatrixZ = hier.linkage( mxRMSD_cond,method='complete')
+        sorted_rank=sorted( ranked_ensemble, key=lambda x: -x[1])
+        labels=[sorted_rank[x][0] for x in range(len(sorted_rank))]
+        hier_dendo=hier.dendrogram(linkageMatrixZ,color_threshold=cutoff,orientation='right',get_leaves=True,distance_sort=True,show_leaf_counts=True,show_contracted=True,labels=labels)
+            #print hier_dendo['leaves']
+        denAX.get_xaxis().set_ticks([])
+        heatmapAX = fig.add_subplot(heatmapGS[0,1])
+        index = hier_dendo['leaves']
+            #reorder matrix
+        mxscore = mxscore[index,:]
+        axi = heatmapAX.imshow(mxscore,interpolation='nearest',cmap=plt.cm.Blues,origin='lower')
+        ax = axi.get_axes()
+        ax.get_xaxis().set_ticks([])
+        ax.get_yaxis().set_ticks([])
+        heatmapAX.get_xaxis().set_ticks([])
+        heatmapAX.get_yaxis().set_ticks([])
+        plt.show()
+
+    def ShowRMSDmatrix(self,mxRMSD):
+        fig = plt.figure(figsize=(6, 3.2))
+        ax = fig.add_subplot(111)
+        ax.set_title('RMSD matrix')
+        plt.imshow(mxRMSD,interpolation='nearest',cmap=plt.cm.Blues,origin='lower')
+        ax.set_aspect('equal')
+        cax = fig.add_axes([0.12, 0.1, 0.78, 0.8])
+        cax.get_xaxis().set_visible(False)
+        cax.get_yaxis().set_visible(False)
+        cax.patch.set_alpha(0)
+        cax.set_frame_on(False)
+        plt.colorbar(orientation='vertical')
+        plt.show()
+

@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETParticleCleanup import clean_using_marker_file
+from PEETMotiveList import *
+from PEETModelParser import *
+
+
+parser = argparse.ArgumentParser(description=('Remove particles based on a Chimera marker file. Marker file must contain only the heads of markers'
+                                              'created using pex functions. The particles corresponding to these heads will be removed.'))
+parser.add_argument('motl', help='The PEET motive list containing orientations of particles.')
+parser.add_argument('model', help='The IMOD model file containing positions of particles.')
+parser.add_argument('marker_file', help='A Chimera marker file, an edited version of a file created using pex_make_chim_markers or'
+                                        ' pex_make_chim_markers_from_prm. Should contain only the heads (the large green/red spheres)'
+                                        ' of the particles to be removed.')
+parser.add_argument('outfile', help='The desired prefix of the output files.')
+parser.add_argument('--write_new_markers', help='Write out a new marker file, based on the output motive list and model.', action="store_true")
+parser.add_argument('--silent', help='Turn off reports on numbers of particles.', action="store_true")
+
+
+args = parser.parse_args()
+verbose = not args.silent
+
+clean_using_marker_file(args.motl, args.model, args.marker_file, outfile=args.outfile, verbose=verbose, marker_out=args.write_new_markers)

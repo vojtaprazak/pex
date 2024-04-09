@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import argparse
+from symm_checker import *
+
+
+parser = argparse.ArgumentParser(description='Check the (C-)symmetry of a map by plotting rotational correlation')
+parser.add_argument('mrc_file', help='The map to be tested, in MRC format')
+parser.add_argument('--mask', help='Mask file, in MRC format. Must be the same size as the map.')
+parser.add_argument('--output', help='Write output to files <output>.txt, <output>_fou.txt and <output>.png')
+parser.add_argument('--step', help='Integer rotational step size in degrees. Default = 3', type=int, default=3)
+parser.add_argument('--axis', nargs=3, metavar=('x', 'y', 'z'), type=float, help='Axis of symmetry in x,y,z Cartesian coordinates. Default is 0,1,0', default=(0,1,0))
+parser.add_argument('--centre', nargs=3,  metavar=('x', 'y', 'z'), type=float, help='Centre of symmetry in x,y,z Cartesian coordinates. Default is centre of map')
+parser.add_argument('--verbose', help='Print out steps and correlation as they are calculated, and display graphs at the end.', action="store_true")
+parser.add_argument('--othermap', help='Compare map with map given in this variable, rather than itself.', default="")
+
+args = parser.parse_args()
+
+if len(args.othermap) == 0:
+    othermap = False
+else:
+    othermap = args.othermap
+
+symm_checker(args.mrc_file, maskfile=args.mask, axis=args.axis, axis_centre=args.centre, step=args.step, outfile=args.output, verbose=args.verbose, othermap=othermap)
+

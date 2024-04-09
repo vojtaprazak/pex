@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+import argparse
+from ctf_calc import ctf
+
+parser = argparse.ArgumentParser(description=("Get resolution/pixel positions of expected zeros for given CTF function. CTF plot optional."))
+
+parser.add_argument('defocus', type=float, help="Defocus, in microns. Positive is underfocus.")
+parser.add_argument('--pix_size', type=float, help="Pixel size of image, in Angstroms. Default is 1.0", default=1.0)
+parser.add_argument('--acc_volt', type=int, help='Acceleration voltage in keV. Default is 300.', default=300)
+parser.add_argument('--cs', type=float, help='Spherical abberation constant of microscope, in mm. Default is 2.7.', default=2.7)
+parser.add_argument('--phase_plate', type=float, help='Phase shift added from phase plate, in radians. Default is 0.', default=0.0)
+parser.add_argument('--image_size', type=int, help='Horizontal size (x-direction) of image, in pixels. Default is 3838, for K2 images.', default=3838)
+parser.add_argument('--step_size', type=float, help='Step size for function. Default is 0.002', default=0.002)
+parser.add_argument('--plot', help='Plot the CTF curve.', action="store_true")
+
+
+
+args = parser.parse_args()
+
+r,ctfcurve = ctf(args.defocus, args.acc_volt, args.cs, args.pix_size, r_step=args.step_size, phaseplate=args.phase_plate, image_size=args.image_size, plotit=args.plot)

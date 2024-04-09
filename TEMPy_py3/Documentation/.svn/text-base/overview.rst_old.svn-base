@@ -1,0 +1,329 @@
+==========================
+ Overview over TEMpy
+==========================
+
+**TEMpy** is a object-oriented Python library designed to help the user
+manipulate and analyse atomic structures and density maps from 3D EM. It
+is object oriented so it treats atoms, groups of atoms, densities, etc
+as different objects.
+
+A typical usage pattern is to analyse the coordinates of a model with 
+respect a target density maps from 3D EM.
+
+
+Working with Structure and Map Instance
+==================
+
+Load a Structure Instance
+---------------------
+
+The following example show how to fetch a Structure Instance::
+
+	from StructureParser import PDBParser
+
+	'fetch a structure PDB file'
+	structure_instance=PDBParser.fetch_PDB('1A5T','1A5T.pdb',hetatm=True,water=False)
+
+
+**NOTE**: It is possible to create structure object from a PDB file or from the mmCIF file.
+For mmCIF file the last version Biopython (>1.40b) is required.
+
+The following example show how to create a Structure Instance::
+
+	from StructureParser import PDBParser
+
+	structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+
+
+
+Load a Map Instance
+---------------------
+
+The following example show how to create a Map Instance:: 
+	
+	from MapParser import readMRC
+	
+	# Generate Structure Instance from File:
+
+	emmap=MapParser.readMRC(map_target) #read target map
+
+
+Convoluting an Structure Instance into an Map Instance
+---------------------
+
+The following example show how to create a 20Å resolution Map Instance from a Structure Instance using target map informations as template::
+
+	from StructureBlurrer import gaussian_blur
+	
+	#Generate a Map instance based on a Gaussian blurring of a protein
+
+	blurrer = StructureBlurrer()
+	sim_map = blurrer.gaussian_blur(structure_instance, 20.,densMap=target_map) 
+
+**NOTE** To compare with a target map use *densMap=target_map*, unless specified the Map Instance dimensions will be based on the Structure Instance.
+
+
+Translate a Structure Instance
+---------------------
+
+The following example show how to translate a Structure Instance of +4.3Å in the x-direction, 1Å in y and -55Å in z (translation vector)::
+		
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		# get the starting Centre of mass of the Structure Instance
+		structure_instance.CoM 
+		# translate the Structure Instance
+		# note, this overwrites the existing position
+		structure_instance.translate(4.3, 1.0, -55) 
+		# get the transformed Centre of mass of the Structure Instance
+		structure_instance.CoM 
+		# reset transformation
+		structure_instance.reset_position() 
+
+
+Selection and Manipulation of Structure Instance Segments
+---------------------
+
+The following example show how to do a selection from a list of segments::
+		
+		# select two segments: 1st from Res 130 to 166, 2nd from Res 235 to 280
+		rigid_segment_list=[[130,166],[235,280]]
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		list_segments=b.break_into_segments(rigid_segment_list)
+		# First Segment from Residues 130 to 166
+		list_segments[0]
+	
+It is possible to add the selected segments to a Structure Instance as follow::
+	
+		structure_instance.combine_structures(list_segments)
+
+Alternative, it is possible to combine a list of selected segments in a unique Structure Instance (rigid body)::
+		
+		structure_instance.combine_SSE_structures(list_segments)
+
+Alternatively the user can read a  *rigid body file* in Flex-EM format using residue numbers.
+Each line describes one rigid body by specifying the initial and final residue of each of the segments in that rigid body
+(eg, '2 6 28 30' means that residues 2-6 and 28-30 will be included in the same rigid body).::
+		
+		from StructureParser import PDBParser
+		from RigidBodyParser import RBParser
+		
+		rb_file="rigid.txt"
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		listRB_structure_instances=RBParser.read_FlexEM_RIBFIND_files(rb_file,structure_instance)
+
+We recommend to use the RIBFIND server for accurately identifying Rigid Bodys in a protein structures.
+
+
+Map Manipulations
+---------------------
+The following example show how to rotate a Map Instance around centre of mass of a structure_instance and write the rotated Map Instance as a MRC file.
+In this example the Map Instance is rotated round the xy-plane (axis x,y,z =  0,0,1) of 45 degree::
+
+		emmap=MapParser.readMRC(map_target) #read target map
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		
+		emmap_rotate = emmap.rotate_by_axis_angle(0,0,1, 45, structure_instance.CoM)
+		emmap_rotate.write_to_MRC_file(path_out+'/Test/rotation_test.mrc') # Writing out to MRC file 
+
+It is possible to translate a Map Instance, the translation uses fourier-shifting, so that the movements are periodic.
+Here an example in which a Map Instance is translated of +5.2Å in the x-direction, 5Å in y and 1Å in z::
+		
+		emmap3 = sim_map.translate(5.2,5,1) 
+		
+
+Ensemble Generation
+==================
+
+Generate a Random Ensemble
+---------------------
+The following example show how to generate an ensemble of 10 Structure Instance rotated less than 90° and translated less than 5 Å::
+
+		from EnsembleGeneration import  *
+		
+		EnsembleGeneration=EnsembleGeneration()
+		
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		ensemble_list=EnsembleGeneration.randomise_structs(structure_instance, 10, 5, 90)	
+
+
+Generate an Angular Sweep Ensemble
+---------------------
+
+The following example show how to generate an ensemble of 10 Structure Instance using Angular Sweep using a rotation angle of 100° around a specified rotation axis using a translation vector as before::
+
+		from EnsembleGeneration import  *
+		
+		EnsembleGeneration=EnsembleGeneration()
+
+		translation_vector=[4.3, 1.0, -55]
+		rotation_angle= 110
+		axis=[0.21949010788898163, -0.80559787935161753, -0.55030527207975843]
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		ensemble_list=EnsembleGeneration.anglar_sweep(structure_instance,axis, translation_vector, 10, rotation_angle, 'structure_instance_angular_sweep', atom_com_ind=False)
+
+**NOTE** It is advisable to chose the number of structures for the ensemble accordingly with the angular increment step (rotation angle/number of structures) and/orthe translational increment step (translation vector/number of structures) to have a more homogeneous ensemble.
+
+
+
+Scoring Structure Instance in Map Instance
+==================
+
+For more information on the performance of the difference Scoring Functions please read:
+
+**Vasishtan and Topf (2011) Scoring functions for cryoEM density fitting. J Struct Biol 174:333-343.**
+
+Cross-correlation function (CCF)
+---------------------
+
+The cross-correlation function (CCF) is the most prevalent method of scoring the goodness-of-fit.
+The following example show how to calculate the CCF score between two Map Instance::
+		
+		from ScoringFunctions import *
+		from MapParser import *
+		
+		scorer = ScoringFunctions()
+		
+		maptarget=MapParser.readMRC(map_target)
+		mapprobe=MapParser.readMRC(map_probe)
+		
+		scorer.CCC(mapprobe,maptarget)
+
+Laplacian-filtered CCC
+---------------------
+
+Based on (Chacon and Wriggers, 2002)
+One of the most promising scores for low resolution (⩾10 Å).
+The following example show how to calculate the Laplacian cross-correlation score between two Map Instance::
+		
+		from ScoringFunctions import *
+		from MapParser import *
+		
+		scorer = ScoringFunctions()
+		
+		maptarget=MapParser.readMRC(map_target)
+		mapprobe=MapParser.readMRC(map_probe)
+		
+		scorer.laplace_CCC(mapprobe,maptarget)
+
+
+Segment Based cross-correlation score (SCCC)
+---------------------
+
+This score is used to quantify and compare the local quality of fits between the simulated map of a selected local segment of the fit and its corresponding target map.
+
+For more information:
+
+**Pandurangan AP, Shakeel S, Butcher SJ, Topf M. Combined approaches to flexible fitting and assessment in virus capsids undergoing conformational change. J Struct Biol. 2013 Dec 12**
+The following example show how to calculate the SCCC score::
+
+		from PDBParser import *
+		from Bio.PDB import *
+		from MapParser import *
+	
+		sim_res=20 #Target resolution of the outputted map.
+		sim_sigma_coeff=0.187 #Sigma width of the Gaussian used to blur the atomic structure.
+		scorer = ScoringFunctions()
+		
+		emmap=MapParser.readMRC(map_target) #read target map
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		
+		# select two segments that forms a unique rigid body: 1st from Res 130 to 166, 2nd from Res 235 to 280
+		rigid_body1=[[340,349 ]]
+		rigid_body2=[[362,368 ]]
+		rigid_body3=[[8,12],[16,21], [29,32], [103,107],[131,137], [360,361]] 
+		rigid_body4=[[151,156],[161,167],[ 170,171],[177,179],[299,302],[331,332]] 
+		rigid_body5=[[239, 242],[ 248, 251]] 
+
+		listRB=[rigid_body1,rigid_body2,rigid_body3,rigid_body4,rigid_body5]
+		for RB in listRB:
+			RB_str_break=structure_instance.break_into_segments(RB) 	
+			RB_str=structure_instance.combine_SSE_structures(RB_str_break) # create a Structure Instance of selected segments.
+			score_SCCC=scorer.SCCC(emmap,6.6,sim_sigma_coeff,structure_instance,RB_str)
+			print score_SCCC
+
+
+**NOTE** Different way of segment selection are implemented in TEMpy. See the segment selection exemple for more information.
+In this example the segment selection is defined from a rigid body list.
+
+
+Mutual information score (MI)
+---------------------
+
+The mutual information was amongst the best scores tested with robustness to changes in the resolution and in the sigma coefficients, making it one of the most promising scores for low resolution.
+This score, by calculation of its ratio to the total entropy of the system, can formulate an easily understood and statistically meaningful value.
+The following example show how to calculate the MI score::
+	
+		from ScoringFunctions import *
+		from MapParser import *
+		
+		scorer = ScoringFunctions()
+		
+		maptarget=MapParser.readMRC(map_target)
+		mapprobe=MapParser.readMRC(map_probe)
+
+		scorer.MI(mapprobe,maptarget)
+
+Envelope score (ENV)
+---------------------
+
+The envelope score is the most sensitivity to the resolution of the target maps.
+It is the fastest of the available scores and so it could be used in screening possible fits in large assemblies.
+The following example show how to calculate the ENV score::
+
+		from PDBParser import *
+		from Bio.PDB import *
+		from MapParser import *
+
+		scorer = ScoringFunctions()
+		
+		target_map=MapParser.readMRC(map_target) #read target map
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+
+		min_thr=target_map.get_min_threshold(structure_instance.get_prot_mass_from_atoms(), target_map.min(), target_map.max()) #minimum density value based on protein molecular weight.
+		scorer.envelope_score(target_map, min_thr, structure_instance,norm=True)
+		
+*NOTE* The correcte definition of the volume threshold can effect the performance of this score
+
+Normal vector score (NV)
+---------------------
+
+The Normal Vector score calculates the average angular difference between the vectors representing the surface of the target and probe maps. 
+As such, the score between identical maps is 0, and the worst possible score will be -pi.
+The Normal vector score does not rely as heavily on the absolute (coordinate) positions of the calculated surface voxels.
+An important advantage of this score is that it can be applied to any subsection of the surface 
+of a map and be relatively free from ‘contamination’ from other subunits.
+For this reason, it is probably the most useful
+score in sequentially fitting single subunits into maps of large assemblies.
+
+
+
+
+The following example show how to calculate the NV score::
+
+		from PDBParser import *
+		from Bio.PDB import *
+		from MapParser import *
+		from StructureBlurrer import *
+		
+		scorer = ScoringFunctions()
+		blurrer = StructureBlurrer()
+		
+		target_map=MapParser.readMRC(map_target) #read target map
+		structure_instance=PDBParser.read_PDB_file("TEST", pdb_file_test)
+		probe_map = blurrer.gaussian_blur(structure_instance, 20.,densMap=target_map)
+		
+		min_thr=probe_map.get_min_threshold(structure_instance.get_prot_mass_from_atoms(), probe_map.min(), probe_map.max())
+		points= round((probe_map.map_size())*0.01)
+		max_thr=probe_map.get_max_threshold(min_thr, points, min_thr, probe_map.max(),err_percent=1)
+
+		scorer.normal_vector_score(target_map,probe_map, min_thr, max_thr)
+
+**NOTE** Using too small (0.187×resolution) or large (0.5×resolution) sigma values to produce the probe map appeared to disrupt the accuracy of the normal vector score.
+
+Code snippets
+==================
+
+The source code distribution comes with a `Example_TEMPY01`_ file that
+contains a number of code snippets that show how to use certain
+aspects of TEMpy to retrieve informations regarding the Structure
+and Map Instances.

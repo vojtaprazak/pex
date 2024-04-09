@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPicker import linear_sampling
+from PEETModelParser import PEETmodel
+from PEET2Pytom import extract_pcles_using_PEET_PRM
+
+parser = argparse.ArgumentParser(description=("Extract particles and create XML particle lists for use with PyTom, from a PEET prm file."))
+
+parser.add_argument('prmfile', help="The PEET prm file to convert.")
+parser.add_argument('iteration', help="The iteration from the PEET run to convert", type=int)
+parser.add_argument('boxsize', help='The size of the box to extract, in x,y,z order.')
+parser.add_argument('--num_digits', help='Number of digits in the filenames of extracted particles. Defaults to 5 (ie. particle 4 will be particle 00004.', default=5, type=int)
+parser.add_argument('--no_extraction', help='Skip particle extraction and just create the particle lists.', action="store_false")
+parser.add_argument('--skip_to', help='Only extract particles and make xml files for tomograms after this. ie. if 22 tomograms are in the prm file, adding --skip_to 14 will extract particles for tomograms 14 through 22. Default is 1.', default=1, type=int)
+
+
+args = parser.parse_args()
+boxsize = [int(x) for x in args.boxsize.split(',')]
+
+extract_pcles_using_PEET_PRM(args.prmfile, args.iteration, boxsize, no_of_digits=args.num_digits, extpcles=args.no_extraction, skip_to=args.skip_to-1)

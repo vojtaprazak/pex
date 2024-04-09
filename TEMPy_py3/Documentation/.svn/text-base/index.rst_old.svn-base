@@ -1,0 +1,69 @@
+.. TEMPy documentation master file, created by
+   sphinx-quickstart on Mon Dec  2 11:38:53 2013.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+###############################
+TEMPy documentation
+###############################
+
+TEMPy is a object-oriented Python library designed to help the user manipulate and analyse atomic structures and density maps from 3D EM.
+TEMPy will eventually be expanded to include a suite of functions for fitting and the assessment of fits, as well as being a toolkit for users to build their own, personalised, functions. 
+TEMPy makes use of open source software including **NumPy** (http://www.numpy.org/), **SciPy** (http://www.scipy.org/) and **Biopython** (http://biopython.org/)
+
+Warning Please be aware that this is alpha software that most definitely contains bugs.
+
+Contents
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+   
+   installation
+   overview
+   StructureParser
+   ProtRep_Biopy
+   MapParser
+   StructureBlurrer
+   EMMap
+   RigidBodyParser
+   TransformParser
+   EnsembleGeneration
+   ScoringFunctions
+   Cluster
+   Vector
+
+
+Download
+==================
+
+XXXXX
+
+**Source code** is available from http://XXXX under the
+GNU Public Licence, version 2, together with some additional documentation.
+
+Get the latest package at
+ 
+Citation
+==================
+
+XXXXX
+
+Contributors
+==================
+
+Irene Farabella, Daven Vasishtan, Arun Prasad Pandurangan, Harpal Sahota and Maya Topf.
+
+
+Funding
+==================
+.. image:: _static/nostrap-bbsrc-colour.png
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

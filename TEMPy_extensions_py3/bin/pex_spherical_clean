@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Removes particles if they are outside a certain radial distance from calculated centres. To be used to clean up models initialised with pex_spherical_pick'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when removing particles. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+parser.add_argument('--max_num_sph', type=int, help=('default 20. Maximum number of spheres to test in clustering. Change if your model has more than 20 spheres.'), default=20)
+parser.add_argument('--fixed_radius', type=float, help=('Clean using a specified radius (in pixels). If ignored, radii are calculated by average distance of particles from cluster centres.'), default=0)
+parser.add_argument('--radial_tol', type=int, help=('default 10. Maximum radial distance a particle can be from expected radius before it is removed.'), default=10)
+parser.add_argument('--silent', help='Turn off reports on numbers of particles.', action="store_true")
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+
+
+args = parser.parse_args()
+
+verbose = not args.silent
+writeprm = not args.no_prm
+if args.fixed_radius == 0:
+    fr = None
+else:
+    fr = args.fixed_radius
+
+inp = PEETPRMFile(args.prmfile)
+inp.clean_spheres(args.iteration, args.outdir, writeprm=writeprm, fixed_radius=fr, rad_extra=args.radial_tol, max_num_sph=args.max_num_sph, verbose=verbose)
+

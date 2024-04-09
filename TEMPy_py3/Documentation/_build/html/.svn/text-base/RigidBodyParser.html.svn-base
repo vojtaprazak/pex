@@ -1,0 +1,172 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8. Read Rigid Body Files in Flex-EM format &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="9. Parser for Transformation Matrices" href="TransformParser.html" />
+    <link rel="prev" title="7. Density Map Instance Informations" href="EMMap.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="TransformParser.html" title="9. Parser for Transformation Matrices"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="EMMap.html" title="7. Density Map Instance Informations"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="read-rigid-body-files-in-flex-em-format">
+<h1>8. Read Rigid Body Files in Flex-EM format<a class="headerlink" href="#read-rigid-body-files-in-flex-em-format" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-RigidBodyParser"></span><dl class="class">
+<dt id="RigidBodyParser.RBParser">
+<em class="property">class </em><tt class="descclassname">RigidBodyParser.</tt><tt class="descname">RBParser</tt><a class="reference internal" href="_modules/RigidBodyParser.html#RBParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RigidBodyParser.RBParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to read Rigid Body files</p>
+<dl class="staticmethod">
+<dt id="RigidBodyParser.RBParser.RBfileToRBlist">
+<em class="property">static </em><tt class="descname">RBfileToRBlist</tt><big>(</big><em>file_in</em><big>)</big><a class="headerlink" href="#RigidBodyParser.RBParser.RBfileToRBlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a rigid body files in Flex-EM format (text file) using residue numbers in a list of segments.
+Each line describes one rigid body by specifying the initial and final residue of each of the segments in that rigid body 
+(eg, &#8216;2 6 28 30&#8217; means that residues 2-6 and 28-30 will be included in the same rigid body). 
+We recommend to use the RIBFIND server for accurately identifying Rigid Bodies in a protein structures.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>file_in</em></dt>
+<dd>Rigid Body File in Flex EM format</dd>
+<dt><em>list_out</em></dt>
+<dd><p class="first">Return a list of segments (each line in the file).
+The list of rigid body is defined as:</p>
+<blockquote>
+<div>[[riA,rfA],..,[riB,rfB]]</div></blockquote>
+<p>where :</p>
+<blockquote class="last">
+<div>riA is the starting residues number of segment A.
+rfA is the final residues number of segment A.</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="RigidBodyParser.RBParser.read_FlexEM_RIBFIND_files">
+<em class="property">static </em><tt class="descname">read_FlexEM_RIBFIND_files</tt><big>(</big><em>file_in</em>, <em>structure_instance</em>, <em>list_out=True</em><big>)</big><a class="reference internal" href="_modules/RigidBodyParser.html#RBParser.read_FlexEM_RIBFIND_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RigidBodyParser.RBParser.read_FlexEM_RIBFIND_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a rigid body files in Flex-EM format (text file) using residue numbers in a structure instance.
+Each line describes one rigid body by specifying the initial and final residue of each of the segments in that rigid body 
+(eg, &#8216;2 6 28 30&#8217; means that residues 2-6 and 28-30 will be included in the same rigid body). 
+We recommend to use the RIBFIND server for accurately identifying Rigid Bodies in a protein structures.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>file_in</em></dt>
+<dd>Rigid Body File in Flex EM format</dd>
+<dt><em>structure_instance</em></dt>
+<dd>Structure Instance to manipulate</dd>
+<dt><em>list_out</em></dt>
+<dd>True return a list of the Rigid Bodies structure instances (each line in the file).
+False will print them separately.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="TransformParser.html" title="9. Parser for Transformation Matrices"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="EMMap.html" title="7. Density Map Instance Informations"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

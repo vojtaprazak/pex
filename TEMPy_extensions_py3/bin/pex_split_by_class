@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+import argparse, os
+from PEETPRMParser import PEETPRMFile
+
+
+parser = argparse.ArgumentParser(description=('Make a new PEET run, using only particles with the chosen class IDs.'))
+parser.add_argument('prmfile', help='The PEET parameter file')
+parser.add_argument('iteration', help='The iteration from which to make the marker files', type=int)
+parser.add_argument('classes', help='A comma separated list of class IDs to extract for the new run, eg. 1,2,5')
+parser.add_argument('outfile_dir', help='The directory in which to write files.')
+
+args = parser.parse_args()
+prm = PEETPRMFile(args.prmfile)
+classes = [int(x) for x in args.classes.split(',')]
+prm.split_by_classID(args.iteration, args.outfile_dir, classes=classes, splitForFSC=False, writeprm=True)

@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+import argparse
+from relion_dose_file_maker import *
+      
+parser = argparse.ArgumentParser(description=('Takes an input tomogram tilt stack and creates a cumulative dose file (.order) for use with relion subtomogram averaging.'))
+parser.add_argument('stack', help='The name of the tomogram tilt stack.')
+parser.add_argument('outfile', help='The desired name of the output file.')
+
+args = parser.parse_args()
+
+get_cumulative_dose(args.stack, args.outfile)

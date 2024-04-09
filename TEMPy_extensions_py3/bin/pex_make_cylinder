@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+
+import argparse
+from make_shapes import make_cylinder
+
+
+parser = argparse.ArgumentParser(description=('Make MRC file containing a solid cylinder'))
+parser.add_argument('box_size', nargs=3, type=int, help='The size of the box in pixels, in x,y,z order. ie 50 50 50 for a cube with a 50 pixel side.')#, metavar=('x','y','z'))
+parser.add_argument('radius', type=int, help='The radius of the cylinder, in pixels.')
+parser.add_argument('height', type=int, help='The height of the cylinder, in pixels.')
+parser.add_argument('outfile', help='The desired name of the output file.')
+parser.add_argument('--symm_axis', help='The orientation of the symmetry axis of the cylinder. Must be x, y,or z. Default is y.', default='y')
+parser.add_argument('--centre', nargs=3, metavar=('x','y','z'), type=int, help='Location of the centre of the cylinder in pixels, ie 25 20 25. Default is the centre of the box.')
+parser.add_argument('--fill', help='The fill value of the cylinder. Default is 1.0.', default=1.0, type=float)
+parser.add_argument('--apix', help='The sampling size of the map, in Angstroms per pixel. Default is 1.', default=1.0, type=float)
+parser.add_argument('--origin', nargs=3, metavar=('x','y','z'), help='The origin of the map, in Angstroms. Default is 0 0 0.', default=(0,0,0), type=float)
+
+args = parser.parse_args()
+if not args.centre:
+    centre = False
+else:
+    centre = args.centre
+
+if args.symm_axis == 'x' or args.symm_axis == 'X':
+    symm_axis = 2
+elif args.symm_axis == 'y' or args.symm_axis == 'Y':
+    symm_axis = 1
+elif args.symm_axis == 'z' or args.symm_axis == 'Z':
+    symm_axis = 0
+else:
+    raise TypeError('symm axis must be x, y or z')
+
+m = make_cylinder(args.box_size, args.radius, args.height, symm_axis=symm_axis,\
+                  centre=centre, fill=args.fill, apix=args.apix, origin=args.origin)
+m.write_to_MRC_file(args.outfile)

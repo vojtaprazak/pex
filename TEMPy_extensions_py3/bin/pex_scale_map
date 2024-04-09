@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+import argparse
+from MapParser import *
+      
+parser = argparse.ArgumentParser(description=('Resample a map to a given voxel size.'))
+parser.add_argument('mapfile', help='The name of the map to be resampled.')
+parser.add_argument('new_apix', type=float, help='New voxel size for the resampled map.')
+parser.add_argument('outfile', help='Output file name')
+
+args = parser.parse_args()
+
+inp = MapParser.readMRC(args.mapfile)
+out = inp.resample_by_apix(args.new_apix)
+out.write_to_MRC_file(args.outfile)

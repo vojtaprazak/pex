@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. Density Map Generation &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="7. Density Map Instance Informations" href="EMMap.html" />
+    <link rel="prev" title="5. Parser for Density Map Instance" href="MapParser.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="EMMap.html" title="7. Density Map Instance Informations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="MapParser.html" title="5. Parser for Density Map Instance"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-StructureBlurrer">
+<span id="density-map-generation"></span><h1>6. Density Map Generation<a class="headerlink" href="#module-StructureBlurrer" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="StructureBlurrer.StructureBlurrer">
+<em class="property">class </em><tt class="descclassname">StructureBlurrer.</tt><tt class="descname">StructureBlurrer</tt><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to generates a density map from a structure instance.</p>
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.gaussian_blur">
+<tt class="descname">gaussian_blur</tt><big>(</big><em>prot</em>, <em>resolution</em>, <em>densMap=False</em>, <em>sigma_coeff=0.356</em>, <em>normalise=True</em>, <em>filename='None'</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.gaussian_blur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.gaussian_blur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance based on a Gaussian blurring of a protein.
+The convolution of atomic structures is done in reciprocal space.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>prot</em></dt>
+<dd>the Structure instance to be blurred.</dd>
+<dt><em>resolution</em></dt>
+<dd>the resolution, in Angstroms, to blur the protein to.</dd>
+<dt><em>densMap</em></dt>
+<dd>False to build a Map with dimensions based on the protein, or a Map instance to be used as a template.</dd>
+<dt><em>sigma_coeff</em></dt>
+<dd><p class="first">the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+Default values is 0.356.</p>
+<p>Other values used :</p>
+<blockquote class="last">
+<div><p>0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</p>
+<p>0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</p>
+<p>0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</p>
+<p>0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</p>
+</div></blockquote>
+</dd>
+<dt><em>filename</em></dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.gaussian_blur_box">
+<tt class="descname">gaussian_blur_box</tt><big>(</big><em>prot</em>, <em>resolution</em>, <em>box_size_x</em>, <em>box_size_y</em>, <em>box_size_z</em>, <em>sigma_coeff=0.356</em>, <em>normalise=True</em>, <em>filename='None'</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.gaussian_blur_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.gaussian_blur_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance based on a Gaussian blurring of a protein.
+The convolution of atomic structures is done in reciprocal space.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>prot</em></dt>
+<dd>the Structure instance to be blurred.</dd>
+<dt><em>resolution</em></dt>
+<dd>the resolution, in Angstroms, to blur the protein to.</dd>
+<dt><em>box_size_x</em></dt>
+<dd>x dimension of map box in Angstroms.</dd>
+<dt><em>box_size_y</em></dt>
+<dd>y dimension of map box in Angstroms.</dd>
+<dt><em>box_size_z</em> </dt>
+<dd>z dimension of map box in Angstroms.</dd>
+<dt><em>sigma_coeff</em></dt>
+<dd><p class="first">the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+Default values is 0.356.</p>
+<p>Other values used :</p>
+<blockquote class="last">
+<div><p>0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</p>
+<p>0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</p>
+<p>0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</p>
+<p>0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</p>
+</div></blockquote>
+</dd>
+<dt><em>filename</em></dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.gaussian_blur_real_space">
+<tt class="descname">gaussian_blur_real_space</tt><big>(</big><em>prot</em>, <em>resolution</em>, <em>densMap=False</em>, <em>sigma_coeff=0.356</em>, <em>normalise=True</em>, <em>filename='None'</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.gaussian_blur_real_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.gaussian_blur_real_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance based on a Gaussian blurring of a protein.
+The convolution of atomic structures is done in real space</p>
+<p>Arguments:</p>
+<blockquote>
+<div><blockquote>
+<div><dl class="docutils">
+<dt><em>prot</em></dt>
+<dd>the Structure instance to be blurred.</dd>
+<dt><em>resolution</em></dt>
+<dd>the resolution, in Angstroms, to blur the protein to.</dd>
+<dt><em>densMap</em></dt>
+<dd>False to build a Map with dimensions based on the protein, or a Map instance to be used as a template.</dd>
+<dt><em>sigma_coeff</em></dt>
+<dd><p class="first">the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+Default values is 0.356.</p>
+<p>Other values used :</p>
+<blockquote class="last">
+<div><p>0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</p>
+<p>0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</p>
+<p>0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</p>
+<p>0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</p>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt><em>filename</em></dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.gaussian_blur_real_space_box">
+<tt class="descname">gaussian_blur_real_space_box</tt><big>(</big><em>prot</em>, <em>resolution</em>, <em>box_size_x</em>, <em>box_size_y</em>, <em>box_size_z</em>, <em>sigma_coeff=0.356</em>, <em>normalise=True</em>, <em>filename='None'</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.gaussian_blur_real_space_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.gaussian_blur_real_space_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance based on a Gaussian blurring of a protein.
+The convolution of atomic structures is done in real space</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>prot</em></dt>
+<dd>the Structure instance to be blurred.</dd>
+<dt><em>resolution</em></dt>
+<dd>the resolution, in Angstroms, to blur the protein to.</dd>
+<dt><em>box_size_x</em></dt>
+<dd>x dimension of map box in Angstroms.</dd>
+<dt><em>box_size_y</em></dt>
+<dd>y dimension of map box in Angstroms.</dd>
+<dt><em>box_size_z</em> </dt>
+<dd>z dimension of map box in Angstroms.</dd>
+<dt><em>sigma_coeff</em></dt>
+<dd><p class="first">the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+Default values is 0.356.</p>
+<p>Other values used :</p>
+<blockquote class="last">
+<div><p>0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</p>
+<p>0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</p>
+<p>0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</p>
+<p>0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</p>
+</div></blockquote>
+</dd>
+<dt><em>filename</em></dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.hard_sphere">
+<tt class="descname">hard_sphere</tt><big>(</big><em>prot</em>, <em>resolution</em>, <em>densMap=False</em>, <em>normalise=True</em>, <em>filename='None'</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.hard_sphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.hard_sphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance based on a Hard Sphere model of a protein.
+Usefull for rigid fitting (Topf et al, 2008)</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>prot</em></dt>
+<dd>the Structure instance to be blurred.</dd>
+<dt><em>resolution</em></dt>
+<dd>the resolution, in Angstroms, to blur the protein to.</dd>
+<dt><em>densMap</em></dt>
+<dd>False to build a Map with dimensions based on the protein, or a Map instance to be used as a template.</dd>
+<dt><em>filename</em></dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.hard_sphere_box">
+<tt class="descname">hard_sphere_box</tt><big>(</big><em>prot</em>, <em>resolution</em>, <em>box_size_x</em>, <em>box_size_y</em>, <em>box_size_z</em>, <em>normalise=True</em>, <em>filename='None'</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.hard_sphere_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.hard_sphere_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance based on a Hard Sphere model of a protein.
+Usefull for rigid fitting (Topf et al, 2008)</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>prot</em></dt>
+<dd>the Structure instance to be blurred.</dd>
+<dt><em>resolution</em></dt>
+<dd>the resolution, in Angstroms, to blur the protein to.</dd>
+<dt><em>box_size_x</em></dt>
+<dd>x dimension of map box in Angstroms.</dd>
+<dt><em>box_size_y</em></dt>
+<dd>y dimension of map box in Angstroms.</dd>
+<dt><em>box_size_z</em> </dt>
+<dd>z dimension of map box in Angstroms.</dd>
+<dt><em>filename</em></dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.make_atom_overlay_map">
+<tt class="descname">make_atom_overlay_map</tt><big>(</big><em>densMap</em>, <em>prot</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.make_atom_overlay_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.make_atom_overlay_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance with atom masses superposed on it.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>densMap</em></dt>
+<dd>an empty (all densities zero) Map instance to superpose the atoms onto.</dd>
+<dt><em>prot</em></dt>
+<dd>a Structure instance.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.make_atom_overlay_map1">
+<tt class="descname">make_atom_overlay_map1</tt><big>(</big><em>densMap</em>, <em>prot</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.make_atom_overlay_map1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.make_atom_overlay_map1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Map instance with atom locations recorded on the nearest voxel with a value of 1.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>densMap</em></dt>
+<dd>an empty (all densities zero) Map instance to superpose the atoms onto.</dd>
+<dt><em>prot</em></dt>
+<dd>a Structure instance.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.mapGridPosition">
+<tt class="descname">mapGridPosition</tt><big>(</big><em>densMap</em>, <em>atom</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.mapGridPosition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.mapGridPosition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the nearest pixel to an atom, and atom mass (4 values in list form).</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>densMap</em></dt>
+<dd>Map instance the atom is to be placed on.</dd>
+<dt><em>atom</em></dt>
+<dd>Atom instance.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.protMap">
+<tt class="descname">protMap</tt><big>(</big><em>struct</em>, <em>apix</em>, <em>resolution</em>, <em>filename='None'</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.protMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.protMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Map instance sized and centred based on the atomic structure.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>apix</em></dt>
+<dd>Angstroms per pixel for the Map to be outputted.</dd>
+<dt><em>resolution</em></dt>
+<dd>Target resolution of the outputted map.</dd>
+<dt><em>sigma_coeff</em></dt>
+<dd>Sigma width of the Gaussian used to blur the atomic structure.</dd>
+<dt><em>filename</em> </dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="StructureBlurrer.StructureBlurrer.protMapBox">
+<tt class="descname">protMapBox</tt><big>(</big><em>struct</em>, <em>apix</em>, <em>resolution</em>, <em>box_size_x</em>, <em>box_size_y</em>, <em>box_size_z</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/StructureBlurrer.html#StructureBlurrer.protMapBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructureBlurrer.StructureBlurrer.protMapBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Map instance sized and centered based on the atomic structure.</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>struct</em></dt>
+<dd>the Structure instance.</dd>
+<dt><em>apix</em></dt>
+<dd>Angstroms per pixel for the output Map.</dd>
+<dt><em>resolution</em></dt>
+<dd>the resolution, in Angstroms, to blur the protein to.</dd>
+<dt><em>box_size_x</em></dt>
+<dd>x dimension of output map box in Angstroms.</dd>
+<dt><em>box_size_y</em></dt>
+<dd>y dimension of output map box in Angstroms.</dd>
+<dt><em>box_size_z</em></dt>
+<dd>z dimension of output map box in Angstroms.</dd>
+<dt><em>filename</em></dt>
+<dd>output name of the map file.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Return:</dt>
+<dd>A Map instance</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="EMMap.html" title="7. Density Map Instance Informations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="MapParser.html" title="5. Parser for Density Map Instance"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

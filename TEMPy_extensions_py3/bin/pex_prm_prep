@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+import sys
+sys.path.append('/gpfs/cssb/user/prazakvo/software/scripts')
+sys.path.append('/gpfs/cssb/user/prazakvo/software/flexo')
+from easy_peet_prep import *
+import argparse
+
+parser = argparse.ArgumentParser(description=('Format initial prm file. Expecting modelfile softlinks, where links point to model files in the respective tomogram reconstruction directories.'))
+parser.add_argument('mod_list', help = "List of model file links. e.g. ls *.mod > list.txt")
+parser.add_argument('out_dir', help = "running directory. will be created")
+
+#currently required
+parser.add_argument('linpick_sampling', help = "samplig for linear pick")
+parser.add_argument('--tomo_ext', help = "common tomo suffix", default = '_b4_rec.mrc')
+parser.add_argument('--exclude_kw', help = "ignore tomos with these strings. comma separated strings", default = 'fakesirt,bp,full')
+parser.add_argument('--box_size', help = 'desired ref box size, space separated ints', default = [48,48,48], nargs = 3, type = int)
+args = parser.parse_args()
+
+exclude_str = (args.exclude_kw).split(',')
+
+
+prep_prm(args.mod_list, args.out_dir, ref = False, linpick_sampling = args.linpick_sampling, extension= args.tomo_ext,
+             excluded_tomo_kw = exclude_str,
+             box_size = args.box_size, base = 'm')
+    

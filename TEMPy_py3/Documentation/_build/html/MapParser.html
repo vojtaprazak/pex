@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. Parser for Density Map Instance &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="6. Density Map Generation" href="StructureBlurrer.html" />
+    <link rel="prev" title="4. Class to define and manipulate protein structures" href="ProtRep_Biopy.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="StructureBlurrer.html" title="6. Density Map Generation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ProtRep_Biopy.html" title="4. Class to define and manipulate protein structures"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="parser-for-density-map-instance">
+<h1>5. Parser for Density Map Instance<a class="headerlink" href="#parser-for-density-map-instance" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-MapParser"></span><dl class="class">
+<dt id="MapParser.MapParser">
+<em class="property">class </em><tt class="descclassname">MapParser.</tt><tt class="descname">MapParser</tt><a class="reference internal" href="_modules/MapParser.html#MapParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MapParser.MapParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to read various EM map file types into a Map object instance.</p>
+<dl class="staticmethod">
+<dt id="MapParser.MapParser.get_endian">
+<em class="property">static </em><tt class="descname">get_endian</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/MapParser.html#MapParser.get_endian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MapParser.MapParser.get_endian" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="MapParser.MapParser.readMRC">
+<em class="property">static </em><tt class="descname">readMRC</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/MapParser.html#MapParser.readMRC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MapParser.MapParser.readMRC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read an MRC map file</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>filename</em> </dt>
+<dd>input MRC map file name.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>A Map instance containing the data read from MRC map file.</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="MapParser.MapParser.readMRCHeader">
+<em class="property">static </em><tt class="descname">readMRCHeader</tt><big>(</big><em>filename</em>, <em>endian='&lt;'</em><big>)</big><a class="reference internal" href="_modules/MapParser.html#MapParser.readMRCHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MapParser.MapParser.readMRCHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the header information from the MRC map file.</p>
+<dl class="docutils">
+<dt>Argument</dt>
+<dd><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><blockquote class="first">
+<div>input MRC map file name</div></blockquote>
+<p class="last"><em>endian</em></p>
+</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>A string containing the MRC header information.</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="MapParser.MapParser.readSitus">
+<em class="property">static </em><tt class="descname">readSitus</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/MapParser.html#MapParser.readSitus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MapParser.MapParser.readSitus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read density map file in Situs format</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd>input Situs map file name.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>A Map instance containing the data read from Situs map file.</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="MapParser.MapParser.readXPLOR">
+<em class="property">static </em><tt class="descname">readXPLOR</tt><big>(</big><em>filename</em>, <em>user_origin=None</em>, <em>user_box_size=None</em><big>)</big><a class="reference internal" href="_modules/MapParser.html#MapParser.readXPLOR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MapParser.MapParser.readXPLOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read density map file in XPLOR format
+NOTE: broken.</p>
+<dl class="docutils">
+<dt>Argument:</dt>
+<dd><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd>input XPLOR map file name.</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>A Map instance containing the data read from XPLOR map file.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="StructureBlurrer.html" title="6. Density Map Generation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ProtRep_Biopy.html" title="4. Class to define and manipulate protein structures"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

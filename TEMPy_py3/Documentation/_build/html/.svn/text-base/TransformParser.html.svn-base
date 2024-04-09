@@ -1,0 +1,173 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9. Parser for Transformation Matrices &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="10. Generation an Ensemble of Structure Instance" href="EnsembleGeneration.html" />
+    <link rel="prev" title="8. Read Rigid Body Files in Flex-EM format" href="RigidBodyParser.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="EnsembleGeneration.html" title="10. Generation an Ensemble of Structure Instance"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="RigidBodyParser.html" title="8. Read Rigid Body Files in Flex-EM format"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="parser-for-transformation-matrices">
+<h1>9. Parser for Transformation Matrices<a class="headerlink" href="#parser-for-transformation-matrices" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-TransformParser"></span><dl class="class">
+<dt id="TransformParser.TransformParser">
+<em class="property">class </em><tt class="descclassname">TransformParser.</tt><tt class="descname">TransformParser</tt><a class="reference internal" href="_modules/TransformParser.html#TransformParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TransformParser.TransformParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to read and save transformation matrices</p>
+<dl class="method">
+<dt id="TransformParser.TransformParser.load_matrix">
+<tt class="descname">load_matrix</tt><big>(</big><em>matrixname</em>, <em>mmap_mode=None</em><big>)</big><a class="reference internal" href="_modules/TransformParser.html#TransformParser.load_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TransformParser.TransformParser.load_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an array(s) from .npy, .npz</p>
+<p>Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>matrixname</em>:</dt>
+<dd>.npy  matrix
+If the filename extension is .gz, the file is first decompressed
+(see numpy.load for more information)</dd>
+<dt><em>mmap_mode</em>:</dt>
+<dd><p class="first">default None (memory-map the file)
+It can be set with different mode: 
+&#8216;r&#8217;,&#8217;r+&#8217;,&#8217;w+&#8217;,&#8217;c&#8217; accordingly with numpy.load (see numpy.memmap for a detailed description of the modes)
+The file is opened in this mode:</p>
+<blockquote>
+<div>&#8216;r&#8217;     Open existing file for reading only.
+&#8216;r+&#8217;    Open existing file for reading and writing.
+&#8216;w+&#8217;    Create or overwrite existing file for reading and writing.
+&#8216;c&#8217;     Copy-on-write: assignments affect data in memory, but changes are not saved to disk. The file on disk is read-only.</div></blockquote>
+<p class="last">A memory-mapped array is kept on disk. However, it can be accessed and sliced like any ndarray. 
+Memory mapping is especially useful for accessing small fragments of large files without reading the entire file into memory.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="TransformParser.TransformParser.save_npy_matrix">
+<tt class="descname">save_npy_matrix</tt><big>(</big><em>file</em>, <em>arr</em><big>)</big><a class="reference internal" href="_modules/TransformParser.html#TransformParser.save_npy_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TransformParser.TransformParser.save_npy_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save an array to a binary file in NumPy .npy format.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>file</em> </dt>
+<dd>File or filename to which the data is saved. If file is a file-object, then the filename is unchanged. If file is a string, a .npy extension will be appended to the file name if it does not already have one.</dd>
+<dt><em>arr</em></dt>
+<dd>array_like. Array data to be saved.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="TransformParser.TransformParser.save_npz_matrix">
+<tt class="descname">save_npz_matrix</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/TransformParser.html#TransformParser.save_npz_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TransformParser.TransformParser.save_npz_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save several arrays into a single file in uncompressed .npz format. (See numpy.savez for more information)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="EnsembleGeneration.html" title="10. Generation an Ensemble of Structure Instance"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="RigidBodyParser.html" title="8. Read Rigid Body Files in Flex-EM format"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

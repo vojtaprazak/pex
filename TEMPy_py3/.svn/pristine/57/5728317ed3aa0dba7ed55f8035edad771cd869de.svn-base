@@ -1,0 +1,675 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>StructureBlurrer &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for StructureBlurrer</h1><div class="highlight"><pre>
+<span class="c">#===============================================================================</span>
+<span class="c">#     This file is part of TEMPy.</span>
+<span class="c">#     </span>
+<span class="c">#     TEMPy is a free software designed to help the user in the manipulation </span>
+<span class="c">#     and analyses of macromolecular assemblies using 3D electron microscopy maps. </span>
+<span class="c">#     </span>
+<span class="c">#     Copyright (C) 2013 Irene Farabella, Daven Vasishtan, Arun Prasad Pandurangan, </span>
+<span class="c">#                        Agnel-Praveen Joseph, Harpal Sahota and Maya Topf.</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is free software: you can redistribute it and/or modify</span>
+<span class="c">#     it under the terms of the GNU General Public License as published by</span>
+<span class="c">#     the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#     (at your option) any later version.</span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is distributed in the hope that it will be useful,</span>
+<span class="c">#     but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#     GNU General Public License for more details.</span>
+<span class="c"># </span>
+<span class="c">#     You should have received a copy of the GNU General Public License</span>
+<span class="c">#     along with TEMPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#     </span>
+<span class="c">#     Please cite your use of TEMPy in published work:</span>
+<span class="c"># </span>
+<span class="c">#     I. Farabella ,D.Vasishtan, A. P. Pandurangan, H. Sahota and M. Topf .</span>
+<span class="c">#     TEMPy: Tool for Scoring and Assessment into 3D EM Maps using Python </span>
+<span class="c">#     XXXXX</span>
+<span class="c">#===============================================================================</span>
+
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span>  <span class="n">zeros</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span><span class="n">sqrt</span><span class="p">,</span><span class="n">exp</span>
+<span class="kn">from</span> <span class="nn">scipy.fftpack</span> <span class="kn">import</span> <span class="n">fftn</span><span class="p">,</span> <span class="n">ifftn</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">fourier_gaussian</span><span class="p">,</span><span class="n">gaussian_filter</span>
+<span class="kn">from</span> <span class="nn">TEMPy.EMMap</span> <span class="kn">import</span> <span class="n">Map</span>
+
+<div class="viewcode-block" id="StructureBlurrer"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer">[docs]</a><span class="k">class</span> <span class="nc">StructureBlurrer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    </span>
+<span class="sd">    A class to generates a density map from a structure instance.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="StructureBlurrer.protMap"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.protMap">[docs]</a>    <span class="k">def</span> <span class="nf">protMap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">,</span> <span class="n">apix</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;None&quot;</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns an Map instance sized and centred based on the atomic structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">           *apix*</span>
+<span class="sd">               Angstroms per pixel for the Map to be outputted.</span>
+<span class="sd">           *resolution*</span>
+<span class="sd">                Target resolution of the outputted map.</span>
+<span class="sd">           *sigma_coeff*</span>
+<span class="sd">               Sigma width of the Gaussian used to blur the atomic structure.</span>
+<span class="sd">           *filename* </span>
+<span class="sd">               output name of the map file.</span>
+<span class="sd">               </span>
+<span class="sd">           &quot;&quot;&quot;</span>
+
+        <span class="c"># Build empty template map based on the size of the protein and the resolution.</span>
+        <span class="n">extr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">get_extreme_values</span><span class="p">()</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">resolution</span><span class="o">/</span><span class="n">apix</span><span class="p">)</span><span class="o">+</span><span class="mi">4</span>
+        <span class="n">x_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">extr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">extr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">apix</span><span class="p">)</span><span class="o">+</span><span class="n">edge</span>
+        <span class="n">y_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">extr</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">extr</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="n">apix</span><span class="p">)</span><span class="o">+</span><span class="n">edge</span>
+        <span class="n">z_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">extr</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">extr</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">/</span><span class="n">apix</span><span class="p">)</span><span class="o">+</span><span class="n">edge</span>
+
+        <span class="c"># Origin calculated such that the centre of the map is the centre of mass of the protein.</span>
+        <span class="n">x_origin</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="p">(</span><span class="n">apix</span><span class="o">*</span><span class="n">x_size</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">y_origin</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="p">(</span><span class="n">apix</span><span class="o">*</span><span class="n">y_size</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">z_origin</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="p">(</span><span class="n">apix</span><span class="o">*</span><span class="n">z_size</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">z_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">,</span> <span class="n">x_size</span><span class="p">))</span>
+        <span class="n">fullMap</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="p">[</span><span class="n">x_origin</span><span class="p">,</span> <span class="n">y_origin</span><span class="p">,</span> <span class="n">z_origin</span><span class="p">],</span> <span class="n">apix</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fullMap</span>
+      <span class="c">#add by IF</span>
+    </div>
+<div class="viewcode-block" id="StructureBlurrer.protMapBox"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.protMapBox">[docs]</a>    <span class="k">def</span> <span class="nf">protMapBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">,</span> <span class="n">apix</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span><span class="n">box_size_x</span><span class="p">,</span><span class="n">box_size_y</span><span class="p">,</span><span class="n">box_size_z</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Map instance sized and centered based on the atomic structure.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *struct*</span>
+<span class="sd">                the Structure instance.</span>
+<span class="sd">            *apix*</span>
+<span class="sd">                Angstroms per pixel for the output Map.</span>
+<span class="sd">            *resolution*</span>
+<span class="sd">                the resolution, in Angstroms, to blur the protein to.</span>
+<span class="sd">            *box_size_x*</span>
+<span class="sd">                x dimension of output map box in Angstroms.</span>
+<span class="sd">            *box_size_y*</span>
+<span class="sd">                y dimension of output map box in Angstroms.</span>
+<span class="sd">            *box_size_z*</span>
+<span class="sd">                z dimension of output map box in Angstroms.</span>
+<span class="sd">            *filename*</span>
+<span class="sd">                output name of the map file.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            A Map instance</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Build empty template map based on the size of the protein and the resolution.</span>
+        <span class="n">x_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_size_x</span><span class="p">)</span>
+        <span class="n">y_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_size_y</span><span class="p">)</span>
+        <span class="n">z_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_size_z</span><span class="p">)</span>
+
+        <span class="c"># Origin calculated such that the centre of the map is the centre of mass of the protein.</span>
+        <span class="n">x_origin</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="p">(</span><span class="n">apix</span><span class="o">*</span><span class="n">x_size</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">y_origin</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="p">(</span><span class="n">apix</span><span class="o">*</span><span class="n">y_size</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">z_origin</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="p">(</span><span class="n">apix</span><span class="o">*</span><span class="n">z_size</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">z_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">,</span> <span class="n">x_size</span><span class="p">))</span>
+        <span class="n">fullMap</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="p">[</span><span class="n">x_origin</span><span class="p">,</span> <span class="n">y_origin</span><span class="p">,</span> <span class="n">z_origin</span><span class="p">],</span> <span class="n">apix</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fullMap</span>
+  </div>
+<div class="viewcode-block" id="StructureBlurrer.mapGridPosition"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.mapGridPosition">[docs]</a>    <span class="k">def</span> <span class="nf">mapGridPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">densMap</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns the index of the nearest pixel to an atom, and atom mass (4 values in list form).</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">           *densMap*</span>
+<span class="sd">               Map instance the atom is to be placed on.</span>
+<span class="sd">           *atom*</span>
+<span class="sd">               Atom instance.</span>
+<span class="sd">               </span>
+<span class="sd">           &quot;&quot;&quot;</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">origin</span>
+        <span class="n">apix</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">apix</span>
+        <span class="n">box_size</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">()</span>
+        <span class="n">x_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">apix</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">y_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">apix</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">z_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="n">origin</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="n">apix</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c">#print &quot;grid_pos&quot;, x_pos,y_pos,z_pos,atom.x-origin[0], atom.y-origin[1], atom.z-origin[2]</span>
+	    <span class="c">#if((box_size[0] &gt; x_pos &gt;= 0) and (box_size[1] &gt; y_pos &gt;= 0) and (box_size[2] &gt; z_pos &gt;= 0)):</span>
+        <span class="c">#    return (x_pos, y_pos, z_pos, atom.mass)</span>
+        
+        <span class="c">#MODIFIED BY PAP</span>
+        <span class="c">#MODIFY BY IF</span>
+        <span class="k">if</span><span class="p">((</span><span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">x_pos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">y_pos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">z_pos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">z_pos</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        
+<span class="c">#this two can be merged and be a unique function that return either the density or 1</span>
+<span class="c">#added by PAP</span></div>
+<div class="viewcode-block" id="StructureBlurrer.make_atom_overlay_map"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.make_atom_overlay_map">[docs]</a>    <span class="k">def</span> <span class="nf">make_atom_overlay_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">densMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance with atom masses superposed on it.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">           *densMap*</span>
+<span class="sd">               an empty (all densities zero) Map instance to superpose the atoms onto.</span>
+<span class="sd">           *prot*</span>
+<span class="sd">               a Structure instance.</span>
+<span class="sd">               </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">densMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">prot</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapGridPosition</span><span class="p">(</span><span class="n">densMap</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span>
+	    <span class="c">#print pos</span>
+            <span class="k">if</span> <span class="n">pos</span><span class="p">:</span>
+                <span class="n">densMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">densMap</span>
+
+    <span class="c">#ADDED BY PAP</span></div>
+<div class="viewcode-block" id="StructureBlurrer.make_atom_overlay_map1"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.make_atom_overlay_map1">[docs]</a>    <span class="k">def</span> <span class="nf">make_atom_overlay_map1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">densMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance with atom locations recorded on the nearest voxel with a value of 1.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">           </span>
+<span class="sd">           *densMap*</span>
+<span class="sd">               an empty (all densities zero) Map instance to superpose the atoms onto.</span>
+<span class="sd">           *prot*</span>
+<span class="sd">               a Structure instance.</span>
+<span class="sd">               </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">densMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">densMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">*</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">prot</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapGridPosition</span><span class="p">(</span><span class="n">densMap</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span>
+            <span class="c">#print &#39;overlay index&#39;, pos</span>
+            <span class="k">if</span> <span class="n">pos</span><span class="p">:</span>
+                <span class="n">densMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">densMap</span>
+
+</div>
+<div class="viewcode-block" id="StructureBlurrer.gaussian_blur"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur">[docs]</a>    <span class="k">def</span> <span class="nf">gaussian_blur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">densMap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sigma_coeff</span><span class="o">=</span><span class="mf">0.356</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;None&quot;</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance based on a Gaussian blurring of a protein.</span>
+<span class="sd">        The convolution of atomic structures is done in reciprocal space.</span>
+
+<span class="sd">        Arguments:</span>
+
+<span class="sd">            *prot*</span>
+<span class="sd">                the Structure instance to be blurred.</span>
+<span class="sd">            *resolution*</span>
+<span class="sd">                the resolution, in Angstroms, to blur the protein to.</span>
+<span class="sd">            *densMap*</span>
+<span class="sd">                False to build a Map with dimensions based on the protein, or a Map instance to be used as a template.</span>
+<span class="sd">            *sigma_coeff*</span>
+<span class="sd">                the sigma value (multiplied by the resolution) that controls the width of the Gaussian. </span>
+<span class="sd">                Default values is 0.356.</span>
+<span class="sd">                </span>
+<span class="sd">                Other values used :</span>
+<span class="sd">                </span>
+<span class="sd">                    0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</span>
+<span class="sd">                                </span>
+<span class="sd">                    0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                                </span>
+<span class="sd">                    1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</span>
+
+<span class="sd">            *filename*</span>
+<span class="sd">                output name of the map file.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#densMap= your map if you want to compare prot blurred with an exisiting map.</span>
+        <span class="c">#Daven always use that so that it blurred based on the experiment box</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">densMap</span><span class="p">:</span>
+            <span class="n">densMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protMap</span><span class="p">(</span><span class="n">prot</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">resolution</span><span class="o">/</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="n">resolution</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&quot;WARNING: Use StructureBlurrer.gaussian_blur_box() to blured a map with a user defined defined cubic box&quot;</span>
+            <span class="c">#from here till newMap.fullMap*=0 are few line of code that create an empty map with the new A/px of 1</span>
+            <span class="c">#this replace the make_clash_map(apix) function. they do the job but they need to be replaced with something more rigorous</span>
+        <span class="n">x_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">y_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">z_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">([</span><span class="n">z_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">,</span> <span class="n">x_s</span><span class="p">])</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">*=</span> <span class="mi">0</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_coeff</span><span class="o">*</span><span class="n">resolution</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_atom_overlay_map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">)</span>
+        <span class="n">fou_map</span> <span class="o">=</span> <span class="n">fourier_gaussian</span><span class="p">(</span><span class="n">fftn</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">),</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">ifftn</span><span class="p">(</span><span class="n">fou_map</span><span class="p">))</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span>
+        <span class="k">return</span> <span class="n">newMap</span>
+
+    <span class="c">#add IF</span></div>
+<div class="viewcode-block" id="StructureBlurrer.gaussian_blur_box"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur_box">[docs]</a>    <span class="k">def</span> <span class="nf">gaussian_blur_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">box_size_x</span><span class="p">,</span> <span class="n">box_size_y</span><span class="p">,</span> <span class="n">box_size_z</span><span class="p">,</span> <span class="n">sigma_coeff</span><span class="o">=</span><span class="mf">0.356</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;None&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance based on a Gaussian blurring of a protein.</span>
+<span class="sd">        The convolution of atomic structures is done in reciprocal space.</span>
+<span class="sd">    </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *prot*</span>
+<span class="sd">                the Structure instance to be blurred.</span>
+<span class="sd">            *resolution*</span>
+<span class="sd">                the resolution, in Angstroms, to blur the protein to.</span>
+<span class="sd">            *box_size_x*</span>
+<span class="sd">                 x dimension of map box in Angstroms.</span>
+<span class="sd">            *box_size_y*</span>
+<span class="sd">                y dimension of map box in Angstroms.</span>
+<span class="sd">            *box_size_z* </span>
+<span class="sd">                z dimension of map box in Angstroms.</span>
+<span class="sd">            *sigma_coeff*</span>
+<span class="sd">                the sigma value (multiplied by the resolution) that controls the width of the Gaussian. </span>
+<span class="sd">                Default values is 0.356.</span>
+<span class="sd">                </span>
+<span class="sd">                Other values used :</span>
+<span class="sd">                </span>
+<span class="sd">                    0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</span>
+<span class="sd">                                </span>
+<span class="sd">                    0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                                </span>
+<span class="sd">                    1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</span>
+
+<span class="sd">            *filename*</span>
+<span class="sd">                output name of the map file.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">densMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protMapBox</span><span class="p">(</span><span class="n">prot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">box_size_x</span><span class="p">,</span> <span class="n">box_size_y</span><span class="p">,</span> <span class="n">box_size_z</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">x_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">y_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">z_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">([</span><span class="n">z_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">,</span> <span class="n">x_s</span><span class="p">])</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">*=</span> <span class="mi">0</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_coeff</span><span class="o">*</span><span class="n">resolution</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_atom_overlay_map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">)</span>
+        <span class="n">fou_map</span> <span class="o">=</span> <span class="n">fourier_gaussian</span><span class="p">(</span><span class="n">fftn</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">),</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">ifftn</span><span class="p">(</span><span class="n">fou_map</span><span class="p">))</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">newMap</span>
+    
+ 
+
+     <span class="c">#add IF   </span></div>
+<div class="viewcode-block" id="StructureBlurrer.hard_sphere"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.hard_sphere">[docs]</a>    <span class="k">def</span> <span class="nf">hard_sphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prot</span><span class="p">,</span><span class="n">resolution</span><span class="p">,</span> <span class="n">densMap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;None&quot;</span><span class="p">):</span>
+             
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance based on a Hard Sphere model of a protein.</span>
+<span class="sd">        Usefull for rigid fitting (Topf et al, 2008)</span>
+
+<span class="sd">        Arguments:</span>
+
+<span class="sd">            *prot*</span>
+<span class="sd">                the Structure instance to be blurred.</span>
+<span class="sd">            *resolution*</span>
+<span class="sd">                the resolution, in Angstroms, to blur the protein to.</span>
+<span class="sd">            *densMap*</span>
+<span class="sd">                False to build a Map with dimensions based on the protein, or a Map instance to be used as a template.</span>
+<span class="sd">            *filename*</span>
+<span class="sd">                output name of the map file.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">densMap</span><span class="p">:</span>
+            <span class="n">densMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protMap</span><span class="p">(</span><span class="n">prot</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">resolution</span><span class="o">/</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="n">resolution</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&quot;WARNING: Use StructureBlurrer.hard_sphere() to create a map with a user defined defined cubic box&quot;</span>
+        <span class="n">x_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">y_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">z_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">([</span><span class="n">z_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">,</span> <span class="n">x_s</span><span class="p">])</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">*=</span> <span class="mi">0</span>
+
+        <span class="n">newMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_atom_overlay_map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">)</span>
+        <span class="c">#newMap.fullMap=newMap</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">newMap</span>
+    <span class="c">#add IF</span></div>
+<div class="viewcode-block" id="StructureBlurrer.hard_sphere_box"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.hard_sphere_box">[docs]</a>    <span class="k">def</span> <span class="nf">hard_sphere_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">box_size_x</span><span class="p">,</span> <span class="n">box_size_y</span><span class="p">,</span> <span class="n">box_size_z</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;None&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance based on a Hard Sphere model of a protein.</span>
+<span class="sd">        Usefull for rigid fitting (Topf et al, 2008)</span>
+<span class="sd">            </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *prot*</span>
+<span class="sd">                the Structure instance to be blurred.</span>
+<span class="sd">            *resolution*</span>
+<span class="sd">                the resolution, in Angstroms, to blur the protein to.</span>
+<span class="sd">            *box_size_x*</span>
+<span class="sd">                 x dimension of map box in Angstroms.</span>
+<span class="sd">            *box_size_y*</span>
+<span class="sd">                y dimension of map box in Angstroms.</span>
+<span class="sd">            *box_size_z* </span>
+<span class="sd">                z dimension of map box in Angstroms.</span>
+<span class="sd">            *filename*</span>
+<span class="sd">                output name of the map file.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">densMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protMapBox</span><span class="p">(</span><span class="n">prot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">box_size_x</span><span class="p">,</span> <span class="n">box_size_y</span><span class="p">,</span> <span class="n">box_size_z</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">x_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">y_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">z_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">([</span><span class="n">z_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">,</span> <span class="n">x_s</span><span class="p">])</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">*=</span> <span class="mi">0</span>
+
+        <span class="n">newMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_atom_overlay_map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">)</span>
+        <span class="c">#newMap.fullMap=newMap</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">newMap</span>
+
+    <span class="c">#add IF</span></div>
+<div class="viewcode-block" id="StructureBlurrer.gaussian_blur_real_space"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur_real_space">[docs]</a>    <span class="k">def</span> <span class="nf">gaussian_blur_real_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">densMap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sigma_coeff</span><span class="o">=</span><span class="mf">0.356</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;None&quot;</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance based on a Gaussian blurring of a protein.</span>
+<span class="sd">        The convolution of atomic structures is done in real space</span>
+<span class="sd">        </span>
+
+<span class="sd">        Arguments:</span>
+
+<span class="sd">            *prot*</span>
+<span class="sd">                the Structure instance to be blurred.</span>
+<span class="sd">            *resolution*</span>
+<span class="sd">                the resolution, in Angstroms, to blur the protein to.</span>
+<span class="sd">            *densMap*</span>
+<span class="sd">                False to build a Map with dimensions based on the protein, or a Map instance to be used as a template.</span>
+<span class="sd">            *sigma_coeff*</span>
+<span class="sd">                the sigma value (multiplied by the resolution) that controls the width of the Gaussian. </span>
+<span class="sd">                Default values is 0.356.</span>
+<span class="sd">                </span>
+<span class="sd">                Other values used :</span>
+<span class="sd">                </span>
+<span class="sd">                    0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</span>
+<span class="sd">                                </span>
+<span class="sd">                    0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                                </span>
+<span class="sd">                    1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</span>
+
+<span class="sd">           *filename*</span>
+<span class="sd">                output name of the map file.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">densMap</span><span class="p">:</span>
+            <span class="n">densMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protMap</span><span class="p">(</span><span class="n">prot</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">resolution</span><span class="o">/</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="n">resolution</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&quot;WARNING: Use StructureBlurrer.gaussian_blur_real_space_box() to blured a map with a user defined defined cubic box&quot;</span>
+        <span class="n">x_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">y_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">z_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">([</span><span class="n">z_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">,</span> <span class="n">x_s</span><span class="p">])</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">*=</span> <span class="mi">0</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_coeff</span><span class="o">*</span><span class="n">resolution</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_atom_overlay_map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">)</span>
+        <span class="n">gauss_map</span> <span class="o">=</span> <span class="n">gaussian_filter</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">=</span> <span class="n">gauss_map</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">newMap</span>
+</div>
+<div class="viewcode-block" id="StructureBlurrer.gaussian_blur_real_space_box"><a class="viewcode-back" href="../StructureBlurrer.html#StructureBlurrer.StructureBlurrer.gaussian_blur_real_space_box">[docs]</a>    <span class="k">def</span> <span class="nf">gaussian_blur_real_space_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">box_size_x</span><span class="p">,</span> <span class="n">box_size_y</span><span class="p">,</span> <span class="n">box_size_z</span><span class="p">,</span> <span class="n">sigma_coeff</span><span class="o">=</span><span class="mf">0.356</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;None&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a Map instance based on a Gaussian blurring of a protein.</span>
+<span class="sd">        The convolution of atomic structures is done in real space</span>
+<span class="sd">           </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *prot*</span>
+<span class="sd">                the Structure instance to be blurred.</span>
+<span class="sd">            *resolution*</span>
+<span class="sd">                the resolution, in Angstroms, to blur the protein to.</span>
+<span class="sd">            *box_size_x*</span>
+<span class="sd">                 x dimension of map box in Angstroms.</span>
+<span class="sd">            *box_size_y*</span>
+<span class="sd">                y dimension of map box in Angstroms.</span>
+<span class="sd">            *box_size_z* </span>
+<span class="sd">                z dimension of map box in Angstroms.</span>
+<span class="sd">            *sigma_coeff*</span>
+<span class="sd">                the sigma value (multiplied by the resolution) that controls the width of the Gaussian. </span>
+<span class="sd">                Default values is 0.356.</span>
+<span class="sd">                </span>
+<span class="sd">                Other values used :</span>
+<span class="sd">                </span>
+<span class="sd">                    0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                    </span>
+<span class="sd">                    0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</span>
+<span class="sd">                                </span>
+<span class="sd">                    0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                                </span>
+<span class="sd">                    1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</span>
+
+<span class="sd">            *filename*</span>
+<span class="sd">                output name of the map file.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">densMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protMapBox</span><span class="p">(</span><span class="n">prot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">box_size_x</span><span class="p">,</span> <span class="n">box_size_y</span><span class="p">,</span> <span class="n">box_size_z</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">x_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">y_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">z_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span><span class="p">()</span><span class="o">*</span><span class="n">densMap</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">([</span><span class="n">z_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">,</span> <span class="n">x_s</span><span class="p">])</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">*=</span> <span class="mi">0</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_coeff</span><span class="o">*</span><span class="n">resolution</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_atom_overlay_map</span><span class="p">(</span><span class="n">newMap</span><span class="p">,</span> <span class="n">prot</span><span class="p">)</span>
+        <span class="n">gauss_map</span> <span class="o">=</span> <span class="n">gaussian_filter</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="n">newMap</span><span class="o">.</span><span class="n">fullMap</span> <span class="o">=</span> <span class="n">gauss_map</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">resample_by_box_size</span><span class="p">(</span><span class="n">densMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">newMap</span> <span class="o">=</span> <span class="n">newMap</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">newMap</span>
+
+
+    
+    <span class="c">#---BANDPASS FILTERING (NOT WORKING YET)--- add by DV# MAKE them PRIVITA _FUNCT</span>
+    <span class="c">#way of filtering the map using &quot;Fourier-like&quot; but it is too slow so abandon the idea. there are quiker and better way</span>
+    <span class="c"># Bsoft is a better way to go. http://lsbr.niams.nih.gov/bsoft/</span>
+    <span class="c"># not spend time on it.      </span>
+        
+</div>
+    <span class="k">def</span> <span class="nf">_bandpass_blur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomList</span><span class="p">,</span> <span class="n">densMap</span><span class="p">,</span> <span class="n">lopass</span><span class="p">,</span> <span class="n">lomin</span><span class="p">,</span> <span class="n">lowid</span><span class="p">,</span> <span class="n">hipass</span><span class="p">,</span> <span class="n">hiwid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        WARNING: BANDPASS FILTERING (NOT WORKING YET)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+
+    <span class="k">def</span> <span class="nf">_bandpass_mask_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">densMap</span><span class="p">,</span> <span class="n">lopass</span><span class="p">,</span> <span class="n">lopass_min</span><span class="p">,</span> <span class="n">lowid</span><span class="p">,</span> <span class="n">hipass</span><span class="p">,</span> <span class="n">hiwid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        WARNING: BANDPASS FILTERING (NOT WORKING YET)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newMap</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="c">#self.make_empty_map(densMap)</span>
+        <span class="n">centre</span> <span class="o">=</span> <span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">[:])</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">newMap</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+                    <span class="n">dist</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">centre</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">centre</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">centre</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+                    <span class="n">newMap</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandpass_eq_gaussian</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">lopass</span><span class="p">,</span> <span class="n">lopass_min</span><span class="p">,</span> <span class="n">lowid</span><span class="p">,</span> <span class="n">hipass</span><span class="p">,</span> <span class="n">hiwid</span><span class="p">)</span>
+                    <span class="n">t3</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+                    <span class="k">print</span> <span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">,</span> <span class="n">t3</span><span class="o">-</span><span class="n">t2</span>
+        <span class="k">return</span> <span class="n">newMap</span>
+
+    <span class="k">def</span> <span class="nf">_bandpass_eq_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">lopass</span><span class="p">,</span> <span class="n">lopass_min</span><span class="p">,</span> <span class="n">lowid</span><span class="p">,</span> <span class="n">hipass</span><span class="p">,</span> <span class="n">hiwid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        WARNING: BANDPASS FILTERING (NOT WORKING YET)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lp_max</span> <span class="o">=</span> <span class="n">lopass</span><span class="o">+</span><span class="n">lowid</span>
+        <span class="n">hp_min</span> <span class="o">=</span> <span class="n">hipass</span><span class="o">-</span><span class="n">hiwid</span>
+        <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">lp_max</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lopass_min</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lopass_min</span><span class="p">)</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="p">((</span><span class="n">dist</span><span class="o">-</span><span class="n">lp_max</span><span class="p">)</span><span class="o">/</span><span class="n">lowid</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lp_max</span> <span class="o">&lt;</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">hp_min</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="p">((</span><span class="n">dist</span><span class="o">-</span><span class="n">hp_min</span><span class="p">)</span><span class="o">/</span><span class="n">hiwid</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bandpass_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lopass</span><span class="p">,</span> <span class="n">lopass_min</span><span class="p">,</span> <span class="n">lowid</span><span class="p">,</span> <span class="n">hipass</span><span class="p">,</span> <span class="n">hiwid</span><span class="p">,</span> <span class="n">l_len</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        WARNING: BANDPASS FILTERING (NOT WORKING YET)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">([</span><span class="n">l_len</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">l_len</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandpass_eq_gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lopass</span><span class="p">,</span> <span class="n">lopass_min</span><span class="p">,</span> <span class="n">lowid</span><span class="p">,</span> <span class="n">hipass</span><span class="p">,</span> <span class="n">hiwid</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="k">print</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span>
+        <span class="k">return</span> <span class="n">a</span>
+    </div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

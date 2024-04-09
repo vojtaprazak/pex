@@ -1,0 +1,90 @@
+.. TEMPy documentation master file, created by
+   sphinx-quickstart on Mon Dec  2 11:38:53 2013.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+###############################
+TEMPy documentation
+###############################
+
+TEMPy is an object-oriented Python library designed to help the user in the manipulation and analysis of
+macromolecular assemblies, especially in the context of 3D electron microscopy density maps. 
+It is designed with a set of functionalities that assess the goodness-of-fit between a given atomic model 
+and a density map or between two maps using a variety of different scoring functions. 
+It can also generate various ensembles of alternative fits, which has been shown to access one of the 
+best-fitting models. In the future, TEMPy will also include a suite of functions for density ﬁtting. 
+
+TEMPy makes use of open source python libraries including `NumPy`_ , 
+`SciPy`_ and `Biopython`_ .
+TEMPy is flexible, allowing users to build their own functions for specific purposes.
+
+For the use of plotting TEMPy uses `matplotlib`_  but this optional.
+
+.. _NumPy:
+   http://www.numpy.org/
+.. _SciPy:
+   http://www.scipy.org/
+.. _Biopython:
+   http://biopython.org/
+.. _matplotlib:
+   http://matplotlib.org/
+   
+
+Contents
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+   
+   installation
+   overview
+   StructureParser
+   ProtRep_Biopy
+   MapParser
+   StructureBlurrer
+   EMMap
+   RigidBodyParser
+   TransformParser
+   EnsembleGeneration
+   ScoringFunctions
+   Cluster
+   Consensus
+   ShowPlot
+   Vector
+
+
+Download
+==================
+
+The source code is available under the Public Licence, together with some additional documentation.
+
+Get the latest package at `download`_ 
+
+.. _download:
+   http://tempy.ismb.lon.ac.uk/download/TEMPy-1.0.tar.gz
+
+ 
+Copyright
+==================
+
+TEMPy is Copyright© 2010-2015 TEMPy Inventors and Birkbeck College University of London. 
+
+The TEMPy Inventors are Maya Topf, Daven Vasishtan, Arun Prasad Pandurangan, 
+Irene Farabella, Agnel-Praveen Joseph, Harpal Sahota
+
+
+Citation
+==================
+
+If you use TEMPy, please cite: 
+
+Vasishtan D, Topf M. (2011) J Struct Biol 174:333-343. Scoring functions for cryoEM density fitting.
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

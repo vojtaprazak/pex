@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Creates new PEET motive lists, models and a parameter file for symmetrising particles. '
+                                              'Currently only deals with C-symmetry.'))
+parser.add_argument('prmfile', help='The name of the input PEET parameter file (normally ending in .prm)')
+parser.add_argument('symm_type', help='Symmetry type. C-symmetry is given in form C<order of symmetry> ie. C5. '
+                                      'Helical symmetry given in form H<turn in degrees>_<rise in pixels>_<num of points> ie. H120_12.5_3 for a helix with pitch 120 degrees and rise of 12.5 pixels, and 3 particles per initial point.')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when symmetrising. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+parser.add_argument('--axis', nargs=3, metavar=('x','y','z'), help='The axis of of symmetry. Default is 0,1,0 (y-axis).', default=(0,1,0), type=float)
+
+args = parser.parse_args()
+
+inp = PEETPRMFile(args.prmfile)
+inp.symmetrise(args.symm_type, args.iteration, args.outdir, axis=args.axis)
+

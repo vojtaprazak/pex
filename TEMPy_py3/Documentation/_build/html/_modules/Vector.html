@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Vector &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for Vector</h1><div class="highlight"><pre>
+<span class="c">##===============================================================================</span>
+<span class="c">#     This file is part of TEMPy.</span>
+<span class="c">#     </span>
+<span class="c">#     TEMPy is a software designed to help the user in the manipulation </span>
+<span class="c">#     and analyses of macromolecular assemblies using 3D electron microscopy maps. </span>
+<span class="c">#     </span>
+<span class="c">#     Copyright 2010-2014 TEMPy Inventors and Birkbeck College University of London.</span>
+<span class="c">#                          The TEMPy Inventors are: Maya Topf, Daven Vasishtan, </span>
+<span class="c">#                           Arun Prasad Pandurangan, Irene Farabella, Agnel-Praveen Joseph,</span>
+<span class="c">#                          Harpal Sahota</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is available under Public Licence.</span>
+<span class="c">#     </span>
+<span class="c">#     Please cite your use of TEMPy in published work:</span>
+<span class="c">#     </span>
+<span class="c">#     Vasishtan D, Topf M. (2011) J Struct Biol 174:333-343. Scoring functions for cryoEM density fitting.</span>
+<span class="c">#</span>
+<span class="c">#===============================================================================</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span><span class="n">matrix</span><span class="p">,</span><span class="n">random</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span><span class="n">sin</span><span class="p">,</span><span class="n">pi</span><span class="p">,</span><span class="n">acos</span><span class="p">,</span><span class="n">asin</span><span class="p">,</span> <span class="n">atan2</span>
+
+<div class="viewcode-block" id="Vector"><a class="viewcode-back" href="../Vector.html#Vector.Vector">[docs]</a><span class="k">class</span> <span class="nc">Vector</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class representing Cartesian 3-dimensonal vectors.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;x, y, z = Cartesian co-ordinates of vector.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
+        
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;(</span><span class="si">%.3f</span><span class="s">,</span><span class="si">%.3f</span><span class="s">,</span><span class="si">%.3f</span><span class="s">)&quot;</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">l</span><span class="o">.</span><span class="n">__iter__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Vector.copy"><a class="viewcode-back" href="../Vector.html#Vector.Vector.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return:</span>
+<span class="sd">            A copy of Vector instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Vector.mod"><a class="viewcode-back" href="../Vector.html#Vector.Vector.mod">[docs]</a>    <span class="k">def</span> <span class="nf">mod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return:</span>
+<span class="sd">            The modulus (length) of the vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Vector.reverse"><a class="viewcode-back" href="../Vector.html#Vector.Vector.reverse">[docs]</a>    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Flip the direction of a Vector instance.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">          A Vector instance  </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Vector.arg"><a class="viewcode-back" href="../Vector.html#Vector.Vector.arg">[docs]</a>    <span class="k">def</span> <span class="nf">arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the argument (angle) between this and another vector.RAD&quot;&quot;&quot;</span>
+        <span class="n">top</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="p">()</span><span class="o">*</span><span class="n">vector</span><span class="o">.</span><span class="n">mod</span><span class="p">()</span>
+        <span class="c">#print &#39;top/bottom, top, bottom &#39;, top/bottom, top, bottom</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">top</span><span class="o">-</span><span class="n">bottom</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.00001</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c">#print &#39;top/bottom, top, bottom &#39;, top/bottom, top, bottom</span>
+            <span class="c">#return acos(top/bottom)</span>
+            <span class="k">return</span> <span class="n">acos</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">top</span><span class="o">/</span><span class="n">bottom</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">),</span><span class="mf">1.0</span><span class="p">))</span>
+    </div>
+<div class="viewcode-block" id="Vector.times"><a class="viewcode-back" href="../Vector.html#Vector.Vector.times">[docs]</a>    <span class="k">def</span> <span class="nf">times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multiplies a Vector instance by a scalar factor.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">          A Vector instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">factor</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">factor</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">factor</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Vector.dot"><a class="viewcode-back" href="../Vector.html#Vector.Vector.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return:</span>
+<span class="sd">            The dot product of this and another vector specified as input parameter. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">vector</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">vector</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">vector</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+    </div>
+<div class="viewcode-block" id="Vector.cross"><a class="viewcode-back" href="../Vector.html#Vector.Vector.cross">[docs]</a>    <span class="k">def</span> <span class="nf">cross</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return:</span>
+<span class="sd">            A Vector instance of the cross product of this and another vector specified as input parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">vector</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">*</span><span class="n">vector</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">newY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">*</span><span class="n">vector</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="n">vector</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">newZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="n">vector</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">vector</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">newX</span><span class="p">,</span> <span class="n">newY</span><span class="p">,</span> <span class="n">newZ</span><span class="p">)</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a Vector instance of the subtraction of a vector from this one.&quot;&quot;&quot;</span>
+        <span class="n">newX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">vector</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">newY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">vector</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">newZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">vector</span><span class="o">.</span><span class="n">z</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">newX</span><span class="p">,</span> <span class="n">newY</span><span class="p">,</span> <span class="n">newZ</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Vector.dist"><a class="viewcode-back" href="../Vector.html#Vector.Vector.dist">[docs]</a>    <span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return:</span>
+<span class="sd">            The distance between this and another vector specified as input parameter. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">-</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">mod</span><span class="p">()</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a Vector instance of the addition of a vector from this one.&quot;&quot;&quot;</span>
+        <span class="n">newX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">vector</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">newY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">vector</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">newZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">+</span> <span class="n">vector</span><span class="o">.</span><span class="n">z</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">newX</span><span class="p">,</span> <span class="n">newY</span><span class="p">,</span> <span class="n">newZ</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prod</span><span class="p">):</span>
+        <span class="n">newX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="n">prod</span>
+        <span class="n">newY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">prod</span>
+        <span class="n">newZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">*</span><span class="n">prod</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">newX</span><span class="p">,</span> <span class="n">newY</span><span class="p">,</span> <span class="n">newZ</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">divisor</span><span class="p">):</span>
+        <span class="n">newX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">divisor</span><span class="p">)</span>
+        <span class="n">newY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">divisor</span><span class="p">)</span>
+        <span class="n">newZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">divisor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">newX</span><span class="p">,</span> <span class="n">newY</span><span class="p">,</span> <span class="n">newZ</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Vector.translate"><a class="viewcode-back" href="../Vector.html#Vector.Vector.translate">[docs]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Translate a Vector instance.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *x, y, z*</span>
+<span class="sd">                distance in Angstroms in respective Cartesian directions to translate vector.</span>
+<span class="sd">                </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Vector instance.    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span>
+        <span class="n">newY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">y</span>
+        <span class="n">newZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">+</span> <span class="n">z</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">newX</span><span class="p">,</span> <span class="n">newY</span><span class="p">,</span> <span class="n">newZ</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Vector.matrix_transform"><a class="viewcode-back" href="../Vector.html#Vector.Vector.matrix_transform">[docs]</a>    <span class="k">def</span> <span class="nf">matrix_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot_mat</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform the vector using a transformation matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *rot_mat*</span>
+<span class="sd">                a 3x3 Python matrix instance.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            A vector instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vec_mat</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">],[</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">],[</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]])</span>
+        <span class="n">new_pos</span> <span class="o">=</span> <span class="n">rot_mat</span><span class="o">*</span><span class="n">vec_mat</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Vector.to_atom"><a class="viewcode-back" href="../Vector.html#Vector.Vector.to_atom">[docs]</a>    <span class="k">def</span> <span class="nf">to_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an Atom instance based on Vector instance.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Atom instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">ProtRep_Biopy</span> <span class="kn">import</span> <span class="n">BioPyAtom</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="s">&#39;ATOM      1  C   NOR A   1      23.161  39.732 -25.038  1.00 10.00             C&#39;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">BioPyAtom</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="k">return</span> <span class="n">a</span>
+    </div>
+<div class="viewcode-block" id="Vector.unit"><a class="viewcode-back" href="../Vector.html#Vector.Vector.unit">[docs]</a>    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return:</span>
+<span class="sd">            Vector instance of a unit vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mod</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="n">mod</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="n">mod</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">/</span><span class="n">mod</span><span class="p">)</span>
+
+<span class="c">###########################################################################</span>
+<span class="c">###########################################################################</span>
+<span class="c">###########################################################################</span>
+<span class="c">#### def out of the class . </span>
+<span class="c">#### better have them separate as these definition are an adaptation of </span>
+<span class="c">#### Transformations Python Module from Christoph Gohlke</span>
+<span class="c">#### http://www.lfd.uci.edu/~gohlke/</span>
+<span class="c">#### http://www.lfd.uci.edu/~gohlke/code/transformations.py.html</span>
+<span class="c">###########################################################################</span>
+<span class="c">###########################################################################</span>
+<span class="c">###########################################################################</span>
+   </div></div>
+<div class="viewcode-block" id="random_vector"><a class="viewcode-back" href="../Vector.html#Vector.random_vector">[docs]</a><span class="k">def</span> <span class="nf">random_vector</span><span class="p">(</span><span class="n">min_v</span><span class="p">,</span> <span class="n">max_v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a random vector.</span>
+<span class="sd">    The values for the vector component x, y, and z are randomly sampled between minimum and maximum values specified.</span>
+<span class="sd">    </span>
+<span class="sd">    Argument:</span>
+<span class="sd">        *min_v, max_v*</span>
+<span class="sd">            minimum and maximum value</span>
+<span class="sd">    Return:</span>
+<span class="sd">        A Vector instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_v</span><span class="p">,</span> <span class="n">max_v</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_v</span><span class="p">,</span> <span class="n">max_v</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_v</span><span class="p">,</span> <span class="n">max_v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="axis_angle_to_matrix"><a class="viewcode-back" href="../Vector.html#Vector.axis_angle_to_matrix">[docs]</a><span class="k">def</span> <span class="nf">axis_angle_to_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">turn</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the axis angle rotation to a matrix form.</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">       *x, y, z*</span>
+<span class="sd">           axis of rotation (does not need to be normalised).</span>
+<span class="sd">       *turn*</span>
+<span class="sd">           angle of rotation, in radians if rad=True, else in degrees.</span>
+<span class="sd">    Return:</span>
+<span class="sd">        A 3X3 transformation matrix.   </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rad</span><span class="p">:</span>
+        <span class="n">turn</span> <span class="o">=</span> <span class="n">turn</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+    <span class="n">c_a</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">turn</span><span class="p">)</span>
+    <span class="n">s_a</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">turn</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">z</span>
+
+    <span class="n">rot_mat</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">([[</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">c_a</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c_a</span><span class="p">)</span><span class="o">-</span><span class="n">z</span><span class="o">*</span><span class="n">s_a</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c_a</span><span class="p">)</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">s_a</span><span class="p">],</span>
+                          <span class="p">[</span> <span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c_a</span><span class="p">)</span><span class="o">+</span><span class="n">z</span><span class="o">*</span><span class="n">s_a</span><span class="p">,</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">c_a</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c_a</span><span class="p">)</span><span class="o">-</span><span class="n">x</span><span class="o">*</span><span class="n">s_a</span><span class="p">],</span>
+                          <span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c_a</span><span class="p">)</span><span class="o">-</span><span class="n">y</span><span class="o">*</span><span class="n">s_a</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c_a</span><span class="p">)</span><span class="o">+</span><span class="n">x</span><span class="o">*</span><span class="n">s_a</span><span class="p">,</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">c_a</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">rot_mat</span>
+</div>
+<div class="viewcode-block" id="euler_to_matrix"><a class="viewcode-back" href="../Vector.html#Vector.euler_to_matrix">[docs]</a><span class="k">def</span> <span class="nf">euler_to_matrix</span><span class="p">(</span><span class="n">x_turn</span><span class="p">,</span> <span class="n">y_turn</span><span class="p">,</span> <span class="n">z_turn</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an euler rotation to a matrix form.</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">       *x_turn, y_turn, z_turn*</span>
+<span class="sd">           rotation angles around respective axis, in radians if rad=True, else in degrees.</span>
+<span class="sd">    Return:</span>
+<span class="sd">        A 3X3 transformation matrix.   </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rad</span><span class="p">:</span>
+        <span class="n">x_turn</span> <span class="o">=</span> <span class="n">x_turn</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+        <span class="n">y_turn</span> <span class="o">=</span> <span class="n">y_turn</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+        <span class="n">z_turn</span> <span class="o">=</span> <span class="n">z_turn</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+    <span class="n">x_mat</span> <span class="o">=</span> <span class="n">axis_angle_to_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">x_turn</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">y_mat</span> <span class="o">=</span> <span class="n">axis_angle_to_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">y_turn</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">z_mat</span> <span class="o">=</span> <span class="n">axis_angle_to_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">z_turn</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_mat</span><span class="o">*</span><span class="n">y_mat</span><span class="o">*</span><span class="n">z_mat</span>
+</div>
+<div class="viewcode-block" id="axis_angle_to_euler"><a class="viewcode-back" href="../Vector.html#Vector.axis_angle_to_euler">[docs]</a><span class="k">def</span> <span class="nf">axis_angle_to_euler</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span> <span class="n">turn</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the axis angle rotation to an Euler form.</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">       *x, y, z*</span>
+<span class="sd">           axis of rotation (does not need to be normalised).</span>
+<span class="sd">       *turn*</span>
+<span class="sd">           angle of rotation, in radians if rad=True, else in degrees.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A 3-tuple (x,y,z) containing the Euler angles. .</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rad</span><span class="p">:</span>
+        <span class="n">turn</span> <span class="o">=</span> <span class="n">turn</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+    <span class="n">z_rot</span> <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">turn</span><span class="p">)</span><span class="o">-</span><span class="n">x</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cos</span><span class="p">(</span><span class="n">turn</span><span class="p">)),</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cos</span><span class="p">(</span><span class="n">turn</span><span class="p">)))</span>
+    <span class="n">x_rot</span> <span class="o">=</span> <span class="n">asin</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cos</span><span class="p">(</span><span class="n">turn</span><span class="p">))</span><span class="o">+</span><span class="n">z</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">turn</span><span class="p">))</span>
+    <span class="n">y_rot</span> <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">turn</span><span class="p">)</span><span class="o">-</span><span class="n">y</span><span class="o">*</span><span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cos</span><span class="p">(</span><span class="n">turn</span><span class="p">)),</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">cos</span><span class="p">(</span><span class="n">turn</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x_rot</span><span class="p">,</span> <span class="n">y_rot</span><span class="p">,</span> <span class="n">z_rot</span><span class="p">)</span>
+
+<span class="c"># -- Vector methods for torsion angle geometry -- #</span>
+
+
+</div>
+<div class="viewcode-block" id="torsion"><a class="viewcode-back" href="../Vector.html#Vector.torsion">[docs]</a><span class="k">def</span> <span class="nf">torsion</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the torsion angle between planes ab and bc.</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">        *a,b,c*</span>
+<span class="sd">            Vector instances.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The torsion angle in radians</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n1</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">n1</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="n">n2</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="altTorsion"><a class="viewcode-back" href="../Vector.html#Vector.altTorsion">[docs]</a><span class="k">def</span> <span class="nf">altTorsion</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An alternate and better way to find the torsion angle between planes ab and bc.</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        *a,b,c*</span>
+<span class="sd">            Vector instances.</span>
+<span class="sd">    Return:</span>
+<span class="sd">        The torsion angle (radians)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">c</span><span class="p">))</span><span class="o">*</span><span class="n">b</span><span class="o">.</span><span class="n">mod</span><span class="p">()</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">atan2</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

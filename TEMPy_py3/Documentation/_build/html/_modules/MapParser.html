@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MapParser &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for MapParser</h1><div class="highlight"><pre>
+<span class="c">#===============================================================================</span>
+<span class="c">#     This file is part of TEMPy.</span>
+<span class="c">#     </span>
+<span class="c">#     TEMPy is a software designed to help the user in the manipulation </span>
+<span class="c">#     and analyses of macromolecular assemblies using 3D electron microscopy maps. </span>
+<span class="c">#     </span>
+<span class="c">#     Copyright 2010-2014 TEMPy Inventors and Birkbeck College University of London.</span>
+<span class="c">#                          The TEMPy Inventors are: Maya Topf, Daven Vasishtan, </span>
+<span class="c">#                           Arun Prasad Pandurangan, Irene Farabella, Agnel-Praveen Joseph,</span>
+<span class="c">#                          Harpal Sahota</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is available under Public Licence.</span>
+<span class="c">#     </span>
+<span class="c">#     Please cite your use of TEMPy in published work:</span>
+<span class="c">#     </span>
+<span class="c">#     Vasishtan D, Topf M. (2011) J Struct Biol 174:333-343. Scoring functions for cryoEM density fitting.</span>
+<span class="c">#</span>
+<span class="c">#===============================================================================</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">fromfile</span><span class="p">,</span> <span class="n">flipud</span><span class="p">,</span><span class="n">isnan</span>
+<span class="kn">import</span> <span class="nn">struct</span> <span class="kn">as</span> <span class="nn">binary</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">TEMPy.EMMap</span> <span class="kn">import</span> <span class="n">Map</span>
+
+<div class="viewcode-block" id="MapParser"><a class="viewcode-back" href="../MapParser.html#MapParser.MapParser">[docs]</a><span class="k">class</span> <span class="nc">MapParser</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to read various EM map file types into a Map object instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">## mapping of numpy type to MRC mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numpy2mrc</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="c">## convert these to int8</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+
+            <span class="c">## convert these to int16</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">int16</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+
+            <span class="c">## convert these to float32</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">int</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+
+            <span class="c">## convert these to complex64</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">complex</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">complex64</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">complex128</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+
+            <span class="c">## convert these to uint16</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">uint16</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MapParser.readMRCHeader"><a class="viewcode-back" href="../MapParser.html#MapParser.MapParser.readMRCHeader">[docs]</a>    <span class="k">def</span> <span class="nf">readMRCHeader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">endian</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the header information from the MRC map file. </span>
+<span class="sd">        </span>
+<span class="sd">        Argument</span>
+<span class="sd">           *filename*</span>
+<span class="sd">               input MRC map file name</span>
+<span class="sd">            *endian*</span>
+<span class="sd">                </span>
+<span class="sd">        Return:</span>
+<span class="sd">           A string containing the MRC header information.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="n">fm_string</span> <span class="o">=</span> <span class="n">endian</span><span class="o">+</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="s">&#39;l&#39;</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="s">&#39;f&#39;</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="s">&#39;l&#39;</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="s">&#39;f&#39;</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">27</span><span class="o">*</span><span class="s">&#39;l&#39;</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="s">&#39;f&#39;</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="s">&#39;c&#39;</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;lfl&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">binary</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">fm_string</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">224</span><span class="p">)))</span>
+        <span class="n">notes</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">800</span><span class="p">)</span>
+        <span class="n">notes</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">notes</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">notes</span><span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">header</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MapParser.get_endian"><a class="viewcode-back" href="../MapParser.html#MapParser.MapParser.get_endian">[docs]</a>    <span class="k">def</span> <span class="nf">get_endian</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">MapParser</span><span class="o">.</span><span class="n">readMRCHeader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">endian</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">endian</span> <span class="o">=</span> <span class="s">&#39;&gt;&#39;</span>
+        <span class="k">return</span> <span class="n">endian</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MapParser.readMRC"><a class="viewcode-back" href="../MapParser.html#MapParser.MapParser.readMRC">[docs]</a>    <span class="k">def</span> <span class="nf">readMRC</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read an MRC map file</span>
+<span class="sd">           </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *filename* </span>
+<span class="sd">                input MRC map file name.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">           A Map instance containing the data read from MRC map file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">mrc2numpy</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">0</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="c">#    3:  complex made of two int16.  No such thing in numpy</span>
+            <span class="c">#   however, we could manually build a complex array by reading two</span>
+            <span class="c">#   int16 arrays somehow.</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span>
+            <span class="mi">6</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">uint16</span><span class="p">,</span>    <span class="c"># according to UCSF</span>
+        <span class="p">}</span>
+
+        <span class="n">endian</span> <span class="o">=</span> <span class="n">MapParser</span><span class="o">.</span><span class="n">get_endian</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">MapParser</span><span class="o">.</span><span class="n">readMRCHeader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">endian</span><span class="p">)</span>
+
+        <span class="n">box_size</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">flipud</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">52</span><span class="p">]</span> <span class="c">#ctrl UCSF</span>
+
+        <span class="c"># READ ORIGIN BASED ON MRC2000/CCP4 format</span>
+        <span class="n">nstart_index</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+        <span class="n">apix</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">/</span><span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">nstart</span> <span class="o">=</span> <span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">apix</span><span class="p">),</span><span class="n">header</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">apix</span><span class="p">),</span><span class="n">header</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">apix</span><span class="p">))</span>
+        <span class="n">crs_index</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">19</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">1</span> <span class="ow">in</span> <span class="p">(</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="mi">2</span> <span class="ow">in</span> <span class="p">(</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="mi">3</span> <span class="ow">in</span> <span class="p">(</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">2</span><span class="p">])):</span>
+                <span class="n">crs_index</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c">#print &#39;Axis order: &#39;, crs_index</span>
+        <span class="c">#print &#39;Nstart&#39;, nstart_index[crs_index[0]-1],nstart_index[crs_index[1]-1],nstart_index[crs_index[2]-1]</span>
+
+	<span class="n">flag_orig</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">list_orig</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">header</span><span class="p">[</span><span class="mi">52</span><span class="p">:</span><span class="mi">56</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="s">&#39;M&#39;</span><span class="p">,</span><span class="s">&#39;A&#39;</span><span class="p">,</span><span class="s">&#39;P&#39;</span><span class="p">,</span><span class="s">&#39; &#39;</span><span class="p">):</span>
+                        <span class="c">#print &#39;MAP flag found (MRC2000)&#39;</span>
+                        <span class="n">origin</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">52</span><span class="p">]</span>
+                        <span class="c">#print &#39;Origin record: &#39;, origin</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">isnan</span><span class="p">(</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">isnan</span><span class="p">(</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="n">isnan</span><span class="p">(</span><span class="n">origin</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">origin</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
+                                <span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                                <span class="c">#print &#39;ORIGIN record empty, Checking NSTART records&#39;</span>
+                                <span class="n">flag_orig</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">flag_orig</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">flag_orig</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">nstart</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">nstart</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">nstart</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">isnan</span><span class="p">(</span><span class="n">nstart</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">isnan</span><span class="p">(</span><span class="n">nstart</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="n">isnan</span><span class="p">(</span><span class="n">nstart</span><span class="p">[</span><span class="mi">2</span><span class="p">])):</span>
+                        <span class="c">#print &#39;NSTART records empty&#39;</span>
+                        <span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">list_orig</span><span class="p">[</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">nstart</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">list_orig</span><span class="p">[</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">nstart</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">list_orig</span><span class="p">[</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">nstart</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="n">list_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">list_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">list_orig</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        if (nstart[0] == 0 and nstart[1] == 0 and nstart[2] == 0) or (isnan(nstart[0]) or isnan(nstart[1]) or isnan(nstart[2])):</span>
+<span class="sd">                origin = (0.0, 0.0, 0.0)</span>
+<span class="sd">                #print &#39;NSTART records empty, Checking ORIGIN records...&#39;</span>
+<span class="sd">                try:</span>
+<span class="sd">                        if header[52:56] == (&#39;M&#39;,&#39;A&#39;,&#39;P&#39;,&#39; &#39;):</span>
+<span class="sd">                                #print &#39;MAP flag found (MRC2000)&#39;</span>
+<span class="sd">                                origin = header[49:52]</span>
+<span class="sd">                                #print &#39;Origin record: &#39;, origin</span>
+<span class="sd">                                if (isnan(origin[0]) or isnan(origin[1]) or isnan(origin[2])) or (origin[0] == 0.0 and origin[1] == 0.0 and origin[2] == 0.0):</span>
+<span class="sd">                                        origin = (0.0, 0.0, 0.0)</span>
+<span class="sd">                except IndexError: pass</span>
+<span class="sd">        else:</span>
+<span class="sd">                list_orig[crs_index[0]-1] = nstart[0]</span>
+<span class="sd">                list_orig[crs_index[1]-1] = nstart[1]</span>
+<span class="sd">                list_orig[crs_index[2]-1] = nstart[2]</span>
+<span class="sd">                origin = (list_orig[0],list_orig[1],list_orig[2])</span>
+
+<span class="sd">        #print &#39;Map Origin is: &#39;, origin</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+        <span class="n">map_size</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">header</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+        <span class="n">map_data</span> <span class="o">=</span> <span class="n">fromfile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mrc2numpy</span><span class="p">[</span><span class="n">header</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="n">count</span><span class="o">=</span><span class="n">map_size</span><span class="p">)</span>
+        <span class="c">### Swap bytes for endian</span>
+        <span class="k">if</span> <span class="n">endian</span> <span class="o">==</span> <span class="s">&#39;&gt;&#39;</span><span class="p">:</span>
+            <span class="c">#print &#39;Byte order swapped!&#39;</span>
+            <span class="n">map_data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">map_data</span><span class="o">=</span><span class="n">map_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">box_size</span><span class="p">)</span>
+        <span class="n">map_data</span><span class="o">=</span><span class="n">array</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+
+	<span class="c">### Check crs to xyz match</span>
+        <span class="k">if</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">crs_index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="c">#print &#39;Map axis permuted!!&#39;</span>
+                <span class="c">#crs to xyz</span>
+                <span class="n">list_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">crs_index</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c">#xyz to crs</span>
+                <span class="n">index_new</span> <span class="o">=</span> <span class="p">(</span><span class="n">list_ind</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">list_ind</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">list_ind</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="c">#rearrange</span>
+                <span class="n">index_new1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="n">index_new</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="n">a</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)]</span>
+                <span class="n">map_data</span><span class="o">=</span><span class="n">transpose</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span><span class="n">index_new1</span><span class="p">)</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">apix</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+
+    <span class="c">#BROKEN</span></div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MapParser.readXPLOR"><a class="viewcode-back" href="../MapParser.html#MapParser.MapParser.readXPLOR">[docs]</a>    <span class="k">def</span> <span class="nf">readXPLOR</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">user_origin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">user_box_size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read density map file in XPLOR format</span>
+<span class="sd">        NOTE: broken.</span>
+<span class="sd">        </span>
+<span class="sd">        Argument:</span>
+<span class="sd">           *filename*</span>
+<span class="sd">               input XPLOR map file name.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">           A Map instance containing the data read from XPLOR map file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="c">#print l</span>
+            <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;0&#39;</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="n">new_map</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">dens</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">new_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dens</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_map</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">new_map</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">new_map</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">new_map</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                <span class="k">break</span>
+        <span class="n">new_map</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">new_map</span><span class="p">)</span>
+        <span class="n">new_map</span> <span class="o">=</span> <span class="n">new_map</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">new_map</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">new_map</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">new_map</span><span class="o">.</span><span class="n">box_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">new_map</span><span class="p">,</span> <span class="n">new_map</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">new_map</span><span class="o">.</span><span class="n">box_size</span><span class="p">,</span> <span class="n">new_map</span><span class="o">.</span><span class="n">apix</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MapParser.readSitus"><a class="viewcode-back" href="../MapParser.html#MapParser.MapParser.readSitus">[docs]</a>    <span class="k">def</span> <span class="nf">readSitus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read density map file in Situs format</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">           *filename*</span>
+<span class="sd">               input Situs map file name.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            A Map instance containing the data read from Situs map file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">first_line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">apix</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">first_line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">first_line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">box_size</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">first_line</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
+        <span class="n">new_map</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">dens</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">new_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dens</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_map</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">box_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">box_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">box_size</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                <span class="k">break</span>
+        <span class="n">new_map</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">new_map</span><span class="p">)</span>
+        <span class="n">new_map</span> <span class="o">=</span> <span class="n">new_map</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">box_size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">box_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">box_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">new_map</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">box_size</span><span class="p">,</span> <span class="n">apix</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

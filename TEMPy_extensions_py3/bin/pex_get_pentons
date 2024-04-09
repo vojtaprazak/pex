@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETPRMParser import PEETPRMFile
+      
+parser = argparse.ArgumentParser(description=('Create models and motive lists for averaging and aligning the pentons from a viral capsid. You first need to run '
+                                              'a PEET alignment and get an average of the whole virus capsid in one of the standard icosahedral orientations.'))
+parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm) that corresponds to your virus alignment run.')
+parser.add_argument('diameter', type=float, help='Diameter, in pixels, of the virus capsid.')
+parser.add_argument('iteration', type=int, help='Number value, the iteration to use when getting pentons. 0 refers to the initial input files.')
+parser.add_argument('outdir', help='Directory to output new motive lists and model files. Automatically creates directory if it does not exist')
+parser.add_argument('orientation', help='Orientation of the virus particle. Available options are i1, i2, i3 and i4.')
+parser.add_argument('--no_prm', help='Turn off writing out an accompanying parameter file.', action="store_true")
+
+
+args = parser.parse_args()
+
+writeprm = not args.no_prm
+
+if args.diameter == 0:
+    diameter = 0.0001
+else:
+    diameter = args.diameter
+
+inp = PEETPRMFile(args.prmfile)
+inp.get_pentons(args.iteration, diameter, args.outdir, orient=args.orientation, writeprm=writeprm)
+

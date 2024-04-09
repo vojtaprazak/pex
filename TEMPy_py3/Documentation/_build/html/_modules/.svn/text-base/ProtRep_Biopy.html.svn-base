@@ -1,0 +1,1403 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ProtRep_Biopy &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ProtRep_Biopy</h1><div class="highlight"><pre>
+<span class="c">#===============================================================================</span>
+<span class="c">#     This file is part of TEMPy.</span>
+<span class="c">#     </span>
+<span class="c">#     TEMPy is a free software designed to help the user in the manipulation </span>
+<span class="c">#     and analyses of macromolecular assemblies using 3D electron microscopy maps. </span>
+<span class="c">#     </span>
+<span class="c">#     Copyright (C) 2013 Irene Farabella, Daven Vasishtan, Arun Prasad Pandurangan, </span>
+<span class="c">#                        Agnel-Praveen Joseph, Harpal Sahota and Maya Topf.</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is free software: you can redistribute it and/or modify</span>
+<span class="c">#     it under the terms of the GNU General Public License as published by</span>
+<span class="c">#     the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#     (at your option) any later version.</span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is distributed in the hope that it will be useful,</span>
+<span class="c">#     but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#     GNU General Public License for more details.</span>
+<span class="c"># </span>
+<span class="c">#     You should have received a copy of the GNU General Public License</span>
+<span class="c">#     along with TEMPy.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#     </span>
+<span class="c">#     Please cite your use of TEMPy in published work:</span>
+<span class="c"># </span>
+<span class="c">#     I. Farabella ,D.Vasishtan, A. P. Pandurangan, H. Sahota and M. Topf .</span>
+<span class="c">#     TEMPy: Tool for Scoring and Assessment into 3D EM Maps using Python </span>
+<span class="c">#     XXXXX</span>
+<span class="c">#===============================================================================</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span><span class="p">,</span><span class="n">array</span><span class="p">,</span><span class="n">append</span><span class="p">,</span><span class="n">matrix</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randrange</span>
+<span class="kn">import</span> <span class="nn">TEMPy.Vector</span> <span class="kn">as</span> <span class="nn">Vector</span>
+
+
+<span class="c"># Useful global constants</span>
+<span class="n">alphabet</span> <span class="o">=</span> <span class="s">&#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ12345676890abcdefghijklmnopqrstuvwxyz&#39;</span>
+<span class="n">atomicMasses</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;H&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span> <span class="s">&#39;O&#39;</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">:</span><span class="mi">32</span><span class="p">}</span>
+<span class="n">vdw_radii</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;H&#39;</span><span class="p">:</span><span class="mf">1.09</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">:</span> <span class="mf">1.7</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">:</span><span class="mf">1.55</span><span class="p">,</span> <span class="s">&#39;O&#39;</span><span class="p">:</span><span class="mf">1.52</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">:</span><span class="mf">1.8</span><span class="p">}</span> <span class="c"># Taken from http://www.ccdc.cam.ac.uk/products/csd/radii/table.php4</span>
+<span class="n">sequenceConsts</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;GLY&#39;</span><span class="p">:</span><span class="s">&#39;G&#39;</span><span class="p">,</span> <span class="s">&#39;ALA&#39;</span><span class="p">:</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;VAL&#39;</span><span class="p">:</span><span class="s">&#39;V&#39;</span><span class="p">,</span> <span class="s">&#39;LEU&#39;</span><span class="p">:</span><span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="s">&#39;ILE&#39;</span><span class="p">:</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;MET&#39;</span><span class="p">:</span><span class="s">&#39;M&#39;</span><span class="p">,</span> <span class="s">&#39;PHE&#39;</span><span class="p">:</span><span class="s">&#39;F&#39;</span><span class="p">,</span> <span class="s">&#39;TRP&#39;</span><span class="p">:</span><span class="s">&#39;W&#39;</span><span class="p">,</span>\
+                  <span class="s">&#39;PRO&#39;</span><span class="p">:</span><span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="s">&#39;SER&#39;</span><span class="p">:</span><span class="s">&#39;S&#39;</span><span class="p">,</span> <span class="s">&#39;THR&#39;</span><span class="p">:</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;CYS&#39;</span><span class="p">:</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;TYR&#39;</span><span class="p">:</span><span class="s">&#39;Y&#39;</span><span class="p">,</span> <span class="s">&#39;ASN&#39;</span><span class="p">:</span><span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;GLN&#39;</span><span class="p">:</span><span class="s">&#39;Q&#39;</span><span class="p">,</span> <span class="s">&#39;ASP&#39;</span><span class="p">:</span><span class="s">&#39;D&#39;</span><span class="p">,</span>\
+                  <span class="s">&#39;GLU&#39;</span><span class="p">:</span><span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;LYS&#39;</span><span class="p">:</span><span class="s">&#39;K&#39;</span><span class="p">,</span> <span class="s">&#39;ARG&#39;</span><span class="p">:</span><span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="s">&#39;HIS&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">}</span>
+<span class="n">root2Pi</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+<span class="n">aa_mass</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;A&#39;</span><span class="p">:</span><span class="mf">71.0788</span><span class="p">,</span><span class="s">&#39;R&#39;</span><span class="p">:</span><span class="mf">156.1875</span><span class="p">,</span><span class="s">&#39;N&#39;</span><span class="p">:</span><span class="mf">114.1038</span><span class="p">,</span><span class="s">&#39;D&#39;</span><span class="p">:</span><span class="mf">115.0886</span><span class="p">,</span><span class="s">&#39;C&#39;</span><span class="p">:</span><span class="mf">103.1388</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">:</span><span class="mf">129.1155</span><span class="p">,</span><span class="s">&#39;Q&#39;</span><span class="p">:</span><span class="mf">128.1307</span><span class="p">,</span><span class="s">&#39;G&#39;</span><span class="p">:</span><span class="mf">57.0519</span><span class="p">,</span><span class="s">&#39;H&#39;</span><span class="p">:</span><span class="mf">137.1411</span><span class="p">,</span><span class="s">&#39;I&#39;</span><span class="p">:</span><span class="mf">113.1594</span><span class="p">,</span><span class="s">&#39;L&#39;</span><span class="p">:</span><span class="mf">113.1594</span><span class="p">,</span><span class="s">&#39;K&#39;</span><span class="p">:</span><span class="mf">128.1741</span><span class="p">,</span><span class="s">&#39;M&#39;</span><span class="p">:</span><span class="mf">131.1926</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">:</span><span class="mf">147.1766</span><span class="p">,</span><span class="s">&#39;P&#39;</span><span class="p">:</span><span class="mf">97.1167</span><span class="p">,</span><span class="s">&#39;S&#39;</span><span class="p">:</span><span class="mf">87.0782</span><span class="p">,</span><span class="s">&#39;T&#39;</span><span class="p">:</span><span class="mf">101.1051</span><span class="p">,</span><span class="s">&#39;W&#39;</span><span class="p">:</span><span class="mf">186.2132</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">:</span><span class="mf">163.1760</span><span class="p">,</span><span class="s">&#39;V&#39;</span><span class="p">:</span><span class="mf">99.1326</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="BioPyAtom"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom">[docs]</a><span class="k">class</span> <span class="nc">BioPyAtom</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    A class representing an atom, as read from a PDB file using Biopython.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Atom from BioPython&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">return</span>
+
+        <span class="c">#http://deposit.rcsb.org/adit/docs/pdb_atom_format.html</span>
+        <span class="c">#print &quot;bioatom&quot;,atom#&#39;bioatom &lt;Atom O&gt;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_name</span> <span class="o">=</span> <span class="s">&quot;ATOM&quot;</span> <span class="c"># was pdbString[:6].strip() as &quot;ATOM&quot;</span>
+<span class="c">#             res.id[0] == &quot;W&quot; or res.id[0][0]==&quot;H&quot;: #skip water and hetero residues</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_serial_number</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom_name</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alt_loc</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_altloc</span><span class="p">()</span> <span class="c">#Return alternative location specifier.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fullid</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">get_full_id</span><span class="p">()</span>
+        <span class="c">#(&#39;3ukr_test&#39;, 0, &#39;G&#39;, (&#39; &#39;, 113, &#39; &#39;), (&#39;CA&#39;, &#39; &#39;))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span><span class="o">.</span><span class="n">get_resname</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_full_id</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fullid</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icode</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">is_disordered</span><span class="p">()</span> <span class="c"># 1 if the residue has disordered atoms</span>
+<span class="c">#            self.icode = pdbString[26].strip()#code for insertion residues</span>
+<span class="c">#             # Starting co-ordinates of atom.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_x</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_y</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_z</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+<span class="c">#             # Current co-ordinates of atom.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
+<span class="c">#             </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_occupancy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_fac</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_bfactor</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elem</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_element</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">elem</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="o">=</span><span class="s">&quot;&quot;</span>  
+            <span class="c">#Mass of atom as given by atomicMasses global constant. Defaults to 1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">atomicMasses</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom_name</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="c">#             # True if atom is the terminal of a chain. Automatically false until modified.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isTerm</span> <span class="o">=</span> <span class="bp">False</span>
+    
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;(&#39;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_res</span><span class="p">()</span> <span class="o">+</span><span class="s">&#39; &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_no</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; &#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">+</span> <span class="s">&#39;: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span>
+
+
+<div class="viewcode-block" id="BioPyAtom.copy"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Copy of the Atom instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="n">BioPyAtom</span><span class="p">([])</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">record_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_name</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">atom_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_name</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">alt_loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt_loc</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">res_no</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_no</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">icode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">icode</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">init_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_x</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">init_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_y</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">init_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_z</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">occ</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">temp_fac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_fac</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">elem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elem</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">isTerm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isTerm</span>
+        <span class="k">return</span> <span class="n">atom</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.get_mass"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_mass">[docs]</a>    <span class="k">def</span> <span class="nf">get_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Atom mass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.distance_from_init_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.distance_from_init_position">[docs]</a>    <span class="k">def</span> <span class="nf">distance_from_init_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Distance from initial position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+
+    <span class="c"># Was &#39;distance_from_atom&#39;</span></div>
+<div class="viewcode-block" id="BioPyAtom.distance_from_atom"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.distance_from_atom">[docs]</a>    <span class="k">def</span> <span class="nf">distance_from_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Distance from another atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">atom</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">atom</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">atom</span><span class="o">.</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.reset_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.reset_position">[docs]</a>    <span class="k">def</span> <span class="nf">reset_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Translate atom back in its initial position.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            initial position co-ordinates of atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_z</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.change_init_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.change_init_position">[docs]</a>    <span class="k">def</span> <span class="nf">change_init_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Change initial position co-ordinates of atom to current position.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            new initial position co-ordinates of atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.translate"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.translate">[docs]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Translate the atom.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *x, y, z*</span>
+<span class="sd">                distance in Angstroms in respective directions to move atom.</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Translate atom object.</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">+=</span> <span class="n">z</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.map_grid_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.map_grid_position">[docs]</a>    <span class="k">def</span> <span class="nf">map_grid_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">densMap</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                          </span>
+<span class="sd">        Arguments:   </span>
+<span class="sd">            *densMap*</span>
+<span class="sd">                EM map object consisting the 3D grid of density values.</span>
+<span class="sd">                </span>
+<span class="sd">        Return:</span>
+<span class="sd">              The co-ordinates and density value of the grid point in a density map closest to this atom.</span>
+<span class="sd">              Return 0 if atom is outside of map.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_origin</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">x_origin</span>
+        <span class="n">y_origin</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">y_origin</span>
+        <span class="n">z_origin</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">z_origin</span>
+        <span class="n">apix</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">apix</span>
+        <span class="n">x_size</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">x_size</span>
+        <span class="n">y_size</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">y_size</span>
+        <span class="n">z_size</span> <span class="o">=</span> <span class="n">densMap</span><span class="o">.</span><span class="n">z_size</span>
+        <span class="n">x_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">getX</span><span class="p">()</span><span class="o">-</span><span class="n">x_origin</span><span class="p">)</span><span class="o">/</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">y_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">getY</span><span class="p">()</span><span class="o">-</span><span class="n">y_origin</span><span class="p">)</span><span class="o">/</span><span class="n">apix</span><span class="p">)</span>
+        <span class="n">z_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">getZ</span><span class="p">()</span><span class="o">-</span><span class="n">z_origin</span><span class="p">)</span><span class="o">/</span><span class="n">apix</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">((</span><span class="n">x_size</span> <span class="o">&gt;</span> <span class="n">x_pos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y_size</span> <span class="o">&gt;</span> <span class="n">y_pos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">z_size</span> <span class="o">&gt;</span> <span class="n">z_pos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">z_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.matrix_transform"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.matrix_transform">[docs]</a>    <span class="k">def</span> <span class="nf">matrix_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot_mat</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Transform atom using a 3x3 matrix</span>
+<span class="sd">                  </span>
+<span class="sd">        Arguments:   </span>
+<span class="sd">            *rot_mat*</span>
+<span class="sd">                a 3x3 matrix instance.</span>
+<span class="sd">                </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Transformed position of atom object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atom_mat</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">],[</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">],[</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">]])</span>
+        <span class="n">new_pos</span> <span class="o">=</span> <span class="n">rot_mat</span><span class="o">*</span><span class="n">atom_mat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.get_pos_vector"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_pos_vector">[docs]</a>    <span class="k">def</span> <span class="nf">get_pos_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Vector instance containing 3D coordinates of the atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.get_pos_mass"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_pos_mass">[docs]</a>    <span class="k">def</span> <span class="nf">get_pos_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            An array containing Vector instances containing 3D coordinates of the atom and and its corresponding mass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">]</span>
+        </div>
+<div class="viewcode-block" id="BioPyAtom.get_x"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_x">[docs]</a>    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            x co-ordinate of atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BioPyAtom.get_y"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_y">[docs]</a>    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return: </span>
+<span class="sd">            y co-ordinate of atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BioPyAtom.get_z"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_z">[docs]</a>    <span class="k">def</span> <span class="nf">get_z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            z co-ordinate of atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BioPyAtom.set_x"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.set_x">[docs]</a>    <span class="k">def</span> <span class="nf">set_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mod</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Change the x co-ordinate of an atom based on the argument.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *mod*</span>
+<span class="sd">                float value</span>
+<span class="sd">        Return:</span>
+<span class="sd">            new x co-ordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">mod</span>
+    </div>
+<div class="viewcode-block" id="BioPyAtom.set_y"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.set_y">[docs]</a>    <span class="k">def</span> <span class="nf">set_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mod</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Change the y co-ordinate of an atom based on the argument.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:   </span>
+<span class="sd">            *mod*</span>
+<span class="sd">                float value</span>
+<span class="sd">        Return:</span>
+<span class="sd">            new y co-ordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">mod</span>
+    </div>
+<div class="viewcode-block" id="BioPyAtom.set_z"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.set_z">[docs]</a>    <span class="k">def</span> <span class="nf">set_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mod</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Change the z co-ordinate of an atom based on the argument.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:   </span>
+<span class="sd">            *mod*</span>
+<span class="sd">                float value</span>
+<span class="sd">        Return:</span>
+<span class="sd">            new x co-ordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">mod</span>
+    
+        </div>
+<div class="viewcode-block" id="BioPyAtom.get_name"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        atom name (ie. &#39;CA&#39; or &#39;O&#39;)</span>
+<span class="sd">        </span>
+<span class="sd">        Return: </span>
+<span class="sd">            atom name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_name</span>
+    </div>
+<div class="viewcode-block" id="BioPyAtom.get_res"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_res">[docs]</a>    <span class="k">def</span> <span class="nf">get_res</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            three letter residue code corresponding to the atom (i.e &#39;ARG&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.get_res_no"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_res_no">[docs]</a>    <span class="k">def</span> <span class="nf">get_res_no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            residue number corresponding to the atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_no</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.get_id_no"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.get_id_no">[docs]</a>    <span class="k">def</span> <span class="nf">get_id_no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return: </span>
+<span class="sd">            string of atom serial number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.writeTerm"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.writeTerm">[docs]</a>    <span class="k">def</span> <span class="nf">writeTerm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="s">&#39;TER&#39;</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">+</span><span class="s">&#39; &#39;</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt_loc</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_no</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">line</span>
+</div>
+<div class="viewcode-block" id="BioPyAtom.write_to_PDB"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPyAtom.write_to_PDB">[docs]</a>    <span class="k">def</span> <span class="nf">write_to_PDB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Writes a PDB ATOM record based in the atom attributes to a file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_name</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> 
+        <span class="n">line</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">+</span><span class="s">&#39; &#39;</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_name</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt_loc</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">+</span><span class="s">&#39; &#39;</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_no</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">icode</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;   &#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="n">x</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="n">y</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="n">z</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">occ</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span><span class="o">%</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="p">)</span>
+        <span class="n">temp_fac</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span><span class="o">%</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_fac</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="n">occ</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="n">temp_fac</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;          &#39;</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elem</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">line</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+
+</div></div>
+<span class="k">class</span> <span class="nc">_BioPy_Residue</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    A class representing a Residues, use instead the residues option if Biopy</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#here to be consistent with the original parser of TEMPY</span>
+    <span class="c">#the implemented use of BIOpython is more efficient and retrieve more informations</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_no</span><span class="p">,</span> <span class="n">atom_list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_no</span> <span class="o">=</span> <span class="n">res_no</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom_list</span> <span class="o">=</span> <span class="n">atom_list</span><span class="p">[:]</span>
+
+    <span class="k">def</span> <span class="nf">_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Copy of Residues instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newAtomList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_list</span><span class="p">:</span>
+            <span class="n">newAtomList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">_BioPy_Residue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_no</span><span class="p">,</span> <span class="n">newAtomList</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Translate the Structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *x, y, z*</span>
+<span class="sd">                distance in Angstroms to move structure in respective x, y, and z directions. </span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Translate Structure object.</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_list</span><span class="p">:</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+
+    
+<div class="viewcode-block" id="BioPy_Structure"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure">[docs]</a><span class="k">class</span> <span class="nc">BioPy_Structure</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    A class representing a bjectStructure o, as read from a PDB file using Bio.PDB in Biopython.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomList</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;Unknown&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">footer</span> <span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Initialise using a string of the relevant pdb file name or a numpy array of Atom objects.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *pdbFileOrList*</span>
+<span class="sd">                String of pdb file name or array of Atom objects</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">footer</span> <span class="o">=</span> <span class="n">footer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">atomList</span><span class="p">)</span> <span class="o">==</span> <span class="n">ndarray</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span> <span class="o">=</span> <span class="n">atomList</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">atomList</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">atomList</span><span class="p">)</span>
+        <span class="c">#Centre of mass calculations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_centre_of_mass</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initCoM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span>  <span class="s">&#39;Filename: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;No Of Atoms: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>  <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;First Atom: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;Last Atom: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+<div class="viewcode-block" id="BioPy_Structure.write_to_PDB"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.write_to_PDB">[docs]</a>    <span class="k">def</span> <span class="nf">write_to_PDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Write Structure instance to PDB file.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *filename*</span>
+<span class="sd">                output filename.</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">==</span> <span class="s">&#39;.pdb&#39;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="o">+</span><span class="s">&#39;.pdb&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">=</span><span class="s">&#39;&#39;&#39;EXPDTA    MODEL GENERATE WITH TEMPY</span>
+<span class="s">REMARK    MODEL GENERATE WITH TEMPY</span>
+<span class="s">&#39;&#39;&#39;</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">write_to_PDB</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isTerm</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">writeTerm</span><span class="p">()</span><span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">footer</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.copy"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Copy of Structure instance.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newAtomList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">newAtomList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">newAtomList</span><span class="p">)</span>
+
+    <span class="c">#===========================================================================</span>
+    <span class="c"># def add_het_atoms(self, filename):</span>
+    <span class="c">#     &quot;&quot;&quot;Add het atoms from filename to this Structure instance.</span>
+    <span class="c">#     #NB: DO NOT USE IT ATM</span>
+    <span class="c">#     &quot;&quot;&quot;</span>
+    <span class="c">#     </span>
+    <span class="c">#     self.atomList[-1].isTerm = True</span>
+    <span class="c">#     HETATMList = []</span>
+    <span class="c">#     f = open(filename, &#39;r&#39;)</span>
+    <span class="c">#     for line in f.readlines():</span>
+    <span class="c">#         info = line.split()</span>
+    <span class="c">#         if(info[0][:6] == &#39;HETATM&#39;):</span>
+    <span class="c">#             HETATMList.append(Atom(line, False))</span>
+    <span class="c">#     f.close()</span>
+    <span class="c">#     print len(HETATMList)</span>
+    <span class="c">#     self.atomList = append(self.atomList, HETATMList)</span>
+    <span class="c">#     self.renumber_atoms()</span>
+    <span class="c">#===========================================================================</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.calculate_centre_of_mass"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.calculate_centre_of_mass">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_centre_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:    </span>
+<span class="sd">            Center of mass of structure as a Vector instance.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_momentTotal</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">y_momentTotal</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">z_momentTotal</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">massTotal</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_z</span><span class="p">()</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_mass</span><span class="p">()</span>
+            <span class="n">x_momentTotal</span> <span class="o">+=</span> <span class="n">x</span><span class="o">*</span><span class="n">m</span>
+            <span class="n">y_momentTotal</span> <span class="o">+=</span> <span class="n">y</span><span class="o">*</span><span class="n">m</span>
+            <span class="n">z_momentTotal</span> <span class="o">+=</span> <span class="n">z</span><span class="o">*</span><span class="n">m</span>
+            <span class="n">massTotal</span> <span class="o">+=</span> <span class="n">m</span>
+            <span class="n">x_CoM</span> <span class="o">=</span> <span class="n">x_momentTotal</span><span class="o">/</span><span class="n">massTotal</span>
+            <span class="n">y_CoM</span> <span class="o">=</span> <span class="n">y_momentTotal</span><span class="o">/</span><span class="n">massTotal</span>
+            <span class="n">z_CoM</span> <span class="o">=</span> <span class="n">z_momentTotal</span><span class="o">/</span><span class="n">massTotal</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">x_CoM</span><span class="p">,</span> <span class="n">y_CoM</span><span class="p">,</span> <span class="n">z_CoM</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.translate"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.translate">[docs]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Translate the structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *x, y, z*</span>
+<span class="sd">                distance in Angstroms in respective directions to move structure.</span>
+<span class="sd">                </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Translated Structure instance</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+        
+</div>
+<div class="viewcode-block" id="BioPy_Structure.rotate_by_axis_angle"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.rotate_by_axis_angle">[docs]</a>    <span class="k">def</span> <span class="nf">rotate_by_axis_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">turn</span><span class="p">,</span> <span class="n">x_trans</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_trans</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_trans</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Rotate the Structure instance around its centre.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *turn*</span>
+<span class="sd">                angle (in radians if rad == True, else in degrees) to rotate map.</span>
+<span class="sd">            *x,y,z*</span>
+<span class="sd">                axis to rotate about, ie. x,y,z =  0,0,1 rotates the structure round the xy-plane.</span>
+<span class="sd">            *x_trans, y_trans, z_trans*</span>
+<span class="sd">                extra translational movement if required.</span>
+<span class="sd">            *com*</span>
+<span class="sd">                centre of mass around which to rotate the structure. If False, rotates around centre of mass of structure.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">axis_angle_to_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">turn</span><span class="p">,</span> <span class="n">rad</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">com</span><span class="p">:</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">newcom</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">matrix_transform</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">com</span><span class="o">-</span><span class="n">newcom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix_transform</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x_trans</span><span class="o">+</span><span class="n">offset</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y_trans</span><span class="o">+</span><span class="n">offset</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z_trans</span><span class="o">+</span><span class="n">offset</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        
+</div>
+<div class="viewcode-block" id="BioPy_Structure.rotate_by_euler"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.rotate_by_euler">[docs]</a>    <span class="k">def</span> <span class="nf">rotate_by_euler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_turn</span><span class="p">,</span> <span class="n">y_turn</span><span class="p">,</span> <span class="n">z_turn</span><span class="p">,</span> <span class="n">x_trans</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_trans</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_trans</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">com</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Rotate this Structure instance around its centre.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *x_turn,y_turn,z_turn*</span>
+<span class="sd">                Euler angles (in radians if rad == True, else in degrees) used to rotate structure, in order XYZ.</span>
+<span class="sd">            *x_trans, y_trans, z_trans*</span>
+<span class="sd">                extra translational movement if required.</span>
+<span class="sd">            *com*</span>
+<span class="sd">                centre of mass around which to rotate the structure. If False, rotates around centre of mass of structure.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">euler_to_matrix</span><span class="p">(</span><span class="n">x_turn</span><span class="p">,</span> <span class="n">y_turn</span><span class="p">,</span> <span class="n">z_turn</span><span class="p">,</span> <span class="n">rad</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">com</span><span class="p">:</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">newcom</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">matrix_transform</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">com</span><span class="o">-</span><span class="n">newcom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix_transform</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x_trans</span><span class="o">+</span><span class="n">offset</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y_trans</span><span class="o">+</span><span class="n">offset</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z_trans</span><span class="o">+</span><span class="n">offset</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="BioPy_Structure.randomise_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.randomise_position">[docs]</a>    <span class="k">def</span> <span class="nf">randomise_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_trans</span><span class="p">,</span> <span class="n">max_rot</span><span class="p">,</span> <span class="n">v_grain</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Randomise the position of the Structure instance using random rotations and translations. </span>
+<span class="sd">                  </span>
+<span class="sd">        Arguments:   </span>
+<span class="sd">            *max_trans*</span>
+<span class="sd">                Maximum translation permitted</span>
+<span class="sd">            *max_rot*</span>
+<span class="sd">                Maximum rotation permitted (in degree if rad=False)</span>
+<span class="sd">            *v_grain*</span>
+<span class="sd">                Graning Level for the generation of random vetors (default=30)</span>
+<span class="sd">        Return:</span>
+<span class="sd">            Transformed position of Structure object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t_v</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">random_vector</span><span class="p">(</span><span class="o">-</span><span class="n">v_grain</span><span class="p">,</span> <span class="n">v_grain</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+        <span class="n">r_v</span> <span class="o">=</span> <span class="n">Vector</span><span class="o">.</span><span class="n">random_vector</span><span class="p">(</span><span class="o">-</span><span class="n">v_grain</span><span class="p">,</span> <span class="n">v_grain</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">max_trans</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">t_dist</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t_dist</span> <span class="o">=</span> <span class="n">randrange</span><span class="p">(</span><span class="n">max_trans</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">max_rot</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">r_ang</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r_ang</span> <span class="o">=</span> <span class="n">randrange</span><span class="p">(</span><span class="n">max_rot</span><span class="p">)</span>
+        <span class="n">t_v</span> <span class="o">=</span> <span class="n">t_v</span><span class="o">.</span><span class="n">times</span><span class="p">(</span><span class="n">t_dist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotate_by_axis_angle</span><span class="p">(</span><span class="n">r_v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">r_v</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">r_v</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">r_ang</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="n">rad</span><span class="p">)</span>
+        <span class="c">#self.translate(t_v.x, t_v.y, t_v.z)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="p">(</span><span class="n">r_v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">r_v</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">r_v</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">r_ang</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">r_v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">r_v</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">r_v</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">r_ang</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">t_v</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.matrix_transform"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.matrix_transform">[docs]</a>    <span class="k">def</span> <span class="nf">matrix_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Transform Structure using a 3x3 transformation matrix</span>
+<span class="sd">                  </span>
+<span class="sd">        Arguments:   </span>
+<span class="sd">            *rot_mat*</span>
+<span class="sd">                a 3x3 matrix instance.</span>
+<span class="sd">                </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Transformed position of Structure object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">matrix_transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">matrix_transform</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.reorder_residues"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.reorder_residues">[docs]</a>    <span class="k">def</span> <span class="nf">reorder_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Order residues in atom list by residue number. </span>
+<span class="sd">        (NOTE: Does not check for chain information - split by chain first).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">cmp</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">res_no</span><span class="p">)</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">res_no</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="BioPy_Structure.renumber_residues"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.renumber_residues">[docs]</a>    <span class="k">def</span> <span class="nf">renumber_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startRes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">missingRes</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Renumber the structure starting from startRes.</span>
+<span class="sd">        Missing number list to add.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *startRes*</span>
+<span class="sd">                Starting residue number for renumbering</span>
+<span class="sd">            *missingRes*</span>
+<span class="sd">                A list of missing residue numbers to add </span>
+<span class="sd">                 </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resNo</span> <span class="o">=</span> <span class="n">startRes</span>
+        <span class="n">currentRes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">res_no</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">res_no</span> <span class="o">==</span> <span class="n">currentRes</span><span class="p">:</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">res_no</span> <span class="o">=</span> <span class="n">resNo</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">currentRes</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">res_no</span>
+                <span class="n">resNo</span> <span class="o">+=</span><span class="mi">1</span>
+                <span class="k">while</span> <span class="n">resNo</span> <span class="ow">in</span> <span class="n">missingRes</span><span class="p">:</span>
+                    <span class="n">resNo</span> <span class="o">+=</span><span class="mi">1</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">res_no</span> <span class="o">=</span> <span class="n">resNo</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.renumber_atoms"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.renumber_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">renumber_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Renumber the atoms in the structure. </span>
+<span class="sd">        After renumbering the starting atom number will be 1.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">99999</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="s">&#39;*****&#39;</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.rename_chains"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.rename_chains">[docs]</a>    <span class="k">def</span> <span class="nf">rename_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain_list</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Rename chain name based on the list of new chain names</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">             *chain_list*</span>
+<span class="sd">                 List of chain names</span>
+<span class="sd">                 If False rename in alphabetical order.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">chain_list</span><span class="p">:</span>
+            <span class="n">chain_list</span> <span class="o">=</span> <span class="n">alphabet</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">noc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_of_chains</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain_list</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_of_chains</span><span class="p">():</span>
+                <span class="k">print</span> <span class="s">&#39;No. of chains in structure = &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">noc</span><span class="p">)</span>
+                <span class="k">print</span> <span class="s">&#39;Length of chain list = &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chain_list</span><span class="p">))</span>
+                <span class="k">print</span> <span class="s">&#39;Chains not changed.&#39;</span>
+                <span class="k">return</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">chain</span>
+        <span class="n">renum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">chain</span> <span class="o">==</span> <span class="n">ch</span><span class="p">:</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="n">chain_list</span><span class="p">[</span><span class="n">renum</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">renum</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">ch</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">chain</span><span class="p">[:]</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="n">chain_list</span><span class="p">[</span><span class="n">renum</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.split_into_chains"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.split_into_chains">[docs]</a>    <span class="k">def</span> <span class="nf">split_into_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         </span>
+<span class="sd">         Split the structure into separate chains and returns the list of Structure instance for each chain. </span>
+<span class="sd">         </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">structList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">currentChain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">chain</span>
+        <span class="n">currentStruct</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">chain</span> <span class="o">==</span> <span class="n">currentChain</span><span class="p">:</span>
+                <span class="n">currentStruct</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">currentChain</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">chain</span>
+                <span class="n">structList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">currentStruct</span><span class="p">))</span>
+                <span class="n">currentStruct</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>
+        <span class="n">structList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">currentStruct</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">structList</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.no_of_chains"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.no_of_chains">[docs]</a>    <span class="k">def</span> <span class="nf">no_of_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return:</span>
+<span class="sd">            the number of chains in the Structure object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_into_chains</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                </div>
+<div class="viewcode-block" id="BioPy_Structure.reset_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.reset_position">[docs]</a>    <span class="k">def</span> <span class="nf">reset_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Translate structure back into initial position.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">reset_position</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initCoM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.change_init_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.change_init_position">[docs]</a>    <span class="k">def</span> <span class="nf">change_init_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Change initial position of structure to current position.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">change_init_position</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_CoM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    </div>
+<div class="viewcode-block" id="BioPy_Structure.RMSD_from_init_position"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.RMSD_from_init_position">[docs]</a>    <span class="k">def</span> <span class="nf">RMSD_from_init_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">CA</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return RMSD of structure from initial position after translation.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *CA*</span>
+<span class="sd">                True will consider only CA atoms.</span>
+<span class="sd">                False will consider all atoms.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            RMSD in angstrom</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">CA</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">atom_name</span> <span class="o">==</span> <span class="s">&#39;CA&#39;</span><span class="p">:</span>
+                    <span class="n">dists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">distance_from_init_position</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">distance_from_init_position</span><span class="p">())</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dists</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.RMSD_from_same_structure"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.RMSD_from_same_structure">[docs]</a>    <span class="k">def</span> <span class="nf">RMSD_from_same_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherStruct</span><span class="p">,</span> <span class="n">CA</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return the RMSD between two structure instances.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *otherStruct*</span>
+<span class="sd">                Structure instance to compare, containing the same number of atoms as the target instance.</span>
+<span class="sd">            *CA*</span>
+<span class="sd">                True will consider only CA atoms.</span>
+<span class="sd">                False will consider all atoms.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            RMSD in angstrom</span>
+<span class="sd"> </span>
+<span class="sd">        &quot;&quot;&quot;</span>            
+        <span class="n">dists</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">CA</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">atom_name</span> <span class="o">==</span> <span class="s">&#39;CA&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">otherStruct</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">atom_name</span> <span class="o">==</span> <span class="s">&#39;CA&#39;</span><span class="p">:</span>
+                        <span class="n">dists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">distance_from_atom</span><span class="p">(</span><span class="n">otherStruct</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">atom_name</span><span class="p">,</span> <span class="n">otherStruct</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">atom_name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">res_no</span><span class="p">,</span> <span class="n">otherStruct</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">res_no</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">distance_from_atom</span><span class="p">(</span><span class="n">otherStruct</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">a</span><span class="p">]))</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dists</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    </div>
+<div class="viewcode-block" id="BioPy_Structure.get_vector_list"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_vector_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_vector_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Array containing 3D Vector instances of positions of all atoms.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">get_pos_vector</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.get_pos_mass_list"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_pos_mass_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_pos_mass_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Array containing Vector instances of positions of all atoms and mass.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">get_pos_mass</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.get_extreme_values"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_extreme_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_extreme_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            A 6-tuple containing the minimum and maximum of x, y and z co-ordinates of the structure.</span>
+<span class="sd">            Given in order (min_x, max_x, min_y, max_y, min_z, max_z).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
+        <span class="n">max_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
+        <span class="n">min_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span>
+        <span class="n">max_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span>
+        <span class="n">min_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_z</span><span class="p">()</span>
+        <span class="n">max_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_z</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">min_x</span><span class="p">:</span>
+                <span class="n">min_x</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">max_x</span><span class="p">:</span>
+                <span class="n">max_x</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">min_y</span><span class="p">:</span>
+                <span class="n">min_y</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">max_y</span><span class="p">:</span>
+                <span class="n">max_y</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_z</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">min_z</span><span class="p">:</span>
+                <span class="n">min_z</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_z</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_z</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">max_z</span><span class="p">:</span>
+                <span class="n">max_z</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_z</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">,</span> <span class="n">max_z</span><span class="p">)</span>
+
+                </div>
+<div class="viewcode-block" id="BioPy_Structure.get_atom_list"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_atom_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_atom_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            An array containing Atom instances of positions of all atoms as:</span>
+<span class="sd">            [(RES 1 A: x,y,z), ... ,(RES2 1 A: x1,y1,z1)].</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">alist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">alist</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.find_same_atom"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.find_same_atom">[docs]</a>    <span class="k">def</span> <span class="nf">find_same_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_index</span><span class="p">,</span> <span class="n">otherStruct</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find if an atom exists in the compared structure, based on atom index.</span>
+<span class="sd"> </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *atom_index*</span>
+<span class="sd">                atom number</span>
+<span class="sd">            *otherStruct*</span>
+<span class="sd">                a structure object to compare</span>
+<span class="sd">  </span>
+<span class="sd">        Return:</span>
+<span class="sd">            If a match is found, it returns the atom object; else it returns a string reporting the mismatch.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">otherStruct</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">res_no</span> <span class="o">==</span> <span class="n">atom</span><span class="o">.</span><span class="n">res_no</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">atom_name</span> <span class="o">==</span> <span class="n">atom</span><span class="o">.</span><span class="n">atom_name</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">res</span> <span class="o">==</span> <span class="n">atom</span><span class="o">.</span><span class="n">res</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">chain</span> <span class="o">==</span> <span class="n">atom</span><span class="o">.</span><span class="n">chain</span><span class="p">:</span>
+                <span class="c">#print x</span>
+                <span class="k">return</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="s">&quot;No match of atom index </span><span class="si">%s</span><span class="s"> in structure </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">atom_index</span><span class="p">,</span><span class="n">otherStruct</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.get_chain_list"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_chain_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_chain_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            A list of chain ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chain_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">chain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_list</span><span class="p">:</span>
+                <span class="n">chain_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">chain</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">chain_list</span>
+    </div>
+<div class="viewcode-block" id="BioPy_Structure.get_chain"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_chain">[docs]</a>    <span class="k">def</span> <span class="nf">get_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chainID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            New Structure instance with only the requested chain.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newAtomList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">chain</span> <span class="o">==</span> <span class="n">chainID</span><span class="p">:</span>
+                <span class="n">newAtomList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newAtomList</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">newAtomList</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Warning no chain </span><span class="si">%s</span><span class="s"> found&quot;</span><span class="o">%</span><span class="n">chainID</span>
+    
+    </div>
+<div class="viewcode-block" id="BioPy_Structure.get_selection"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_selection">[docs]</a>    <span class="k">def</span> <span class="nf">get_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startRes</span><span class="p">,</span> <span class="n">finishRes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Get a new Structure instance for the selected residues range without considering residues chain. </span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *startRes*</span>
+<span class="sd">                Start residue number</span>
+<span class="sd">            *finishRes*</span>
+<span class="sd">                End residue number </span>
+<span class="sd">                </span>
+<span class="sd">        Return:</span>
+<span class="sd">            New Structure instance</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newAtomList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_res_no</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">startRes</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">get_res_no</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">finishRes</span><span class="p">)):</span>
+                <span class="n">newAtomList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">newAtomList</span><span class="p">)</span>
+    
+    
+</div>
+<div class="viewcode-block" id="BioPy_Structure.break_into_segments"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.break_into_segments">[docs]</a>    <span class="k">def</span> <span class="nf">break_into_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rigid_list</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return a list of Structure instance based on the rigid body list.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">        </span>
+<span class="sd">            *rigid list*</span>
+<span class="sd">                list of rigid body defined as:</span>
+<span class="sd">            </span>
+<span class="sd">                    [[riA,rfA],..,[riB,rfB]]</span>
+<span class="sd">            </span>
+<span class="sd">                where :</span>
+<span class="sd">            </span>
+<span class="sd">                    riA is the starting residues number of segment A.</span>
+<span class="sd">                    rfA is the final residues number of segment A.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            List of TEMPy Structure instance</span>
+
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">structList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rigid_list</span><span class="p">:</span>
+            <span class="n">fstStruct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_selection</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">nxtStructs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">nxtStructs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_selection</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nxtStructs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">structList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fstStruct</span><span class="o">.</span><span class="n">combine_structures</span><span class="p">(</span><span class="n">nxtStructs</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">structList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fstStruct</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">structList</span>
+    
+    
+<span class="c">#===============================================================================</span>
+<span class="c"># #add IF 19/2/2013 of residues number</span>
+<span class="c"># #we decided to not have this.</span>
+<span class="c">#     def _get_RB(self, rigid_list):</span>
+<span class="c">#         &quot;&quot;&quot;</span>
+<span class="c">#         </span>
+<span class="c">#         Return a Structure instance of the selected rigid body of non consecutively segment from a Structure instance:</span>
+<span class="c">#         </span>
+<span class="c">#         Arguments:</span>
+<span class="c">#             *rigid list* </span>
+<span class="c">#                 list of rigid body defined as:</span>
+<span class="c">#             </span>
+<span class="c">#                 [riA,rfA,..,riB,rfB]</span>
+<span class="c">#             </span>
+<span class="c">#                 where :</span>
+<span class="c">#             </span>
+<span class="c">#                 riA= starting residues of segment A</span>
+<span class="c">#                 rfA=final residues of segment A</span>
+<span class="c">#             </span>
+<span class="c">#                 so that Rigid body Structure is formed by non consecutively segment.</span>
+<span class="c">#                 </span>
+<span class="c">#         &quot;&quot;&quot;</span>
+<span class="c">#         structList = []</span>
+<span class="c">#         nxtStructs=[]</span>
+<span class="c">#         fstStruct = self.get_selection(rigid_list[0],rigid_list[1])         </span>
+<span class="c">#         if len(rigid_list)&gt;2:</span>
+<span class="c">#             for r in range(2, len(rigid_list), 2):</span>
+<span class="c">#                 nxtStructs.append(self.get_selection(rigid_list[r], rigid_list[r+1]))</span>
+<span class="c">#                 if len(nxtStructs) != 0:</span>
+<span class="c">#                     structList.append(fstStruct.combine_structures(nxtStructs))</span>
+<span class="c">#                 else:</span>
+<span class="c">#                     structList.append(fstStruct)</span>
+<span class="c">#     #return the last structureList that contains only the atoms of the defined RB</span>
+<span class="c">#         return structList[-1]</span>
+<span class="c">#===============================================================================</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.combine_structures"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.combine_structures">[docs]</a>    <span class="k">def</span> <span class="nf">combine_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structList</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Add a list of Structure instance to the existing structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *structList*</span>
+<span class="sd">                list of Structure instance</span>
+<span class="sd">        Return:</span>
+<span class="sd">            New Structure Instance</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atomList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">structList</span><span class="p">:</span>
+            <span class="n">atomList</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">atomList</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">atomList</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">atomList</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BioPy_Structure.combine_SSE_structures"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.combine_SSE_structures">[docs]</a>    <span class="k">def</span> <span class="nf">combine_SSE_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structList</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Combine a list of Structure instance into one and return a new Structure instance.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *structList*</span>
+<span class="sd">                list of Structure instance</span>
+<span class="sd">        Return:</span>
+<span class="sd">            New Structure Instance</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atomList</span> <span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">structList</span><span class="p">:</span>
+            <span class="n">atomList</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">atomList</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">atomList</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">atomList</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BioPy_Structure.get_selection_more_than"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_selection_more_than">[docs]</a>    <span class="k">def</span> <span class="nf">get_selection_more_than</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startRes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Get a Structure instance comprising all residues with their residue numbers greater than startRes.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *startRes*</span>
+<span class="sd">                a residue number</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            A Structure instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newAtomList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_res_no</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">startRes</span><span class="p">)):</span>
+                <span class="n">newAtomList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">newAtomList</span><span class="p">)</span>
+            </div>
+<div class="viewcode-block" id="BioPy_Structure.get_selection_less_than"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_selection_less_than">[docs]</a>    <span class="k">def</span> <span class="nf">get_selection_less_than</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endRes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Get a Structure instance comprising all residues with their residue numbers less than endRes.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *endRes*</span>
+<span class="sd">                a residue number</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            A Structure instance</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newAtomList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_res_no</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">endRes</span><span class="p">):</span>
+                <span class="n">newAtomList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">newAtomList</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.get_residue"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_residue">[docs]</a>    <span class="k">def</span> <span class="nf">get_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resNo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">       </span>
+<span class="sd">       Get the residue corresponding to the residue number.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *resNo*</span>
+<span class="sd">                Residues number</span>
+<span class="sd">        Return: </span>
+<span class="sd">            Returns a Residues instance. </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">get_res_no</span><span class="p">()</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">resNo</span><span class="p">)])</span>
+    </div>
+<div class="viewcode-block" id="BioPy_Structure.get_atom"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_atom">[docs]</a>    <span class="k">def</span> <span class="nf">get_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return specific atom in Structure instance.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            *index*</span>
+<span class="sd">                Index of the atom</span>
+<span class="sd">        Return: </span>
+<span class="sd">            Returns an Atom instance. </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">index</span><span class="p">)]</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.get_backbone"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_backbone">[docs]</a>    <span class="k">def</span> <span class="nf">get_backbone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            Structure instance with only the backbone atoms in structure.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">backboneList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c">#print self.atomList</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span><span class="c">#error again due to aold atom list </span>
+            <span class="k">if</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;CA&#39;</span> <span class="ow">or</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;N&#39;</span> <span class="ow">or</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;C&#39;</span><span class="p">):</span>
+                <span class="n">backboneList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">BioPy_Structure</span><span class="p">(</span><span class="n">backboneList</span><span class="p">[:])</span>
+</div>
+<div class="viewcode-block" id="BioPy_Structure.vectorise"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.vectorise">[docs]</a>    <span class="k">def</span> <span class="nf">vectorise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vectorList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">vectorList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_pos_vector</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vectorList</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">vList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vectorList</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="n">vectorList</span><span class="p">[</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">vList</span>
+        </div>
+<div class="viewcode-block" id="BioPy_Structure.get_torsion_angles"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_torsion_angles">[docs]</a>    <span class="k">def</span> <span class="nf">get_torsion_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            List of torsion angles in Structure instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vectorList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorise</span><span class="p">()</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vectorList</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector</span><span class="o">.</span><span class="n">altTorsion</span><span class="p">(</span><span class="n">vectorList</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="n">vectorList</span><span class="p">[</span><span class="n">v</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reverse</span><span class="p">(),</span> <span class="n">vectorList</span><span class="p">[</span><span class="n">v</span><span class="o">+</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">angles</span>
+
+</div>
+<div class="viewcode-block" id="BioPy_Structure.get_prot_mass_from_res"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_res">[docs]</a>    <span class="k">def</span> <span class="nf">get_prot_mass_from_res</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Termini</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="c"># ADD by IF 22-4-2013 </span>
+        <span class="c">#from Harpal  code calculation of mass from seq.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates Mass (kDa) of the Structure instance, from average mass</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>      
+        <span class="c">#NOTE: problem with Residues class from Structure class need a more elegand way of doing it</span>
+        <span class="c">#PROBLEM ONLY 1 CHAIN READ</span>
+        <span class="c">#atm seq_list_resno to create the sequence from pdb</span>
+            
+        <span class="n">aa</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ARG&#39;</span><span class="p">:</span><span class="s">&#39;R&#39;</span><span class="p">,</span><span class="s">&#39;HIS&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span><span class="s">&#39;LYS&#39;</span><span class="p">:</span><span class="s">&#39;K&#39;</span><span class="p">,</span><span class="s">&#39;ASP&#39;</span><span class="p">:</span><span class="s">&#39;D&#39;</span><span class="p">,</span><span class="s">&#39;GLU&#39;</span><span class="p">:</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;SER&#39;</span><span class="p">:</span><span class="s">&#39;S&#39;</span><span class="p">,</span><span class="s">&#39;THR&#39;</span><span class="p">:</span><span class="s">&#39;T&#39;</span><span class="p">,</span><span class="s">&#39;ASN&#39;</span><span class="p">:</span><span class="s">&#39;N&#39;</span><span class="p">,</span><span class="s">&#39;GLN&#39;</span><span class="p">:</span><span class="s">&#39;Q&#39;</span><span class="p">,</span><span class="s">&#39;CYS&#39;</span><span class="p">:</span><span class="s">&#39;C&#39;</span><span class="p">,</span><span class="s">&#39;SEC&#39;</span><span class="p">:</span><span class="s">&#39;U&#39;</span><span class="p">,</span><span class="s">&#39;GLY&#39;</span><span class="p">:</span><span class="s">&#39;G&#39;</span><span class="p">,</span><span class="s">&#39;PRO&#39;</span><span class="p">:</span><span class="s">&#39;P&#39;</span><span class="p">,</span><span class="s">&#39;ALA&#39;</span><span class="p">:</span><span class="s">&#39;A&#39;</span><span class="p">,</span><span class="s">&#39;ILE&#39;</span><span class="p">:</span><span class="s">&#39;I&#39;</span><span class="p">,</span><span class="s">&#39;LEU&#39;</span><span class="p">:</span><span class="s">&#39;L&#39;</span><span class="p">,</span><span class="s">&#39;MET&#39;</span><span class="p">:</span><span class="s">&#39;M&#39;</span><span class="p">,</span><span class="s">&#39;PHE&#39;</span><span class="p">:</span><span class="s">&#39;F&#39;</span><span class="p">,</span><span class="s">&#39;TRP&#39;</span><span class="p">:</span><span class="s">&#39;W&#39;</span><span class="p">,</span><span class="s">&#39;TYR&#39;</span><span class="p">:</span><span class="s">&#39;Y&#39;</span><span class="p">,</span><span class="s">&#39;VAL&#39;</span><span class="p">:</span><span class="s">&#39;V&#39;</span><span class="p">}</span>
+        
+        <span class="c">#based on http://web.expasy.org/findmod/findmod_masses.html</span>
+        <span class="n">mass_tot</span><span class="o">=</span><span class="mi">0</span>
+        <span class="nb">str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">seq_string</span><span class="o">=</span><span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="nb">str</span><span class="o">.</span><span class="n">split_into_chains</span><span class="p">():</span>
+            <span class="n">seq_list_resno</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">seq_str_aa</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">res</span> <span class="ow">in</span> <span class="n">aa</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">res_no</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seq_list_resno</span><span class="p">:</span> 
+                        <span class="n">seq_list_resno</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">res_no</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">res</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aa</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                            <span class="n">seq_string</span><span class="o">+=</span><span class="s">&quot;x&quot;</span>
+                        <span class="n">res_singleletter</span><span class="o">=</span><span class="n">aa</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">res</span><span class="p">]</span>
+                        <span class="n">seq_string</span><span class="o">+=</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">res_singleletter</span>
+                        <span class="n">mass_tot</span> <span class="o">+=</span> <span class="n">aa_mass</span><span class="p">[</span><span class="n">res_singleletter</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">Termini</span><span class="p">:</span>
+            <span class="n">mass_tot</span> <span class="o">+=</span> <span class="mf">17.992</span> 
+ 
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">mass_tot</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+     </div>
+<div class="viewcode-block" id="BioPy_Structure.get_prot_mass_from_atoms"><a class="viewcode-back" href="../ProtRep_Biopy.html#ProtRep_Biopy.BioPy_Structure.get_prot_mass_from_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_prot_mass_from_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates Mass (kDa) of the Structure instance, from average mass. Atoms based</span>
+<span class="sd">        use get_prot_mass_from_res is more accurate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>      
+
+        <span class="c"># ADD by IF 22-4-2013 </span>
+        <span class="c">#problem with this are the PDBs not cleaned with ANISU or similar problems</span>
+        <span class="n">mass_tot</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomList</span><span class="p">:</span>
+            <span class="n">mass_tot</span><span class="o">+=</span><span class="n">x</span><span class="o">.</span><span class="n">get_mass</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">mass_tot</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+    
+    
+    
+<span class="c">#PRIVATE </span>
+<span class="c">#functions in development for symmetry operations.</span>
+    
+<span class="c">#===============================================================================</span>
+<span class="c">#     </span>
+<span class="c">#     def build_C_symmetric_model_around_line(self, l, c, noOfUnits):</span>
+<span class="c">#         output = [self.copy()]</span>
+<span class="c">#         output[0].rename_chains()</span>
+<span class="c">#         angle = 360./noOfUnits</span>
+<span class="c">#         </span>
+<span class="c">#         for x in range(1,noOfUnits):</span>
+<span class="c">#             self.rotate_by_axis_angle(l.x, l.y, l.z, angle*x, com=c)</span>
+<span class="c">#             next_unit = self.copy()</span>
+<span class="c">#             next_unit.change_init_position()</span>
+<span class="c">#             for atom in next_unit.atomList:</span>
+<span class="c">#                 atom.chain = alphabet[x]</span>
+<span class="c">#             output.append(next_unit)</span>
+<span class="c">#             self.reset_position()</span>
+<span class="c"># </span>
+<span class="c">#         output = output[0].combine_structures(output[1:])</span>
+<span class="c">#         output.CoM = c.copy()</span>
+<span class="c">#         output.renumber_atoms()</span>
+<span class="c">#         return output</span>
+<span class="c"># </span>
+<span class="c">#     def build_C_symmetric_model(self, symm_axis, noOfUnits, x_point, y_point, z_point):</span>
+<span class="c">#         c = Vector.Vector(x_point, y_point, z_point)</span>
+<span class="c">#         if symm_axis == &#39;x&#39;:</span>
+<span class="c">#             l = Vector.Vector(1,0,0)</span>
+<span class="c">#         elif symm_axis == &#39;y&#39;:</span>
+<span class="c">#             l = Vector.Vector(0,1,0)</span>
+<span class="c">#         else:</span>
+<span class="c">#             l = Vector.Vector(0,0,1)</span>
+<span class="c">#         return self.build_C_symmetric_model_around_line(l, c, noOfUnits)</span>
+<span class="c"># </span>
+<span class="c">#     def build_C_symmetric_model_using_map(self, noOfUnits, symm_axis, densMap):</span>
+<span class="c">#         centre = densMap.centre()</span>
+<span class="c">#         return self.build_C_symmetric_model(symm_axis, noOfUnits, centre[0], centre[1], centre[2])</span>
+<span class="c">#===============================================================================</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ShowPlot.html">13. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Vector.html">14. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Jun 10, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

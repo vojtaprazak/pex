@@ -1,0 +1,226 @@
+#!/usr/bin/env python
+
+import glob, zipfile
+import re, os, shutil
+from subprocess import check_output
+import argparse, pprint
+from numpy import array
+from MapParser_f32_new import *
+
+# Run motioncorr on files with a given prefix
+def sumcorr(prefix, outfile, motioncorr_version=2, motioncorr_opts='', ext='.mrc', error_file='motioncorr_errors.log', pix_size=1.0, threshold=6, zfile=False):
+
+    # Replace square brackets in prefix with regexp friendly versions
+    pre = re.sub(r'\[', '[[]', prefix)
+    pre = re.sub(r'(?<!\[)\]', '[]]', pre)
+
+    if zfile and not os.path.exists(outfile+'.mrcs'):
+        arc = zipfile.ZipFile(zfile)
+        filelist = []
+        r = re.compile(re.sub(r'\?', '[0-9]', os.path.basename(pre)))
+        for m in arc.namelist():
+            if re.match(r,os.path.basename(m)):
+                filelist.append(os.path.basename(m))
+                source = arc.open(m)
+                target = file(os.path.basename(m), "wb")
+                with source, target:
+                    shutil.copyfileobj(source, target)
+                    
+    if zfile:
+        pre = os.path.basename(pre)
+
+    # List files starting wih prefix and sort
+    filelist = glob.glob(pre+'*'+ext)
+    filelist.sort()
+    pp = pprint.PrettyPrinter(indent=4)
+    print("Files that will be combined:")
+    pp.pprint(filelist)
+
+    
+
+    # Put relevant files in a stack
+    #create_stackfilelist(filelist, outfile+'.lst')
+    #stack = check_output('newstack -filei '+outfile+'.lst '+outfile+'.mrcs', shell=True)
+    if not os.path.exists(outfile+'.mrcs'):
+        stack = check_output('ln -s '+filelist[0]+' '+outfile+'.mrcs', shell=True)
+
+    if motioncorr_version == 1:
+        print('Start pixel fixing')
+        #old_stack = MapParser.readMRC(outfile+'.mrcs')
+        #hot_pixels = place(old_stack.fullMap, old_stack.fullMap >= threshold, [0])
+        #old_stack.apix = psize
+        #old_stack.write_to_MRC_file(outfile+'.mrcs')
+        #print 'ccderaser -f -d '+str(threshold)+' '+outfile+'.mrcs'+' '+outfile+'.mrcs'
+        print('blah')
+        raa = check_output('ccderaser -f -d '+str(threshold)+' '+outfile+'.mrcs'+' '+outfile+'.mrcs', shell=True)
+        #os.rename(outfile+'.mrcst', outfile+'.mrcs')
+        print('End pixel fixing')
+
+        #Run motioncorr
+        try:
+            blah = check_output('dosefgpu_driftcorr '+outfile+'.mrcs '+motioncorr_opts +' -fcs '+outfile+'_SumCorr.mrc', shell=True)
+            blah2 = check_output('bhead -recalculate -sampling '+str(pix_size)+' '+outfile+'_SumCorr.mrc '+outfile+'_SumCorr.mrc', shell=True)
+        except:
+            # If motioncorr fails, record failure and carry on
+            with open(error_file, 'a') as f:
+                err = "Failed on " +'dosefgpu_driftcorr '+outfile+'.mrcs '+motioncorr_opts +' -fcs '+outfile+'_SumCorr.mrc'
+                print(err)
+                f.write(err+'\n')
+
+    if motioncorr_version == 2:
+        try:
+            blah = check_output('MotionCor2 -InMrc '+outfile+'.mrcs '+motioncorr_opts +' -OutMrc '+outfile+'_SumCorr.mrc', shell=True)
+            blah2 = check_output('alterheader -d %3f,%3f,%f'%(pix_size,pix_size,pix_size)+' '+outfile+'_SumCorr.mrc '+outfile+'_SumCorr.mrc', shell=True)
+        except:
+            # If motioncorr fails, record failure and carry on
+            with open(error_file, 'a') as f:
+                err = "Failed on " +'MotionCor2 -InMrc '+outfile+'.mrcs '+motioncorr_opts +' -OutMrc '+outfile+'_SumCorr.mrc'
+                print(err)
+                f.write(err+'\n')
+    if zfile and (os.getcwd() != os.path.abspath(zfile)):
+        for m in filelist:
+            os.remove(m)
+        
+                
+# Create an .lst file for use with newstack for a given list of files
+def create_stackfilelist(filelist, outfile):
+    with open(outfile, 'w') as f:
+        f.write(str(len(filelist))+'\n')
+        for x in range(len(filelist)):
+            # new_file = filelist[x].replace(' ', '\\ ')
+            f.write(filelist[x]+'\n0\n')
+
+# Get all unique prefixes in a directory, and all the tilts associated with each prefix. Sorted by tilt order if sort_by_tilt is True,
+# else sorted by order taken. Returns a list of prefixes, and a nested list of all tilts for each prefix, in the same order as the prefix list.
+def get_tilts(dire, ext='.mrc', sort_by_tilt=True, zfile=False):    
+    # Get a list of all the files in the directory ending with the given extension (.mrc by default)
+    if zfile:
+        arc = zipfile.ZipFile(dire)
+        all_files = [f for f in arc.namelist() if f.endswith(ext)]
+    else:
+        all_files = glob.glob(dire+'/*'+ext)
+    # Regular expression to get the information from each file. Assumes that the format is written as <prefix>_<tilt>_<date>_<time>.<extension>
+    # Prefix can include multiple underscores
+    r = re.compile('(.*)_(.*)_(.*)_(.*)_(.*)'+ext)
+    sep = []
+    tilts = []
+    # Go through all files, compare to the reg exp and append the groups if it matches
+    for fi in all_files:
+        z = re.match(r, fi)
+        if z:
+            sep.append(z.groups())
+    # prefixes = list(set(array(sep)[:,0]))
+    # Collect the prefixes (first member of each reg exp group, stripped of path). Use 'set' to remove all the duplicates.
+    if zfile:
+        prefixes = set(array(sep)[:,0])
+    else:
+        prefixes = [os.path.basename(x) for x in set(array(sep)[:,0])]
+    # Find the tilts for each prefix
+    for p in prefixes:
+        these_tilts = []
+        for s in sep:
+            if zfile:
+                if p == s[0]:
+                    these_tilts.append(s[2])
+            else:
+                if dire+'/'+p == s[0] or dire+'//'+p == s[0]:
+                    # Get the tilt (3rd member of reg exp group)
+                    these_tilts.append(s[2])
+        # Remove duplicates
+        these_tilts = list(set(these_tilts))
+        #print these_tilts
+        if sort_by_tilt:
+            # Sort by tilt (float the tilt)
+            these_tilts.sort(key=lambda x: float(x))
+        #else:
+            # Sort by date and time
+        #    these_tilts = sort_by_date_and_time(these_tilts)
+        # print these_tilts
+        tilts.append(these_tilts)
+    return tilts, prefixes
+
+
+def sort_by_date_and_time(tilt_list):
+    # Months to int conversion
+     _MONTHS_TO_INT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+     
+
+
+# Initialise and set argument parser for shell command line
+parser = argparse.ArgumentParser(description=("Combine movie files of a tomogram into stack files for each tilt, and run motioncorr on each stack."))
+parser.add_argument('--motioncorr_opts', default='', help="""Command line options to pass to motioncorr. Options must be written"""\
+                                                          """ inside quotes. i.e. pex_run_sumcorr_for_tomo --motioncorr_opts "-fod 1 -slg 0" input_dir."""\
+                                                          """ Do not try to change the -fcs option.""")
+parser.add_argument('--ext', default='.mrc', help="Expected extension of input files. Default is '.mrc'")
+parser.add_argument('--err_log', default='motioncorr_errors.log', help='File in which to write failed commands. Default is motioncorr_errors.log')
+#parser.add_argument('--mc_version', default=2, type=int, help='Version of motioncorr that you wish to run, 1 or 2. Default is 2.')
+parser.add_argument('--pix_size', default=1.0, type=float, help='Pixel size of images. Default is 1.0')
+parser.add_argument('dir', help='Directory  or zip file (with extension .zip) containing files you wish to combine.')
+#parser.add_argument('outfile', help='Name of output tilt stack.')
+
+
+args = parser.parse_args()
+iszip = args.dir.endswith('.zip')
+
+#assert (args.mc_version == 1 or args.mc_version == 2), "Motioncorr version not known! Please use version 1 or 2"
+mc_version = 2
+
+# Get tilts by order taken
+tilts, prefixes = get_tilts(args.dir, args.ext, zfile=iszip)
+pp = pprint.PrettyPrinter(indent=4)
+print('Prefixes: ')
+pp.pprint(prefixes)
+
+# Go through each prefix
+for j,p in enumerate(prefixes):
+    if iszip:
+        outp = os.path.basename(p)
+    else:
+        outp = p
+    if os.path.exists(outp+'tomo/'+outp+'fullstack.st'):
+        print(outp+'tomo/'+outp+'fullstack.st already exists. Skipping...')
+    else:
+        # Make relevant directories
+        if not os.path.exists(outp+'tomo'):
+            os.mkdir(outp+'tomo', 0o755)
+        if not os.path.exists(outp+'tomo/tmp'):
+            os.mkdir(outp+'tomo/tmp', 0o755)
+        out_tilts = []
+        # Go through the tilts for this prefix
+        for t in tilts[j]:
+            # Tilt without the square brackets
+            #clean_t = t[1][1:-1]
+            sumcorr_out = outp+'tomo/tmp/'+outp+'tilt_'+t
+            # Run motioncorr if necessary
+            if os.path.exists(sumcorr_out+'_SumCorr.mrc'):
+                print(sumcorr_out + '_SumCorr.mrc already exists. Skipping...')
+            else:
+                if iszip:
+                    sumcorr(outp+'_???_'+t, sumcorr_out, mc_version, args.motioncorr_opts, args.ext, args.err_log, args.pix_size, zfile=args.dir)
+                else:
+                    sumcorr(args.dir+'/'+p+'_???_'+t, sumcorr_out, mc_version, args.motioncorr_opts, args.ext, args.err_log, args.pix_size)
+            out_tilts.append(sumcorr_out+'_SumCorr.mrc')
+            
+        # Build .lst file to build tilt stack using newstack, and create final stack
+        create_stackfilelist(out_tilts, outp+'tomo/tmp/'+outp+'fullstack.lst')
+        try:
+            #stack = check_output('newstack -mode 1 -scale 0,32000 -filei '+outp+'tomo/tmp/'+outp+'fullstack.lst '+outp+'tomo/'+outp+'fullstack.st', shell=True)
+            stack = check_output('newstack -filei '+outp+'tomo/tmp/'+outp+'fullstack.lst '+outp+'tomo/'+outp+'fullstack.st', shell=True)
+        except:
+            # If newstack fails, record failure in log file and carry on.
+            with open(args.err_log, 'a') as f:
+                #err = "Failed on " + 'newstack -mode 1 -scale 0,32000 -filei '+outp+'tomo/tmp/'+outp+'fullstack.lst '+outp+'tomo/'+outp+'fullstack.st'
+                err = "Failed on " + 'newstack -filei '+outp+'tomo/tmp/'+outp+'fullstack.lst '+outp+'tomo/'+outp+'fullstack.st'
+                print(err)
+                f.write(err+'\n')
+                
+        # Build .rawtlt file, in tilt order    
+        with open(outp+'tomo/'+outp+'fullstack.rawtlt', 'w') as f:
+            for x in tilts[j]:
+                f.write(x+'\n')
+
+    # Remove intermediate files
+    if os.path.exists(outp+'tomo/'+outp+'fullstack.st') and os.path.exists(outp+'tomo/tmp'):
+        print(outp+'tomo/'+outp+'fullstack.st created. Removing '+outp+'tomo/tmp directory...')           
+        shutil.rmtree(outp+'tomo/tmp')
+

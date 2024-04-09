@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+import argparse
+from PEETParticleAnalysis import csvfile_to_chim_markers
+
+
+parser = argparse.ArgumentParser(description=('Make chimera marker file using a PEET motive list and model file.'))
+parser.add_argument('motl', help='The PEET motive list containing orientations of particles.')
+parser.add_argument('model', help='The IMOD model file containing positions of particles.')
+parser.add_argument('outfile', help='The desired name of the output file.')
+parser.add_argument('--classID', help='The class of particles (last column in motive list) to convert to markers.', default=-1, type=int)
+parser.add_argument('--length', help='The length of the pin, in pixels.', default=30, type=float)
+parser.add_argument('--axis', nargs=3, metavar=('x','y','z'), help='The axis of each particle to depict. Default is 0,1,0 (y-axis).', default=(0,1,0), type=float)
+parser.add_argument('--head', help='The size of the head of each pin, in pixels.', default=8.0, type=float)
+parser.add_argument('--tail', help='The length of the pin, in pixels.', default=30, type=float)
+parser.add_argument('--ccc_range', nargs=2, metavar=('ccc_min','ccc_max'), help='The minimum and maximum ccc values to depict. Particles with ccc values less than the first number in ccc_range are depicted as solid red.'
+                    'Particles with ccc values greater than second number in ccc_range are depicted as solid green.', default=(-2,-2), type=float)
+
+args = parser.parse_args()
+
+csvfile_to_chim_markers(args.motl, args.model, args.outfile, d=args.tail, classID=args.classID, dummy=args.axis, head_rad=args.head)

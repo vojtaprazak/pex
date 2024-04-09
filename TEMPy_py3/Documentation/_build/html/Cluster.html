@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12. Clustering multiple fits in a cryoEM map &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="13. Consensus Scoring of multiple fits in a cryoEM map" href="Consensus.html" />
+    <link rel="prev" title="11. Scoring Functions" href="ScoringFunctions.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="Consensus.html" title="13. Consensus Scoring of multiple fits in a cryoEM map"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ScoringFunctions.html" title="11. Scoring Functions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="clustering-multiple-fits-in-a-cryoem-map">
+<h1>12. Clustering multiple fits in a cryoEM map<a class="headerlink" href="#clustering-multiple-fits-in-a-cryoem-map" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-Cluster"></span><dl class="class">
+<dt id="Cluster.Cluster">
+<em class="property">class </em><tt class="descclassname">Cluster.</tt><tt class="descname">Cluster</tt><a class="reference internal" href="_modules/Cluster.html#Cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Cluster.Cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to clustering an ensemble of structure instance</p>
+<dl class="method">
+<dt id="Cluster.Cluster.RMSD_ensemble">
+<tt class="descname">RMSD_ensemble</tt><big>(</big><em>rank_fit_ensemble</em>, <em>ensemble_list</em><big>)</big><a class="reference internal" href="_modules/Cluster.html#Cluster.RMSD_ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Cluster.Cluster.RMSD_ensemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the pairwise RMSD matrix for all Structure Instance in the ensemble.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>rank_fit_ensemble</em></dt>
+<dd>Ensemble of Structure Instance ranked using cluster.rank_fit_ensemble</dd>
+<dt><em>ensemble_list</em></dt>
+<dd>Input list of Structure Instances</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd>A numpy array</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cluster.Cluster.cluster_fit_ensemble_top_fit">
+<tt class="descname">cluster_fit_ensemble_top_fit</tt><big>(</big><em>ensemble_list</em>, <em>score</em>, <em>rms_cutoff</em>, <em>res_target_map</em>, <em>sigma_coeff</em>, <em>number_top_mod=0</em>, <em>write=False</em>, <em>targetMap=False</em><big>)</big><a class="reference internal" href="_modules/Cluster.html#Cluster.cluster_fit_ensemble_top_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Cluster.Cluster.cluster_fit_ensemble_top_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>RMSD clustering of the multiple &#8220;fits&#8221; starting from the best scoring model accordingly with a chosen score.
+Cluster the fits based on Calpha RMSD (starting from the best scoring model)</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>ensemble_list</em></dt>
+<dd>Input list of Structure Instances.</dd>
+<dt><em>targetMap</em></dt>
+<dd>Target Map Instance.</dd>
+<dt><em>score</em></dt>
+<dd><p class="first">Scoring function to use. 
+See ScoringFunctions class for a list of the available Scoring Function.
+E.g. set score=&#8217;CCC&#8217; to use the Cross-correlation coefficient.</p>
+<p>Score option are:</p>
+<p>i    &#8216;CCC&#8217; - Cross-correlation coefficient;</p>
+<p>ii    &#8216;LAP&#8217; - Laplacian-filtered cross-correlation coefficient:  useful for maps with resolutions worse than 10-15 A;</p>
+<p>iii   &#8216;MI&#8217; - Mutual information score: a good and robust score but relatively slow to calculate;</p>
+<p>iv    &#8216;ENV&#8217; - Envelope score: the fastest score to calculate due to binarisation of the map.</p>
+<p>v-vii  &#8216;NV&#8217;,&#8217;NV_Sobel&#8217;,&#8217;NV_Laplace&#8217;- Normal vector score: a vector-based surface superimposition score with or without Sobel/Laplace filter.</p>
+<p class="last">viii &#8216;CD&#8217; - Chamfer Distance: a score used in computer vision algorithms as a fast similarity metric</p>
+</dd>
+<dt><em>rms_cutoff</em></dt>
+<dd>float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).</dd>
+<dt><em>res_target_map</em></dt>
+<dd>the resolution, in Angstroms, of the target Map.</dd>
+<dt><em>sigma_coeff</em></dt>
+<dd><p class="first">the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+Default values is 0.356.</p>
+<p>Other values used :</p>
+<blockquote class="last">
+<div><p>0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</p>
+<p>0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</p>
+<p>0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</p>
+<p>0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</p>
+</div></blockquote>
+</dd>
+<dt><em>number_top_mod</em></dt>
+<dd>Number of Fits to cluster. Default is all.</dd>
+<dt><em>write</em></dt>
+<dd>True will write out a file that contains the list of the structure instances representing different fits scored and clustered.
+note the lrms column is the Calpha RMSD of each fit from the first fit in its class</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="Cluster.Cluster.rank_fit_ensemble">
+<tt class="descname">rank_fit_ensemble</tt><big>(</big><em>ensemble_list</em>, <em>score</em>, <em>res_target_map</em>, <em>sigma_coeff</em>, <em>number_top_mod=0</em>, <em>write=False</em>, <em>targetMap=False</em><big>)</big><a class="reference internal" href="_modules/Cluster.html#Cluster.rank_fit_ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Cluster.Cluster.rank_fit_ensemble" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>RMSD clustering of the multiple &#8220;fits&#8221; accordingly with a chosen score.
+Cluster the fits based on Calpha RMSD (starting from the best scoring model)</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><em>ensemble_list</em></dt>
+<dd>Input list of Structure Instances.</dd>
+<dt><em>targetMap</em></dt>
+<dd>Target Map Instance.</dd>
+<dt><em>score</em></dt>
+<dd><p class="first">Scoring function to use. 
+See ScoringFunctions class for a list of the available Scoring Function.
+E.g. set score=&#8217;CCC&#8217; to use the Cross-correlation coefficient.</p>
+<p>Score option are:</p>
+<p>i    &#8216;CCC&#8217; - Cross-correlation coefficient;</p>
+<p>ii    &#8216;LAP&#8217; - Laplacian-filtered cross-correlation coefficient:  useful for maps with resolutions worse than 10-15 A;</p>
+<p>iii   &#8216;MI&#8217; - Mutual information score: a good and robust score but relatively slow to calculate;</p>
+<p>iv    &#8216;ENV&#8217; - Envelope score: the fastest score to calculate due to binarisation of the map.</p>
+<p>v-vii  &#8216;NV&#8217;,&#8217;NV_Sobel&#8217;,&#8217;NV_Laplace&#8217;- Normal vector score: a vector-based surface superimposition score with or without Sobel/Laplace filter.</p>
+<p class="last">viii &#8216;CD&#8217; - Chamfer Distance: a score used in computer vision algorithms as a fast similarity metric</p>
+</dd>
+<dt><em>rms_cutoff</em></dt>
+<dd>float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).</dd>
+<dt><em>res_target_map</em></dt>
+<dd>the resolution, in Angstroms, of the target Map.</dd>
+<dt><em>sigma_coeff</em></dt>
+<dd><p class="first">the sigma value (multiplied by the resolution) that controls the width of the Gaussian. 
+Default values is 0.356.</p>
+<p>Other values used :</p>
+<blockquote class="last">
+<div><p>0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</p>
+<p>0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</p>
+<p>0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</p>
+<p>0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</p>
+<p>1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</p>
+</div></blockquote>
+</dd>
+<dt><em>number_top_mod</em></dt>
+<dd>Number of Fits to cluster. Default is all.</dd>
+<dt><em>write</em></dt>
+<dd>True will write out a file that contains the list of the structure instances representing different fits scored and clustered.
+note the lrms column is the Calpha RMSD of each fit from the first fit in its class</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<p>l</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li class="right" >
+          <a href="Consensus.html" title="13. Consensus Scoring of multiple fits in a cryoEM map"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ScoringFunctions.html" title="11. Scoring Functions"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,499 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Cluster &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for Cluster</h1><div class="highlight"><pre>
+<span class="c">##===============================================================================</span>
+<span class="c">#     This file is part of TEMPy.</span>
+<span class="c">#     </span>
+<span class="c">#     TEMPy is a software designed to help the user in the manipulation </span>
+<span class="c">#     and analyses of macromolecular assemblies using 3D electron microscopy maps. </span>
+<span class="c">#     </span>
+<span class="c">#     Copyright 2010-2014 TEMPy Inventors and Birkbeck College University of London.</span>
+<span class="c">#                          The TEMPy Inventors are: Maya Topf, Daven Vasishtan, </span>
+<span class="c">#                           Arun Prasad Pandurangan, Irene Farabella, Agnel-Praveen Joseph,</span>
+<span class="c">#                          Harpal Sahota</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is available under Public Licence.</span>
+<span class="c">#     </span>
+<span class="c">#     Please cite your use of TEMPy in published work:</span>
+<span class="c">#     </span>
+<span class="c">#     Vasishtan D, Topf M. (2011) J Struct Biol 174:333-343. Scoring functions for cryoEM density fitting.</span>
+<span class="c">#</span>
+<span class="c">#===============================================================================</span>
+
+<span class="kn">from</span> <span class="nn">TEMPy.StructureBlurrer</span> <span class="kn">import</span> <span class="n">StructureBlurrer</span>
+<span class="kn">from</span> <span class="nn">TEMPy.ScoringFunctions</span> <span class="kn">import</span> <span class="n">ScoringFunctions</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<div class="viewcode-block" id="Cluster"><a class="viewcode-back" href="../Cluster.html#Cluster.Cluster">[docs]</a><span class="k">class</span> <span class="nc">Cluster</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class to clustering an ensemble of structure instance&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_print_results_cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">models</span><span class="p">,</span><span class="n">class_num</span><span class="p">,</span><span class="n">number_top_mod</span><span class="p">,</span><span class="n">score</span><span class="p">,</span><span class="n">write</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        private function used in Cluster_Ensemble</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">if</span> <span class="n">write</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">outp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;top&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">number_top_mod</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">score</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;_classes.txt&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+            <span class="n">outp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;pdb_name</span><span class="se">\t</span><span class="s">score</span><span class="se">\t</span><span class="s">lrms</span><span class="se">\t</span><span class="s">class</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">class_num</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+       
+    <span class="c"># print the fits of each class ordered by the highest score </span>
+              <span class="k">for</span> <span class="n">ipdb</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+                 <span class="k">if</span> <span class="p">(</span><span class="n">ipdb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">):</span>
+                    <span class="n">out_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+                    <span class="n">outp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%.5f</span><span class="se">\t</span><span class="si">%.3f</span><span class="se">\t</span><span class="si">%d</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+            <span class="n">outp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">class_num</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+              <span class="k">for</span> <span class="n">ipdb</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+                 <span class="k">if</span> <span class="p">(</span><span class="n">ipdb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">):</span>
+                    <span class="n">out_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="k">return</span> <span class="n">out_list</span>
+
+    <span class="k">def</span> <span class="nf">_print_results_cluster2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">models</span><span class="p">,</span><span class="n">write</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        private function used in Cluster_Ensemble</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">if</span> <span class="n">write</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">outp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;top_rank.txt&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+            <span class="n">outp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;pdb_name</span><span class="se">\t</span><span class="s">score</span><span class="se">\t</span><span class="s">lrms</span><span class="se">\t</span><span class="s">class</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+               <span class="c">#[name_mod,mod,score_mod,int(0),int(0)]</span>
+    <span class="c"># print the fits of each class ordered by the highest score </span>
+                <span class="n">outp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%.5f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="n">outp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;this is for print!!!&#39;</span>
+
+<div class="viewcode-block" id="Cluster.cluster_fit_ensemble_top_fit"><a class="viewcode-back" href="../Cluster.html#Cluster.Cluster.cluster_fit_ensemble_top_fit">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_fit_ensemble_top_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ensemble_list</span><span class="p">,</span><span class="n">score</span><span class="p">,</span><span class="n">rms_cutoff</span><span class="p">,</span><span class="n">res_target_map</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="p">,</span><span class="n">number_top_mod</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">write</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">targetMap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          </span>
+<span class="sd">            RMSD clustering of the multiple &quot;fits&quot; starting from the best scoring model accordingly with a chosen score.</span>
+<span class="sd">            Cluster the fits based on Calpha RMSD (starting from the best scoring model)            </span>
+<span class="sd">                </span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *ensemble_list*</span>
+<span class="sd">                        Input list of Structure Instances.</span>
+<span class="sd">                    *targetMap*</span>
+<span class="sd">                        Target Map Instance.</span>
+<span class="sd">                    *score*</span>
+<span class="sd">                        Scoring function to use. </span>
+<span class="sd">                        See ScoringFunctions class for a list of the available Scoring Function.</span>
+<span class="sd">                        E.g. set score=&#39;CCC&#39; to use the Cross-correlation coefficient.</span>
+<span class="sd">                        </span>
+<span class="sd">                        Score option are:</span>
+<span class="sd">                        </span>
+<span class="sd">                        i    &#39;CCC&#39; - Cross-correlation coefficient; </span>
+<span class="sd">                        </span>
+<span class="sd">                        ii    &#39;LAP&#39; - Laplacian-filtered cross-correlation coefficient:  useful for maps with resolutions worse than 10-15 A;</span>
+<span class="sd">                        </span>
+<span class="sd">                        iii   &#39;MI&#39; - Mutual information score: a good and robust score but relatively slow to calculate; </span>
+<span class="sd">                        </span>
+<span class="sd">                        iv    &#39;ENV&#39; - Envelope score: the fastest score to calculate due to binarisation of the map. </span>
+<span class="sd">                        </span>
+<span class="sd">                        v-vii  &#39;NV&#39;,&#39;NV_Sobel&#39;,&#39;NV_Laplace&#39;- Normal vector score: a vector-based surface superimposition score with or without Sobel/Laplace filter.</span>
+
+<span class="sd">                        viii &#39;CD&#39; - Chamfer Distance: a score used in computer vision algorithms as a fast similarity metric </span>
+
+<span class="sd">                    *rms_cutoff*</span>
+<span class="sd">                        float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).</span>
+<span class="sd">                    *res_target_map*</span>
+<span class="sd">                        the resolution, in Angstroms, of the target Map.</span>
+<span class="sd">                    *sigma_coeff*</span>
+<span class="sd">                        the sigma value (multiplied by the resolution) that controls the width of the Gaussian. </span>
+<span class="sd">                        Default values is 0.356.</span>
+<span class="sd">                </span>
+<span class="sd">                        Other values used :</span>
+<span class="sd">                </span>
+<span class="sd">                            0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</span>
+<span class="sd">                    </span>
+<span class="sd">                            0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</span>
+<span class="sd">                    </span>
+<span class="sd">                            0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                    </span>
+<span class="sd">                            0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</span>
+<span class="sd">                                </span>
+<span class="sd">                            0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                                </span>
+<span class="sd">                            1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</span>
+
+<span class="sd">                    *number_top_mod*</span>
+<span class="sd">                        Number of Fits to cluster. Default is all.</span>
+<span class="sd">                    *write*</span>
+<span class="sd">                        True will write out a file that contains the list of the structure instances representing different fits scored and clustered.</span>
+<span class="sd">                        note the lrms column is the Calpha RMSD of each fit from the first fit in its class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">blurrer</span> <span class="o">=</span> <span class="n">StructureBlurrer</span><span class="p">()</span>
+        
+        <span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+        
+        <span class="n">cluster</span><span class="o">=</span><span class="n">Cluster</span><span class="p">()</span>
+
+        <span class="n">count</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">dict_ensembl</span><span class="o">=</span><span class="p">{}</span>
+        <span class="n">list_ordered</span><span class="o">=</span><span class="n">cluster</span><span class="o">.</span><span class="n">rank_fit_ensemble</span><span class="p">(</span><span class="n">ensemble_list</span><span class="p">,</span><span class="n">score</span><span class="p">,</span><span class="n">res_target_map</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="p">,</span><span class="n">number_top_mod</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">write</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">targetMap</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="c">#cluster fits by local rmsd</span>
+        <span class="k">if</span> <span class="n">number_top_mod</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">ini_num</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">end_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_ordered</span><span class="p">)</span>
+            <span class="n">fit_class</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">ipdb</span> <span class="ow">in</span> <span class="n">list_ordered</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;model num </span><span class="si">%d</span><span class="s">: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">list_ordered</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ipdb</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ipdb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">ini_num1</span> <span class="o">=</span> <span class="n">list_ordered</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ipdb</span><span class="p">)</span>
+                <span class="n">mod1</span><span class="o">=</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">print</span> <span class="s">&#39;next index &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ini_num1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ipdb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">fit_class</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">ipdb1</span> <span class="ow">in</span> <span class="n">list_ordered</span><span class="p">[</span><span class="n">ini_num1</span> <span class="p">:</span> <span class="n">end_num</span><span class="p">]:</span>
+                        <span class="n">mod2</span><span class="o">=</span><span class="n">ipdb1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">ipdb1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">rmsd_val</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">RMSD_from_same_structure</span><span class="p">(</span><span class="n">mod2</span><span class="p">,</span><span class="n">CA</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                            <span class="n">ipdb1</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="n">rmsd_val</span>
+                            <span class="k">print</span> <span class="s">&quot;rmsd of </span><span class="si">%s</span><span class="s"> from best local fit (</span><span class="si">%s</span><span class="s">)= </span><span class="si">%.2f</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">ipdb1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ipdb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rmsd_val</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">rmsd_val</span> <span class="o">&lt;</span> <span class="n">rms_cutoff</span><span class="p">:</span>
+                                <span class="n">ipdb1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_class</span>
+                            <span class="k">print</span> <span class="s">&#39;class= &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ipdb1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span> <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span> <span class="k">continue</span>
+            <span class="k">return</span> <span class="n">cluster</span><span class="o">.</span><span class="n">_print_results_cluster</span><span class="p">(</span><span class="n">list_ordered</span><span class="p">,</span><span class="n">fit_class</span><span class="p">,</span><span class="n">number_top_mod</span><span class="p">,</span><span class="n">score</span><span class="p">,</span><span class="n">write</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">number_top_mod</span><span class="p">)</span>
+            <span class="n">ini_num</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">end_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_ordered</span><span class="p">[:</span><span class="n">x</span><span class="p">])</span>
+            <span class="n">fit_class</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">ipdb</span> <span class="ow">in</span> <span class="n">list_ordered</span><span class="p">[:</span><span class="n">x</span><span class="p">]:</span>
+                <span class="k">print</span> <span class="s">&quot;model num </span><span class="si">%d</span><span class="s">: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">list_ordered</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ipdb</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ipdb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">ini_num1</span> <span class="o">=</span> <span class="n">list_ordered</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ipdb</span><span class="p">)</span>
+                <span class="n">mod1</span><span class="o">=</span><span class="n">ipdb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">print</span> <span class="s">&#39;next index &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ini_num1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ipdb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">fit_class</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">ipdb1</span> <span class="ow">in</span> <span class="n">list_ordered</span><span class="p">[</span><span class="n">ini_num1</span> <span class="p">:</span> <span class="n">end_num</span><span class="p">]:</span>
+                        <span class="n">mod2</span><span class="o">=</span><span class="n">ipdb1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">ipdb1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">rmsd_val</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">RMSD_from_same_structure</span><span class="p">(</span><span class="n">mod2</span><span class="p">,</span><span class="n">CA</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                            <span class="k">print</span> <span class="s">&quot;rms of </span><span class="si">%s</span><span class="s"> from best local fit (</span><span class="si">%s</span><span class="s">)= </span><span class="si">%.2f</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">ipdb1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ipdb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rmsd_val</span><span class="p">)</span>
+                            <span class="n">ipdb1</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="n">rmsd_val</span>
+                            <span class="k">if</span> <span class="n">rmsd_val</span> <span class="o">&lt;</span> <span class="n">rms_cutoff</span><span class="p">:</span>
+                                <span class="n">ipdb1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_class</span>
+                            <span class="k">print</span> <span class="s">&#39;class= &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ipdb1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span> <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span> <span class="k">continue</span>
+            <span class="k">return</span> <span class="n">cluster</span><span class="o">.</span><span class="n">_print_results_cluster</span><span class="p">(</span><span class="n">list_ordered</span><span class="p">[:</span><span class="n">x</span><span class="p">],</span><span class="n">fit_class</span><span class="p">,</span><span class="n">number_top_mod</span><span class="p">,</span><span class="n">score</span><span class="p">,</span><span class="n">write</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Cluster.RMSD_ensemble"><a class="viewcode-back" href="../Cluster.html#Cluster.Cluster.RMSD_ensemble">[docs]</a>    <span class="k">def</span> <span class="nf">RMSD_ensemble</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rank_fit_ensemble</span><span class="p">,</span><span class="n">ensemble_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Calculates the pairwise RMSD matrix for all Structure Instance in the ensemble.</span>
+<span class="sd">        </span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *rank_fit_ensemble*</span>
+<span class="sd">                        Ensemble of Structure Instance ranked using cluster.rank_fit_ensemble</span>
+<span class="sd">                    *ensemble_list*</span>
+<span class="sd">                        Input list of Structure Instances</span>
+<span class="sd">                Return:</span>
+<span class="sd">                    A numpy array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">list_rotate_models_dict</span><span class="o">=</span><span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+            <span class="n">list_rotate_models_dict</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">=</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    
+        <span class="n">sorted_rank</span><span class="o">=</span><span class="n">rank_fit_ensemble</span>
+        <span class="n">mxRMSD</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sorted_rank</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">sorted_rank</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">sorted_rank</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">mod2</span> <span class="ow">in</span> <span class="n">sorted_rank</span><span class="p">:</span>
+                
+                <span class="n">rmsd_val</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">list_rotate_models_dict</span><span class="p">[</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">RMSD_from_same_structure</span><span class="p">(</span><span class="n">list_rotate_models_dict</span><span class="p">[</span><span class="n">mod2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">CA</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                <span class="n">m1</span><span class="o">=</span><span class="n">sorted_rank</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">mod1</span><span class="p">)</span>
+                <span class="n">m2</span><span class="o">=</span><span class="n">sorted_rank</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">mod2</span><span class="p">)</span>
+                <span class="n">mxRMSD</span><span class="p">[</span><span class="n">m1</span><span class="p">][</span><span class="n">m2</span><span class="p">]</span><span class="o">=</span><span class="n">rmsd_val</span>
+        <span class="k">return</span> <span class="n">mxRMSD</span>
+</div>
+<div class="viewcode-block" id="Cluster.rank_fit_ensemble"><a class="viewcode-back" href="../Cluster.html#Cluster.Cluster.rank_fit_ensemble">[docs]</a>    <span class="k">def</span> <span class="nf">rank_fit_ensemble</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ensemble_list</span><span class="p">,</span><span class="n">score</span><span class="p">,</span><span class="n">res_target_map</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="p">,</span><span class="n">number_top_mod</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">write</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">targetMap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          </span>
+<span class="sd">            RMSD clustering of the multiple &quot;fits&quot; accordingly with a chosen score.</span>
+<span class="sd">            Cluster the fits based on Calpha RMSD (starting from the best scoring model)            </span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *ensemble_list*</span>
+<span class="sd">                        Input list of Structure Instances.</span>
+<span class="sd">                    *targetMap*</span>
+<span class="sd">                        Target Map Instance.</span>
+<span class="sd">                    *score*</span>
+<span class="sd">                        Scoring function to use. </span>
+<span class="sd">                        See ScoringFunctions class for a list of the available Scoring Function.</span>
+<span class="sd">                        E.g. set score=&#39;CCC&#39; to use the Cross-correlation coefficient.</span>
+<span class="sd">                        </span>
+<span class="sd">                        Score option are:</span>
+<span class="sd">                        </span>
+<span class="sd">                        i    &#39;CCC&#39; - Cross-correlation coefficient; </span>
+<span class="sd">                        </span>
+<span class="sd">                        ii    &#39;LAP&#39; - Laplacian-filtered cross-correlation coefficient:  useful for maps with resolutions worse than 10-15 A;</span>
+<span class="sd">                        </span>
+<span class="sd">                        iii   &#39;MI&#39; - Mutual information score: a good and robust score but relatively slow to calculate; </span>
+<span class="sd">                        </span>
+<span class="sd">                        iv    &#39;ENV&#39; - Envelope score: the fastest score to calculate due to binarisation of the map. </span>
+<span class="sd">                        </span>
+<span class="sd">                        v-vii  &#39;NV&#39;,&#39;NV_Sobel&#39;,&#39;NV_Laplace&#39;- Normal vector score: a vector-based surface superimposition score with or without Sobel/Laplace filter.</span>
+
+<span class="sd">                        viii &#39;CD&#39; - Chamfer Distance: a score used in computer vision algorithms as a fast similarity metric </span>
+<span class="sd">                                                                                         </span>
+
+<span class="sd">                    *rms_cutoff*</span>
+<span class="sd">                        float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).</span>
+<span class="sd">                    *res_target_map*</span>
+<span class="sd">                        the resolution, in Angstroms, of the target Map.</span>
+<span class="sd">                    *sigma_coeff*</span>
+<span class="sd">                        the sigma value (multiplied by the resolution) that controls the width of the Gaussian. </span>
+<span class="sd">                        Default values is 0.356.</span>
+<span class="sd">                </span>
+<span class="sd">                        Other values used :</span>
+<span class="sd">                </span>
+<span class="sd">                            0.187R corresponding with the Gaussian width of the Fourier transform falling to half the maximum at 1/resolution, as used in Situs (Wriggers et al, 1999);</span>
+<span class="sd">                    </span>
+<span class="sd">                            0.225R which makes the Fourier transform of the distribution fall to 1/e of its maximum value at wavenumber 1/resolution, the default in Chimera (Petterson et al, 2004)</span>
+<span class="sd">                    </span>
+<span class="sd">                            0.356R corresponding to the Gaussian width at 1/e maximum height equaling the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                    </span>
+<span class="sd">                            0.425R the fullwidth half maximum being equal to the resolution, as used by FlexEM (Topf et al, 2008);</span>
+<span class="sd">                                </span>
+<span class="sd">                            0.5R the distance between the two inflection points being the same length as the resolution, an option in Chimera (Petterson et al, 2004);</span>
+<span class="sd">                                </span>
+<span class="sd">                            1R where the sigma value simply equal to the resolution, as used by NMFF (Tama et al, 2004).</span>
+
+<span class="sd">                    *number_top_mod*</span>
+<span class="sd">                        Number of Fits to cluster. Default is all.</span>
+<span class="sd">                    *write*</span>
+<span class="sd">                        True will write out a file that contains the list of the structure instances representing different fits scored and clustered.</span>
+<span class="sd">                        note the lrms column is the Calpha RMSD of each fit from the first fit in its class</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        l&quot;&quot;&quot;</span>
+        <span class="n">blurrer</span> <span class="o">=</span> <span class="n">StructureBlurrer</span><span class="p">()</span>
+        
+        <span class="n">scorer</span> <span class="o">=</span> <span class="n">ScoringFunctions</span><span class="p">()</span>
+        
+        <span class="n">cluster</span><span class="o">=</span><span class="n">Cluster</span><span class="p">()</span>
+
+        <span class="n">count</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">dict_ensembl</span><span class="o">=</span><span class="p">{}</span>
+        <span class="n">list_to_order</span><span class="o">=</span><span class="p">[]</span>
+        <span class="c">#print targetMap</span>
+        <span class="k">if</span> <span class="n">targetMap</span><span class="o">==</span><span class="bp">False</span><span class="p">:</span>
+            <span class="c">#targetMap = self.protMap(prot, min(resolution/4., 3.5), resolution)</span>
+            <span class="k">print</span> <span class="s">&quot;WARNING:Need target map&quot;</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;CCC&#39;</span><span class="p">,</span><span class="s">&#39;LAP&#39;</span><span class="p">,</span><span class="s">&#39;MI&#39;</span><span class="p">,</span><span class="s">&#39;NV&#39;</span><span class="p">,</span><span class="s">&#39;NV_Sobel&#39;</span><span class="p">,</span><span class="s">&#39;NV_Laplace&#39;</span><span class="p">,</span><span class="s">&#39;ENV&#39;</span><span class="p">,</span><span class="s">&#39;CD&#39;</span><span class="p">]:</span>
+            <span class="k">print</span> <span class="s">&#39;Incorrect Scoring Function: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">score</span>
+            <span class="k">print</span> <span class="s">&#39;Please select from one of the following scoring functions: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;CCC&#39;</span><span class="p">,</span><span class="s">&#39;LAP&#39;</span><span class="p">,</span><span class="s">&#39;MI&#39;</span><span class="p">,</span><span class="s">&#39;NV&#39;</span><span class="p">,</span><span class="s">&#39;NV_Sobel&#39;</span><span class="p">,</span><span class="s">&#39;NV_Laplace&#39;</span><span class="p">,</span><span class="s">&#39;ENV&#39;</span><span class="p">,</span><span class="s">&#39;CD&#39;</span><span class="p">])</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        
+        
+        <span class="n">targetMap</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;CCC&#39;</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">res_target_map</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_coeff</span><span class="p">)</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">CCC</span><span class="p">(</span><span class="n">sim_map</span><span class="p">,</span><span class="n">targetMap</span><span class="p">)</span> 
+                <span class="c">#&#39;name_file&#39;,&#39;structure_instance&#39;,&#39;score&#39;,&#39;lrmsd&#39;,&#39;class&#39;</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;LAP&#39;</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">res_target_map</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_coeff</span><span class="p">)</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">laplace_CCC</span><span class="p">(</span><span class="n">sim_map</span><span class="p">,</span><span class="n">targetMap</span><span class="p">)</span> 
+                <span class="c">#&#39;name_file&#39;,&#39;structure_instance&#39;,&#39;score&#39;,&#39;lrmsd&#39;,&#39;class&#39;</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;MI&#39;</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">res_target_map</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_coeff</span><span class="p">)</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">MI</span><span class="p">(</span><span class="n">sim_map</span><span class="p">,</span><span class="n">targetMap</span><span class="p">)</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>            
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;NV&#39;</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c">#These two values should be calculated for the experimental map, and only</span>
+                <span class="c">#need to be calculated once, at the beginning</span>
+                <span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">res_target_map</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_coeff</span><span class="p">)</span>
+                <span class="n">min_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_primary_boundary</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">get_prot_mass_from_atoms</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>        
+                <span class="n">points</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_point_map</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span><span class="n">percentage</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+                
+                <span class="n">max_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_second_boundary</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">err_percent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">normal_vector_score</span><span class="p">(</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sim_map</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">max_thr</span><span class="p">,</span><span class="n">Filter</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;NV_Sobel&#39;</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">res_target_map</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_coeff</span><span class="p">)</span>
+                <span class="n">min_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_primary_boundary</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">get_prot_mass_from_atoms</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>                
+                <span class="n">points</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_point_map</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span><span class="n">percentage</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+                <span class="n">max_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_second_boundary</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">err_percent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">normal_vector_score</span><span class="p">(</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sim_map</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">max_thr</span><span class="p">,</span><span class="n">Filter</span><span class="o">=</span><span class="s">&#39;Sobel&#39;</span><span class="p">)</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;NV_Laplace&#39;</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">res_target_map</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_coeff</span><span class="p">)</span>
+                <span class="n">min_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_primary_boundary</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">get_prot_mass_from_atoms</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>                
+                <span class="n">points</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_point_map</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span><span class="n">percentage</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+                <span class="n">max_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_second_boundary</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">err_percent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">normal_vector_score</span><span class="p">(</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sim_map</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">max_thr</span><span class="p">,</span><span class="n">Filter</span><span class="o">=</span><span class="s">&#39;Laplace&#39;</span><span class="p">)</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;ENV&#39;</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">min_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_primary_boundary</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">get_prot_mass_from_atoms</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">envelope_score</span><span class="p">(</span><span class="n">targetMap</span><span class="p">,</span><span class="n">min_thr</span><span class="p">,</span><span class="n">mod</span><span class="p">)</span>
+                 <span class="c">#&#39;name_file&#39;,&#39;structure_instance&#39;,&#39;score&#39;,&#39;lrmsd&#39;,&#39;class&#39;</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">==</span><span class="s">&#39;CD&#39;</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">mod1</span> <span class="ow">in</span> <span class="n">ensemble_list</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">name_mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mod</span><span class="o">=</span><span class="n">mod1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sim_map</span> <span class="o">=</span> <span class="n">blurrer</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">res_target_map</span><span class="p">,</span><span class="n">densMap</span><span class="o">=</span><span class="n">targetMap</span><span class="p">,</span><span class="n">sigma_coeff</span><span class="o">=</span><span class="n">sigma_coeff</span><span class="p">)</span>
+                <span class="n">min_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_primary_boundary</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">get_prot_mass_from_atoms</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+                <span class="n">points</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_point_map</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span><span class="n">percentage</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+                <span class="n">max_thr</span><span class="o">=</span><span class="n">targetMap</span><span class="o">.</span><span class="n">get_second_boundary</span><span class="p">(</span><span class="n">min_thr</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">targetMap</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">err_percent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">score_mod</span><span class="o">=</span><span class="n">scorer</span><span class="o">.</span><span class="n">chamfer_distance</span><span class="p">(</span><span class="n">sim_map</span><span class="p">,</span><span class="n">targetMap</span><span class="p">,</span> <span class="n">min_thr</span><span class="p">,</span> <span class="n">max_thr</span><span class="p">,</span> <span class="n">kdtree</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+                <span class="n">list_to_order</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name_mod</span><span class="p">,</span><span class="n">mod</span><span class="p">,</span><span class="n">score_mod</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">score</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;NV&#39;</span><span class="p">,</span><span class="s">&#39;NV_Sobel&#39;</span><span class="p">,</span><span class="s">&#39;NV_Laplace&#39;</span><span class="p">]:</span>
+            <span class="n">list_ordered</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">list_to_order</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">list_ordered</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">list_to_order</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_top_mod</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">write</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cluster</span><span class="o">.</span><span class="n">_print_results_cluster2</span><span class="p">(</span><span class="n">list_ordered</span><span class="p">,</span><span class="n">write</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">list_ordered</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">number_top_mod</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">write</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cluster</span><span class="o">.</span><span class="n">_print_results_cluster2</span><span class="p">(</span><span class="n">list_ordered</span><span class="p">[:</span><span class="n">x</span><span class="p">],</span><span class="n">write</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">list_ordered</span><span class="p">[:</span><span class="n">x</span><span class="p">]</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

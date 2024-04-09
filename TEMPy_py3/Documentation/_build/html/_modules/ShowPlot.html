@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ShowPlot &mdash; TEMpy 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="TEMpy 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/test6.png" border="0" alt="TEMPy"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ShowPlot</h1><div class="highlight"><pre>
+<span class="c">##===============================================================================</span>
+<span class="c">#     This file is part of TEMPy.</span>
+<span class="c">#     </span>
+<span class="c">#     TEMPy is a software designed to help the user in the manipulation </span>
+<span class="c">#     and analyses of macromolecular assemblies using 3D electron microscopy maps. </span>
+<span class="c">#     </span>
+<span class="c">#     Copyright 2010-2014 TEMPy Inventors and Birkbeck College University of London.</span>
+<span class="c">#                          The TEMPy Inventors are: Maya Topf, Daven Vasishtan, </span>
+<span class="c">#                           Arun Prasad Pandurangan, Irene Farabella, Agnel-Praveen Joseph,</span>
+<span class="c">#                          Harpal Sahota</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#     TEMPy is available under Public Licence.</span>
+<span class="c">#     </span>
+<span class="c">#     Please cite your use of TEMPy in published work:</span>
+<span class="c">#     </span>
+<span class="c">#     Vasishtan D, Topf M. (2011) J Struct Biol 174:333-343. Scoring functions for cryoEM density fitting.</span>
+<span class="c">#</span>
+<span class="c">#===============================================================================</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">scipy.cluster.hierarchy</span> <span class="kn">as</span> <span class="nn">hier</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.gridspec</span> <span class="kn">as</span> <span class="nn">gridspec</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.gridspec</span> <span class="kn">as</span> <span class="nn">gridspec</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">mplcol</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rcParams</span>
+
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;to run this module please install matplotlib</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">as</span> <span class="nn">ssd</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">amax</span> <span class="k">as</span> <span class="n">npmax</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linspace</span> <span class="k">as</span> <span class="n">nplinspace</span> 
+<span class="kn">import</span> <span class="nn">scipy.cluster.hierarchy</span> <span class="kn">as</span> <span class="nn">hier</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linspace</span>
+
+<div class="viewcode-block" id="Plot"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot">[docs]</a><span class="k">class</span> <span class="nc">Plot</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class to create analysis output&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+<div class="viewcode-block" id="Plot.ShowHierarchicalClusterings"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.ShowHierarchicalClusterings">[docs]</a>    <span class="k">def</span> <span class="nf">ShowHierarchicalClusterings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ranked_ensemble</span><span class="p">,</span><span class="n">mxRMSD</span><span class="p">,</span><span class="n">rms_cutoff</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;HierClustPlt&#39;</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">cluster_index</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          </span>
+<span class="sd">            Plot the Calpha RMSD hierarchical clustering of the multiple &quot;fits&quot;.</span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *ranked_ensemble*</span>
+<span class="sd">                        Input list of Structure Instances. It is list of fits obtained with Cluster.rank_fit_ensemble function.</span>
+<span class="sd">                    *mxRMSD*</span>
+<span class="sd">                        Pairwise RMSD matrix for all Structure Instance in the ensemble obtained as one Cluster.RMSD_ensemble function.</span>
+<span class="sd">                    *rms_cutoff*</span>
+<span class="sd">                        float,  the Calpha RMSD cutoff based on which you want to cluster the solutions. For example 3.5 (for 3.5 A).</span>
+<span class="sd">                        Suggested value the mean of the pairwise RMSD matrix.</span>
+<span class="sd">                    *name*</span>
+<span class="sd">                        Output file name (.pdf)</span>
+<span class="sd">                    *save*</span>
+<span class="sd">                        True will save a pdf file of the plot.</span>
+<span class="sd">                    *cluster_index*</span>
+<span class="sd">                        True will return a list that contains the model and the related cluster index.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="n">mxscore</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ranked_ensemble</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ranked_ensemble</span><span class="p">)):</span>
+            <span class="n">mxscore</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">ranked_ensemble</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span><span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+        <span class="n">heatmapGS</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">denAX</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">heatmapGS</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">axdendro</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">()</span>
+        <span class="c">#see why @http://stackoverflow.com/questions/18952587/use-distance-matrix-in-scipy-cluster-hierarchy-linkage</span>
+    
+        <span class="n">mxRMSD_cond</span> <span class="o">=</span> <span class="n">ssd</span><span class="o">.</span><span class="n">squareform</span><span class="p">(</span><span class="n">mxRMSD</span><span class="p">)</span>
+        <span class="n">linkageMatrixZ</span> <span class="o">=</span> <span class="n">hier</span><span class="o">.</span><span class="n">linkage</span><span class="p">(</span><span class="n">mxRMSD_cond</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;complete&#39;</span><span class="p">)</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">ranked_ensemble</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;mod_&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ranked_ensemble</span><span class="p">))]</span>     
+        <span class="n">hier_dendo</span><span class="o">=</span><span class="n">hier</span><span class="o">.</span><span class="n">dendrogram</span><span class="p">(</span><span class="n">linkageMatrixZ</span><span class="p">,</span><span class="n">color_threshold</span><span class="o">=</span><span class="n">rms_cutoff</span><span class="p">,</span><span class="n">orientation</span><span class="o">=</span><span class="s">&#39;right&#39;</span><span class="p">,</span><span class="n">get_leaves</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">distance_sort</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">show_leaf_counts</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">show_contracted</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">denAX</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="n">heatmapAX</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">heatmapGS</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">hier_dendo</span><span class="p">[</span><span class="s">&#39;leaves&#39;</span><span class="p">]</span>
+        <span class="n">cluster_dendro</span><span class="o">=</span> <span class="n">hier_dendo</span><span class="p">[</span><span class="s">&#39;ivl&#39;</span><span class="p">]</span>
+        <span class="c">#reorder matrix</span>
+        <span class="n">mxscore</span> <span class="o">=</span> <span class="n">mxscore</span><span class="p">[</span><span class="n">index</span><span class="p">,:]</span>
+        <span class="n">axi</span> <span class="o">=</span> <span class="n">heatmapAX</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mxscore</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Blues</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s">&#39;lower&#39;</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axi</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="n">heatmapAX</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="n">heatmapAX</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
+        <span class="c">#plt.show(block=False)</span>
+        <span class="c">#plt.ion()</span>
+        <span class="k">if</span> <span class="n">save</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.pdf&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cluster_index</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">hier</span><span class="o">.</span><span class="n">fcluster</span><span class="p">(</span><span class="n">linkageMatrixZ</span><span class="p">,</span> <span class="n">rms_cutoff</span><span class="p">,</span> <span class="s">&#39;distance&#39;</span><span class="p">)</span>
+            <span class="n">ind</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">ind</span><span class="o">=</span><span class="n">ind</span><span class="p">[</span><span class="n">index</span><span class="p">,]</span>
+            <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mxscore</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span><span class="n">cluster_dendro</span><span class="p">,</span><span class="n">ind</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Plot.ShowRMSDmatrix"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.ShowRMSDmatrix">[docs]</a>    <span class="k">def</span> <span class="nf">ShowRMSDmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mxRMSD</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;RMSDmatrix&#39;</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          </span>
+<span class="sd">            Plot the pairwise RMSD matrix for all Structure Instance in the ensemble.</span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *mxRMSD*</span>
+<span class="sd">                        Pairwise RMSD matrix for all Structure Instance in the ensemble obtained as one Cluster.RMSD_ensemble function.</span>
+<span class="sd">                    *name*</span>
+<span class="sd">                        Output file name (.pdf)</span>
+<span class="sd">                    *save*</span>
+<span class="sd">                        True will save a pdf file of the plot.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&#39;RMSD matrix&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mxRMSD</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s">&#39;lower&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s">&#39;equal&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s">&#39;vertical&#39;</span><span class="p">)</span>
+        <span class="c">#plt.ion()</span>
+        <span class="k">if</span> <span class="n">save</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.pdf&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Plot.ShowGeneralMatrix"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.ShowGeneralMatrix">[docs]</a>    <span class="k">def</span> <span class="nf">ShowGeneralMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mxGen</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="s">&#39;HeatMap&#39;</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Blues</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          Heat Map plot of a matrix.</span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *mxGen*</span>
+<span class="sd">                       Generic Matrix. Use SCCCHeatMap_fromSCCCfiles or SCCCHeatMap_fromSCCCList to generate a matrix from a set of segment assessed with SCCC score.</span>
+<span class="sd">                    *name*</span>
+<span class="sd">                        Output file name (.pdf)</span>
+<span class="sd">                    *save*</span>
+<span class="sd">                        True will save a pdf file of the plot.</span>
+<span class="sd">                    *range*</span>
+<span class="sd">                        set the min and max score.</span>
+<span class="sd">                    *cmap*</span>
+<span class="sd">                        color palette to use. Choose form the one available in matplotlib or use cmp_Rainbow.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span><span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="c">#ax.set_title(&#39;SCCC plot&#39;)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mxGen</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="nb">range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vmax</span><span class="o">=</span><span class="nb">range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">origin</span><span class="o">=</span><span class="s">&#39;lower&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s">&#39;equal&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="c">#ax.set_xticklabels([&#39;Mg-ADP&#39;,&#39;NN&#39;,&#39;Mg-AMPPNP&#39;,&#39;Mg-ADPAlFx&#39;],rotation=90,ha=&#39;center&#39;)</span>
+        <span class="c">#ax.set_xticklabels(label_state,rotation=90,ha=&#39;center&#39;)</span>
+        <span class="c">#ax.set_yticklabels([&#39;coreBsheet&#39;,&#39;Bsheet1abc&#39;,&#39;helix-a3&#39;,&#39;loop9&#39;,&#39;loop11&#39;,&#39;helix-a4&#39;,&#39;helix-a6&#39;]) </span>
+        <span class="c">#ax.set_yticklabels([&#39;helix-a6&#39;,&#39;helix-a4&#39;,&#39;loop11&#39;,&#39;loop9&#39;,&#39;helix-a3&#39;,&#39;Bsheet1abc&#39;,&#39;coreBsheet&#39;]) </span>
+        <span class="c">#bsheet1; ploop, helixa3, loop9, loop11, helixa4, helixa6</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c">#plt.colorbar(orientation=&#39;vertical&#39;)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">save</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s">&#39;tight&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Plot.SCCCHeatMap_fromSCCCfiles"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.SCCCHeatMap_fromSCCCfiles">[docs]</a>    <span class="k">def</span> <span class="nf">SCCCHeatMap_fromSCCCfiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">list_file</span><span class="p">,</span><span class="n">trans</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Return a matrix from a list of score.txt files as:</span>
+<span class="sd">                 x= Structure Instances and y= Structure Instances segments scored</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                *list_file*</span>
+<span class="sd">                    list of files</span>
+<span class="sd">                *trans*</span>
+<span class="sd">                    True will transpose the matrix.  </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tot_file_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">list_file</span><span class="p">:</span>
+            <span class="n">fileIn</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">listfile</span><span class="o">=</span><span class="n">fileIn</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">list_float</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">listfile</span><span class="p">:</span>
+                <span class="n">num</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">score</span><span class="p">))</span>
+                <span class="n">list_float</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+            <span class="n">tot_file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_float</span><span class="p">)</span>
+        <span class="n">tot_file_list</span><span class="o">=</span><span class="n">array</span><span class="p">(</span><span class="n">tot_file_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trans</span><span class="o">==</span><span class="bp">False</span><span class="p">:</span>
+            <span class="n">mxscoreInT</span><span class="o">=</span><span class="n">tot_file_list</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mxscoreInT</span><span class="o">=</span><span class="n">tot_file_list</span>
+        <span class="n">mxscore</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">[</span><span class="n">c</span><span class="p">])):</span>
+                <span class="n">num</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">r</span><span class="p">]))</span>
+                <span class="n">mxscore</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">r</span><span class="p">]</span><span class="o">=</span> <span class="n">num</span>
+        <span class="k">return</span> <span class="n">mxscore</span>
+</div>
+<div class="viewcode-block" id="Plot.cmp_Rainbow"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.cmp_Rainbow">[docs]</a>    <span class="k">def</span> <span class="nf">cmp_Rainbow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return rainbow color map.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmap</span><span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s">&#39;spring&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+        <span class="c"># extract all colors from the .jet map</span>
+        <span class="n">cmaplist</span> <span class="o">=</span> <span class="p">[</span><span class="n">cmap</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">N</span><span class="p">)]</span>
+        <span class="n">cmaplist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">cmaplist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">cmaplist</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">cmaplist</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">cmaplist</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="c"># create the new map</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="s">&#39;Custom cmap&#39;</span><span class="p">,</span> <span class="n">cmaplist</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cmap</span>
+</div>
+<div class="viewcode-block" id="Plot.SCCCHeatMap_fromSCCCList"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.SCCCHeatMap_fromSCCCList">[docs]</a>    <span class="k">def</span> <span class="nf">SCCCHeatMap_fromSCCCList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sccc_list</span><span class="p">,</span><span class="n">trans</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Return a matrix from a list of score.txt files as:</span>
+<span class="sd">                 x= Structure Instances and y= Structure Instances segments scored</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                *sccc_list*</span>
+<span class="sd">                    list of list of SCCC scores</span>
+<span class="sd">                *trans*</span>
+<span class="sd">                    True will transpose the matrix.  </span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="n">tot_file_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">sccc_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">sccc_list</span><span class="p">:</span>
+                <span class="n">num</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">score</span><span class="p">))</span>
+                <span class="n">list_float</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+                <span class="n">tot_file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_float</span><span class="p">)</span>
+        <span class="n">tot_file_list</span><span class="o">=</span><span class="n">array</span><span class="p">(</span><span class="n">tot_file_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trans</span><span class="o">==</span><span class="bp">False</span><span class="p">:</span>
+            <span class="n">mxscoreInT</span><span class="o">=</span><span class="n">tot_file_list</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mxscoreInT</span><span class="o">=</span><span class="n">tot_file_list</span>
+
+        <span class="n">mxscore</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">[</span><span class="n">c</span><span class="p">])):</span>
+                <span class="n">num</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">mxscoreInT</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">r</span><span class="p">]))</span>
+                <span class="n">mxscore</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">r</span><span class="p">]</span><span class="o">=</span> <span class="n">num</span>
+        <span class="k">return</span> <span class="n">mxscore</span>
+
+ </div>
+<div class="viewcode-block" id="Plot.PrintOutClusterAnalysis"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.PrintOutClusterAnalysis">[docs]</a>    <span class="k">def</span> <span class="nf">PrintOutClusterAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cluster_output</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="s">&#39;cluster.out&#39;</span><span class="p">,</span><span class="n">write</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          </span>
+<span class="sd">            Print our a txt file that contains the clustering information after hierarchical clustering analysis.&quot;.</span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *cluster_output*</span>
+<span class="sd">                        List that contains the model and the related cluster index.</span>
+<span class="sd">                    *file_name*</span>
+<span class="sd">                        Output file name</span>
+<span class="sd">                    *write*</span>
+<span class="sd">                        True will save the file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">line</span><span class="o">=</span><span class="s">&quot;model</span><span class="se">\t</span><span class="s">score</span><span class="se">\t</span><span class="s">clusterRMSD</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cluster_output</span><span class="p">:</span>
+            <span class="n">line</span><span class="o">+=</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">print</span> <span class="n">line</span>
+        <span class="k">if</span> <span class="n">write</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">file_out</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+            <span class="n">file_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">file_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Plot.PrintOutChimeraCmdClusterAnalysis"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.PrintOutChimeraCmdClusterAnalysis">[docs]</a>    <span class="k">def</span> <span class="nf">PrintOutChimeraCmdClusterAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cluster_output</span><span class="p">,</span><span class="n">path_dir</span><span class="p">,</span><span class="n">targetMap_location</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="s">&#39;chimera_cluster_color&#39;</span><span class="p">,</span><span class="n">load_map</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          </span>
+<span class="sd">            Print out a Chimera command file that can be used for visual inspection of the information after the hierarchical clustering analysis.&quot;.</span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *cluster_output*</span>
+<span class="sd">                        List that contains the model and the related cluster index.</span>
+<span class="sd">                    *path_dir*</span>
+<span class="sd">                        path to ensemble directory </span>
+<span class="sd">                    *targetMap_location*</span>
+<span class="sd">                        path to target map location</span>
+<span class="sd">                    *file_name*</span>
+<span class="sd">                        Output file name    </span>
+<span class="sd">                    *load_map*</span>
+<span class="sd">                        True will add the loading option to the command file.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">num_cluster</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">list_mod</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">list_mod_load</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cluster_output</span><span class="p">:</span>
+            <span class="n">num_cluster</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">list_mod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+ 
+        <span class="k">for</span> <span class="n">filein</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path_dir</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file_name_flag</span> <span class="ow">in</span> <span class="n">list_mod</span><span class="p">:</span>
+                <span class="n">file_num</span><span class="o">=</span><span class="n">filein</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">file_name_flag</span> <span class="o">==</span> <span class="n">file_num</span><span class="p">:</span> 
+                    <span class="n">list_mod_load</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filein</span><span class="p">)</span>
+        
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">rainbow</span><span class="p">(</span><span class="n">nplinspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">npmax</span><span class="p">(</span><span class="n">num_cluster</span><span class="p">)))</span>
+        <span class="n">dict_mod</span><span class="o">=</span><span class="p">{}</span>
+        <span class="c">#print len(num_cluster)</span>
+        <span class="c">#print len(list_mod)</span>
+        <span class="c">#print len(list_mod_load)</span>
+        <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="n">list_mod_load</span><span class="p">:</span>
+            <span class="n">file_num</span><span class="o">=</span><span class="n">lab</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">print</span> <span class="n">lab</span><span class="p">,</span><span class="n">file_num</span>
+            <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">list_mod</span><span class="p">:</span>
+                <span class="c">#if mod in lab:</span>
+                <span class="k">if</span> <span class="n">mod</span> <span class="o">==</span> <span class="n">file_num</span><span class="p">:</span>
+                    <span class="n">dict_mod</span><span class="p">[</span><span class="n">mod</span><span class="p">]</span><span class="o">=</span><span class="n">lab</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="n">count</span><span class="o">=</span><span class="mi">0</span>    
+        <span class="n">line_out</span><span class="o">=</span><span class="s">&#39;&#39;</span>
+        <span class="n">line_out_attr</span><span class="o">=</span><span class="s">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">load_map</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+            <span class="n">line_out</span><span class="o">+=</span><span class="s">&#39;open #</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">targetMap_location</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cluster_output</span><span class="p">:</span>
+            <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="n">mod</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">clust_mod</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">line_out_attr</span><span class="o">+=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">#</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">clust_mod</span><span class="p">)</span>
+            <span class="n">line_out</span><span class="o">+=</span><span class="s">&#39;open #</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path_dir</span><span class="p">),</span><span class="n">dict_mod</span><span class="p">[</span><span class="n">mod</span><span class="p">])</span>
+            <span class="n">line_out</span><span class="o">+=</span><span class="s">&#39;colordef col_</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">count</span>
+            <span class="k">for</span> <span class="n">code_col</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">[(</span><span class="n">clust_mod</span><span class="o">-</span><span class="mi">1</span><span class="p">)]:</span>
+            <span class="c">#print len(colors)</span>
+                <span class="n">line_out</span><span class="o">+=</span> <span class="s">&#39; </span><span class="si">%.3f</span><span class="s"> &#39;</span><span class="o">%</span><span class="n">code_col</span>
+            <span class="n">line_out</span><span class="o">+=</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+            
+            <span class="n">line_out</span><span class="o">+=</span><span class="s">&#39;color col_</span><span class="si">%s</span><span class="s"> #</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">count</span><span class="p">)</span>
+        
+        <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="o">+</span><span class="s">&#39;_attribute.txt&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;attribute: cluster</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>    
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;match mode: 1-to-1</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;recipient: molecules</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line_out_attr</span><span class="p">)</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="n">line_out</span><span class="o">+=</span><span class="s">&#39;defattr </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file_name</span><span class="o">+</span><span class="s">&#39;_attribute.txt&#39;</span><span class="p">))</span>
+ <span class="c">#       print line_out</span>
+        <span class="n">file_out</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="o">+</span><span class="s">&#39;.cmd&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line_out</span><span class="p">)</span>
+        <span class="n">file_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+
+
+        </div>
+<div class="viewcode-block" id="Plot.PrintOutChimeraAttributeFileSCCC_Score"><a class="viewcode-back" href="../ShowPlot.html#ShowPlot.Plot.PrintOutChimeraAttributeFileSCCC_Score">[docs]</a>    <span class="k">def</span> <span class="nf">PrintOutChimeraAttributeFileSCCC_Score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">code_structure</span><span class="p">,</span><span class="n">sccc_list</span><span class="p">,</span><span class="n">listRB</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          </span>
+<span class="sd">            Print out a Chimera attribute file that can be used for visual inspection of the information after Segment based cross-correlation (SCCC) calculation.</span>
+<span class="sd">            </span>
+<span class="sd">                Arguments:</span>
+<span class="sd">                    *code_structure*</span>
+<span class="sd">                        name of the structure instance</span>
+<span class="sd">                    *sccc_list*</span>
+<span class="sd">                        SCCC score for each of the segment.</span>
+<span class="sd">                    *listRB*</span>
+<span class="sd">                        list of segment used for the SCCC calculation.        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">code_structure</span><span class="o">+</span><span class="s">&#39;_attribute.txt&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;attribute: sccc</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>    
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;match mode: 1-to-1</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;recipient: residues</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">sccc_list_3f</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span><span class="o">%</span><span class="n">score</span><span class="p">)</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">sccc_list</span><span class="p">]</span>
+        <span class="n">line_out</span><span class="o">=</span><span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">line1</span><span class="p">,</span><span class="n">line2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">listRB</span><span class="p">,</span><span class="n">sccc_list_3f</span><span class="p">):</span>
+            <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">line1</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+            <span class="n">check</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">check</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="o">+</span><span class="mi">1</span><span class="p">)):</span>
+                        <span class="n">line_out</span><span class="o">+=</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">:</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">line2</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="o">+</span><span class="mi">1</span><span class="p">)):</span>
+                        <span class="n">line_out</span><span class="o">+=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">:</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">line2</span><span class="p">)</span>
+                <span class="n">check</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line_out</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation on Linux &amp; Mac OSX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">2. How to use TEMPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureParser.html">3. Parser for Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ProtRep_Biopy.html">4. Class to define and manipulate protein structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../MapParser.html">5. Parser for Density Map Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../StructureBlurrer.html">6. Density Map Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EMMap.html">7. Density Map Instance Informations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RigidBodyParser.html">8. Read Rigid Body Files in Flex-EM format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TransformParser.html">9. Parser for Transformation Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EnsembleGeneration.html">10. Generation an Ensemble of Structure Instance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ScoringFunctions.html">11. Scoring Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cluster.html">12. Clustering multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Consensus.html">13. Consensus Scoring of multiple fits in a cryoEM map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ShowPlot.html">14. Plotting and Output Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Vector.html">15. Core Modules : Vector</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a></li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2014, Birkbeck College, University of London.
+      Last updated on Feb 11, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/tempy/!svn/ver/66/Examples
+END
+Calculate_SCCC.py
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/tempy/!svn/ver/52/Examples/Calculate_SCCC.py
+END
+Map_Processing.py
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/tempy/!svn/ver/53/Examples/Map_Processing.py
+END
+Scoring_Fits.py
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/tempy/!svn/ver/52/Examples/Scoring_Fits.py
+END
+Calculate_SCCC_RBfile.py
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/tempy/!svn/ver/52/Examples/Calculate_SCCC_RBfile.py
+END
+Cluster_ScoredEnsemble.py
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/tempy/!svn/ver/53/Examples/Cluster_ScoredEnsemble.py
+END
+Score_and_Cluster_Plot.py
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/tempy/!svn/ver/53/Examples/Score_and_Cluster_Plot.py
+END
+Structure_Processing.py
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/tempy/!svn/ver/53/Examples/Structure_Processing.py
+END
+Generate_EnsembleMap_Score.py
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/tempy/!svn/ver/60/Examples/Generate_EnsembleMap_Score.py
+END
+Generate_Ensemble_of_Fits.py
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/tempy/!svn/ver/53/Examples/Generate_Ensemble_of_Fits.py
+END
+Scoring_Ensemble.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/tempy/!svn/ver/52/Examples/Scoring_Ensemble.py
+END
+ParsePDB.py
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/tempy/!svn/ver/52/Examples/ParsePDB.py
+END
