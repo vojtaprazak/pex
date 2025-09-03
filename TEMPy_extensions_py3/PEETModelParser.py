@@ -139,6 +139,21 @@ class PEETmodel:
                     all_ctrs.append(p)
         return array(all_ctrs)
 
+    def get_all_contour_points(self):
+        """
+        Return:
+            Return a Nx3xM list of N contours containing M points.
+        """
+        all_ctrs = []
+        for o in self.objs:
+            for c in o['ctrs']:
+                ctr = []
+                for p in c['points']:
+                    ctr.append(p)
+                if len(ctr) != 0:
+                    all_ctrs.append(array(ctr))
+        return all_ctrs        
+
 
     def distance(self, index1, index2):
         all_points = self.get_all_points()

@@ -23,7 +23,7 @@ aa = np.array(aa, dtype = float)
 
 if not args.bins:
     bins = int(np.ceil(len(aa)/20))
-    bins = (max(bins, 5))
+    bins = min(max(bins, 5), 50)
 else:
     bins = args.bins
 

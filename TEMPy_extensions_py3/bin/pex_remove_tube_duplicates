@@ -4,8 +4,8 @@ import shutil
 import os
 from os.path import join, realpath, isdir
 import glob
-if not '/gpfs/cssb/user/prazakvo/software/scripts/' in sys.path:
-    sys.path.append('/gpfs/cssb/user/prazakvo/software/scripts/')
+#if not '/gpfs/cssb/user/prazakvo/software/scripts/' in sys.path:
+#    sys.path.append('/gpfs/cssb/user/prazakvo/software/scripts/')
 import argparse
 from modify_multiple_lib import modify_prm
 from PEETPRMParser import PEETPRMFile
@@ -17,7 +17,7 @@ parser.add_argument('width', type = int, help = 'Expand points by this amount be
 parser.add_argument('max_distance', type = int, help = 'Remove points closer than this after expanding.')
 parser.add_argument('output_directory', help = "Will be created if it does not exist already.")
 parser.add_argument('--max_cores', type = int, default = 2)
-parser.add_argument('--do_not_cleanup', default = False, help = 'Keep intermediate files')
+parser.add_argument('--do_not_cleanup', default = False, help = 'Keep intermediate files', action = 'store_true')
 
 
 args = parser.parse_args()
@@ -31,7 +31,8 @@ modify_prm(args.prm, args.iteration, [args.width, 0, 0], [0, 0, 0], od, max_core
 
 os.chdir(od)
 prm = glob.glob('*.prm')[0]
-o = 'remdup%s' % (str(args.max_distance))
+o = realpath('remdup%s' % (str(args.max_distance)))
+print(o)
 inp = PEETPRMFile(prm)
 inp.clean_pcles(args.max_distance, 0, o, clean_ccc=False, cccmin=1, cccmax=100, stdev_units=False,\
                           no_of_nbrs=30, offset_mv=True, writeprm=True, verbose=True, intraclass_rm=True)

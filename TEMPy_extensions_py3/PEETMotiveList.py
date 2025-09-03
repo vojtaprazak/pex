@@ -278,7 +278,7 @@ class PEETMotiveList:
         new_csv = PEETMotiveList()
         for m in range(len(aa)):
             new_csv.mlist.append(self.mlist[m][:])
-            new_aa = aa[m][0], aa[m][1], aa[m][2], random.randint(-max_ang, max_ang)
+            new_aa = aa[m][0], aa[m][1], aa[m][2], random.uniform(-max_ang, max_ang)
             new_mat = axis_angle_to_matrix(new_aa[0], new_aa[1], new_aa[2], new_aa[3])*mats[m]
             z1,x,z2 = euler_from_matrix(new_mat, 'rzxz')
             new_csv.mlist[-1][-4] = degrees(z2)
@@ -296,7 +296,7 @@ class PEETMotiveList:
         new_csv = PEETMotiveList()
         for m in range(len(aa)):
             new_csv.mlist.append(self.mlist[m][:])
-            new_aa = aa[m][0], aa[m][1], aa[m][2], random.randint(-max_ang,max_ang)
+            new_aa = aa[m][0], aa[m][1], aa[m][2], random.uniform(-max_ang, max_ang)#random.randint(-max_ang,max_ang)
             new_mat = axis_angle_to_matrix(new_aa[0], new_aa[1], new_aa[2], new_aa[3])*mats[m]
             z1,x,z2 = euler_from_matrix(new_mat, 'rzxz')
             new_csv.mlist[-1][-4] = degrees(z2)

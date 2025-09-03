@@ -250,7 +250,7 @@ def clean_pcles_by_ccc(csvfile, modfile, cccmin, outfile='', stdev_units=True, o
 def clean_using_marker_file(csvfile, modfile, markerfile, outfile='', verbose='True', marker_out=False):
     csv = PEETMotiveList(csvfile)
     mod = PEETmodel(modfile)
-    marker_ids = MarkerFile(markerfile).get_marker_ids()
+    marker_ids = MarkerFile(markerfile).get_pex_cmm_ids()
 
     if not len(csv) == len(mod):
         raise TypeError("Motive list and model file have lengths of "+str(len(csv))+" and "+str(len(mod))+". Lengths must be the same! Aborting...")
@@ -260,7 +260,7 @@ def clean_using_marker_file(csvfile, modfile, markerfile, outfile='', verbose='T
     clean_csv = PEETMotiveList()
     clean_mod = PEETmodel()
     for m in range(len(mod)):
-        if m not in marker_ids:
+        if m in marker_ids:
             clean_csv.add_pcle(csv.mlist[m])
             clean_mod.add_point(0,0, mod.get_point(m))
     clean_csv.renumber()

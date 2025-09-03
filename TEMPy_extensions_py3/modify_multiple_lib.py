@@ -42,8 +42,24 @@ def modify_multiple_p(translation, out_dir, rotation, motls, max_cores = False):
     else:  
         shifts = Parallel(n_jobs=num_cores)(delayed(mod_p)(x, xrot, yrot, zrot, xtrans, ytrans, ztrans, out_dir) for x in motls)
 
-def rp(pl):
-    return [realpath(x) for x in pl]
+def rp(pl, ref_path = False):
+    orig = os.getcwd()
+    if ref_path:
+        os.chdir(ref_path)
+    p = [realpath(x) for x in pl]
+    os.chdir(orig)
+    return p
+
+def check_prm_ite(prm, ite, prmpath):
+    orig_motls = prm.get_MOTLs_from_ite(int(ite))
+    if ite != 0:
+        check_abs = [not isabs(x) for x in orig_motls]
+        if any(check_abs):
+            orig_motls = [join(split(realpath(prmpath))[0], x) for x in orig_motls]
+        check_exist = [not isfile(x) for x in orig_motls]
+        if any(check_exist):
+            raise Exception('Motive list(s) not found. Is the iteration correct?')
+    return orig_motls
     
 def modify_prm(prmpath, ite, translation, rotation, out_dir, max_cores = False, copy_models = True):
 
@@ -52,15 +68,17 @@ def modify_prm(prmpath, ite, translation, rotation, out_dir, max_cores = False, 
     
     out_dir = realpath(out_dir)
     prm = PEETPRMFile(prmpath)
-    orig_motls = prm.get_MOTLs_from_ite(int(ite))
     orig_mods = prm.prm_dict['fnModParticle']
-    if ite != 0:
-        check_abs = [not isabs(x) for x in orig_motls]
-        if any(check_abs):
-            orig_motls = [join(split(realpath(prmpath))[0], x) for x in orig_motls]
-        check_exist = [not isfile(x) for x in orig_motls]
-        if any(check_exist):
-            raise Exception('Motive list(s) not found. Is the iteration correct?')
+    
+    orig_motls = check_prm_ite(prm, ite, prmpath)
+##    prm.get_MOTLs_from_ite(int(ite))
+##    if ite != 0:
+##        check_abs = [not isabs(x) for x in orig_motls]
+##        if any(check_abs):
+##            orig_motls = [join(split(realpath(prmpath))[0], x) for x in orig_motls]
+##        check_exist = [not isfile(x) for x in orig_motls]
+##        if any(check_exist):
+##            raise Exception('Motive list(s) not found. Is the iteration correct?')
         
     outstr = translation + rotation
     motl_dir = join(out_dir)
@@ -73,12 +91,13 @@ def modify_prm(prmpath, ite, translation, rotation, out_dir, max_cores = False, 
 
 #need to update paths
     
-    tomo = rp(prm.prm_dict['fnVolume'])
+    tomo = rp(prm.prm_dict['fnVolume'], split(prmpath)[0])
     
     new_prm = prm.deepcopy()
     new_prm.prm_dict['initMOTL'] = new_motls
     new_prm.prm_dict['fnModParticle'] = new_mods
-    #new_prm.prm_dict['fnVolume'] = tomo
+    new_prm.prm_dict['fnVolume'] = tomo
+    new_prm.prm_dict['fnOutput'] = split(new_motls[0])[1][:-4]
 
     
     o = join(out_dir, split(prmpath)[1])

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-from PEETPicker import linear_sampling
+from PEETPicker import linear_sampling, linear_sampling_per_contour
 from PEETModelParser import PEETmodel
 from PEETParticleAnalysis import csvfile_to_chim_markers
 
@@ -15,13 +15,21 @@ parser.add_argument('line_model', help="A PEET model file containing two points 
 parser.add_argument('sampling', help="Distance between points desired points, in pixels).", type=float)
 parser.add_argument('outfile', help='The desired prefix of the output files. Extensions will be added by the program.')
 parser.add_argument('--non_random', help="Do not randomise particles around y-axis", action="store_false")
+parser.add_argument('--split_contours', help="Split contours into separate model files.", action="store_true")
 
 
 args = parser.parse_args()
 
 m = len(PEETmodel(args.line_model).get_all_points())
-if m%2 != 0:
-    print('ERROR! '+ args.line_model + ' contains '+str(m)+' points. pex_linear_pick requires an even number of points.') 
+if args.split_contours:
+    linear_sampling_per_contour(PEETmodel(args.line_model), args.sampling, args.outfile, rand_orient=args.non_random,
+                                split_contours=True)
 else:
-    linear_sampling(PEETmodel(args.line_model), args.sampling, args.outfile, rand_orient=args.non_random)
-    csvfile_to_chim_markers(args.outfile+'.csv', args.outfile+'.mod', args.outfile+'.cmm')
+    
+    if m%2 != 0:
+        print('ERROR! '+ args.line_model + ' contains '+str(m)+' points. pex_linear_pick requires an even number of points.') 
+    else:
+        linear_sampling(PEETmodel(args.line_model), args.sampling, args.outfile, rand_orient=args.non_random)
+        csvfile_to_chim_markers(args.outfile+'.csv', args.outfile+'.mod', args.outfile+'.cmm')
+
+

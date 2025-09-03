@@ -167,8 +167,12 @@ class MapParser:
 
         ext_head = []
         if header[23] != 0:
-            ext_head = binary.unpack(endian+((header[23]/4)*'f'), f.read(header[23]))
-
+            try:
+                #expecting imod extended header to be a bunch of floats
+                ext_head = binary.unpack(endian+((header[23]/4)*'f'), f.read(header[23]))
+            except:
+                #files from bsoft...
+                ext_head = binary.unpack(endian+(int(numpy.ceil(header[23]))*'c'), f.read(header[23]))
 
         if not chunk:
             map_data = fromfile(f, dtype=mrc2numpy[header[3]])#, count=map_size)

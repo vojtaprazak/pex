@@ -8,11 +8,17 @@
 #===============================================================================
 
 
-import re, os
+import re
+import os
+import errno
 from PEETMotiveList import PEETMotiveList
 from PEETModelParser import PEETmodel
-from PEETPicker import get_pentons_from_run, get_hexons_from_run, point_to_neighbour, get_icos_symm_vectors_from_run, get_tetra_from_run
-from PEETParticleCleanup import clean_pcles_by_tilt_ang_change, clean_pcles_by_ccc, remove_duplicates, remove_offedge, transfer_offsets_to_model, get_class_from_motl, clean_pcles_by_pclelist
+from PEETPicker import (get_pentons_from_run, get_hexons_from_run, point_to_neighbour,
+                        get_icos_symm_vectors_from_run, get_tetra_from_run)
+from PEETParticleCleanup import (clean_pcles_by_tilt_ang_change, clean_pcles_by_ccc,
+                                 remove_duplicates, remove_offedge, transfer_offsets_to_model,
+                                 get_class_from_motl, clean_pcles_by_pclelist,
+                                 clean_using_marker_file)
 from PEETParticleAnalysis import csvfile_to_chim_markers
 #from PEETSphericalClean import clean_spheres
 from check_symm_pcles import check_symm_pcles
@@ -79,6 +85,7 @@ class PEETPRMFile:
                 for x in range(len(self.prm_dict['fnVolume'])):
                     newMOTLs.append(base+'_MOTL_Tom'+str(x+1)+'_Iter1.csv')
                 return newMOTLs
+            
             return self.prm_dict['initMOTL']
         else:
             for x in range(len(self.prm_dict['fnVolume'])):
@@ -110,7 +117,8 @@ class PEETPRMFile:
         uniq_toms = unique(toms)
 
         for x in range(len(uniq_toms)):
-            outbase = outfile_dir+'/'+os.path.basename('tomo_'+str(x)+'_combined')
+            #outbase = outfile_dir+'/'+os.path.basename('tomo_'+str(x)+'_combined')
+            outbase = outfile_dir+'/'+os.path.basename(motls[x])[:-4]+'_combined'
             ind = where(array(toms)== uniq_toms[x])[0]
             comb_motl = PEETMotiveList()
             comb_model = PEETmodel()
@@ -312,7 +320,48 @@ class PEETPRMFile:
             new_prm.write_prm_file(outfile_dir+'/'+new_prm.prm_dict['fnOutput']+'.prm')
         return new_prm
 
-
+    def clean_using_marker_file(self, ite, outfile_dir, verbose=True, writeprm=True):
+        #TBD
+        #/gpfs/cssb/user/prazakvo/pex_paper/actin/adeno_tomos/run2_fix10/remdup0_10_cc002/remduph_0_3_3/remdup7_0_cc0023/test
+        motls = self.get_MOTLs_from_ite(ite)
+        models = self.prm_dict['fnModParticle']
+        markers = [x[:-4] + '_markers.cmm' for x in motls]
+        new_motls = []
+        new_models = []
+        new_toms = []
+        new_tiltrange = []
+        if not os.path.exists(outfile_dir):
+            os.mkdir(outfile_dir, 0o755)
+        before, after = 0,0
+        for x in range(len(models)):
+            if not os.path.isfile(markers[x]):
+                raise FileNotFoundError(
+                    errno.ENOENT, os.strerror(errno.ENOENT), markers[x])
+            if verbose:
+                print("Cleaning "+os.path.basename(motls[x]))
+            
+            outbase = outfile_dir+'/'+os.path.basename(motls[x])[:-4]+'_cmmclean'
+            clean_csv, clean_mod, bef, aft = clean_using_marker_file(
+                motls[x], models[x], markers[x], outfile=outbase, verbose=verbose)
+            before += bef
+            after += aft
+            if aft != 0:
+                new_motls.append(os.path.abspath(outbase+'.csv'))
+                new_models.append(os.path.abspath(outbase+'.mod'))
+                new_toms.append(os.path.abspath(self.prm_dict['fnVolume'][x]))
+                new_tiltrange.append(self.prm_dict['tiltRange'][x])
+        if verbose:
+            print("No. of pcles before: %d"%(before))
+            print("No. of pcles after: %d"%(after))
+        new_prm = self.deepcopy()
+        new_prm.prm_dict['fnModParticle'] = new_models
+        new_prm.prm_dict['initMOTL'] = new_motls
+        new_prm.prm_dict['fnVolume'] = new_toms
+        new_prm.prm_dict['tiltRange'] = new_tiltrange
+        new_prm.prm_dict['fnOutput'] = new_prm.prm_dict['fnOutput']+'_fromIter'+str(ite)+'_cmmclean'
+        if writeprm:
+            new_prm.write_prm_file(outfile_dir+'/'+new_prm.prm_dict['fnOutput']+'.prm')
+        
 
     def clean_pcles_by_tilt_angles(self, ite, ini_ite, outfile_dir, max_ang, axis=[0,1,0], reset=False, reset_all=False, offset_mv=True, writeprm=False, verbose=True):
         motls = self.get_MOTLs_from_ite(ite)
@@ -730,7 +779,7 @@ class PEETPRMFile:
     # Private functions, mostly for reading and writing the file.
 
 
-    def __parse_file(self, prmfile):
+    def __parse_file(self, prmfile, essential={'userCommands':['']}):
         """
         Reads in a .prm file and stores variables in a dict instance. Ignores comments.
 
@@ -761,6 +810,10 @@ class PEETPRMFile:
             for x in lines:
                 key, var = self.__parse_matlab_line(x)
                 prm_dict[key] = var
+        keys = prm_dict.keys()
+        for k in essential.keys():
+            if k not in keys:
+                prm_dict[k] = essential[k]
         return prm_dict
 
 
@@ -827,7 +880,7 @@ class PEETPRMFile:
         return num
     
 
-    def __write_dict_entry_to_str(self, key):
+    def __write_dict_entry_to_str(self, key, brace_keys = ['userCommands']):
         """
         Write a dict entry into a Matlab variable assignment line.
 
@@ -852,8 +905,13 @@ class PEETPRMFile:
             else:
                 return key + " = '" + value + "'"
         if type(value) == list:
+            if len(value) == 0:
+                raise Exception('unexpected empty list for %s' % key)
             if type(value[0]) == list or type(value[0]) == str and value[0] != 'NaN':
-                brack = '{}'
+                if value[0] == '' and key not in brace_keys:
+                    brack = '[]'
+                else:
+                    brack = '{}'
             else:
                 brack = '[]'
             if key == 'maskModelPts' or key == 'lstThresholds':
@@ -863,7 +921,7 @@ class PEETPRMFile:
             out_str = key + " = " + brack[0]
             for v in value:
                 if type(v) == str:
-                    if v == 'NaN' or ':' in v:
+                    if v == 'NaN' or ':' in v and not os.path.isabs(v): #in cygwin D: is being picked up incorrectly
                         out_str += v+", "
                     elif len(v) != 0:
                         out_str += "'"+v+"', "

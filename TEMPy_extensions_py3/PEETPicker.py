@@ -31,10 +31,7 @@ def orient_pcle_to_point(pcle, point, pcle_orient=[0,1,0], return_matrix=False):
         return [degrees(x) for x in euler_from_matrix(mat, axes='rzxz')], mat
     return [degrees(x) for x in euler_from_matrix(mat, axes='rzxz')]
 
-
-def linear_sampling(modfile, sampling, outfile, orient=[0,1,0], rand_orient=True):
-    #m = PEETmodel(modfile)
-    m = modfile
+def _interpolate_pairs_of_points(m, sampling, orient):
     lin_samp = PEETmodel()
     new_csv = PEETMotiveList()
     for p in range(0, len(m), 2):
@@ -45,10 +42,57 @@ def linear_sampling(modfile, sampling, outfile, orient=[0,1,0], rand_orient=True
             lin_samp.add_point(0, 0, new_point.to_array())
             z1,x,z2 = orient_pcle_to_point(new_point, m.get_vector(p+1), orient)
             new_csv.add_empty_pcle(angles=[z1,z2,x])
+    return lin_samp, new_csv
+
+def linear_sampling(modfile, sampling, outfile, orient=[0,1,0], rand_orient=True):
+    #m = PEETmodel(modfile)
+    m = modfile
+    lin_samp, new_csv = _interpolate_pairs_of_points(m, sampling, orient)
     lin_samp.write_model(outfile+'.mod')
     if rand_orient:
         new_csv = new_csv.randomly_rotate_pcles()
     new_csv.write_PEET_motive_list(outfile+'.csv')
+
+def linear_sampling_per_contour(modfile, sampling, outfile=False, orient=[0,1,0],
+                                rand_orient=True, split_contours=False):
+    
+    out_mod = PEETmodel()
+    out_csv = PEETMotiveList()
+    conts = modfile.get_all_contour_points()
+    cont_n = 0
+    split_mods = []
+    split_csvs = []
+    for x in range(len(conts)):
+        tmp_m = PEETmodel()
+        [tmp_m.add_point(0,0,p) for p in conts[x]]
+        if len(conts[x]) % 2 != 0:
+            raise Exception('Contour %s has an odd number of points' % (x+1))
+        lin_samp, tmp_csv = _interpolate_pairs_of_points(tmp_m, sampling, orient)
+        coords = lin_samp.get_all_points()
+        for p in range(len(coords)):
+            if cont_n != 0:
+                out_mod.add_contour(0)
+            out_mod.add_point(0, cont_n, coords[p])
+            out_csv.add_pcle(tmp_csv[p])
+        if rand_orient:
+            out_csv = out_csv.randomly_rotate_pcles()
+        if split_contours and outfile:
+            split_outm = outfile+'_%02d.mod' % x
+            split_outc = outfile+'_%02d.csv' % x
+            out_mod.write_model(split_outm)
+            out_csv.write_PEET_motive_list(split_outc)
+            out_mod = PEETmodel()
+            out_csv = PEETMotiveList()
+            split_mods.append(split_outm)
+            split_csvs.append(split_outc)
+            cont_n = 0
+        cont_n += 1
+    out_csv.renumber()
+    if outfile and not split_contours:
+        out_mod.write_model(outfile+'.mod')
+        out_csv.write_PEET_motive_list(outfile+'.csv')
+    return split_mods, split_csvs
+    
 
 
 def spline_sampling(modfile, sampling, outfile, order=3):
