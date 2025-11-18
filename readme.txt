@@ -3,7 +3,7 @@ Written by Daven Vasishtan, contributions by Vojta Prazak
 Dependencies:
 
 NumPy
-sciPy
+sciPy 1.10.1
 scikit-image
 lxml
 matplotlib
