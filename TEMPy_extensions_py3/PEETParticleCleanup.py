@@ -350,7 +350,7 @@ def remove_duplicates(csvfile, modfile, max_dist, outfile='', clean_ccc=False, c
     mod = PEETmodel(modfile)
     ccc = csv.get_all_ccc()
     if not len(csv) == len(mod):
-        raise TypeError("Motive list and model file have lengths of "+str(len(csv))+" and "+str(len(mod))+". Lengths must be the same! Aborting...")
+        raise TypeError("Motive list and model file have lengths of "+str(len(csv))+" and "+str(len(mod))+". Lengths must be the same! \n%s \n%s \nAborting..." % (csvfile,modfile))
     if verbose:
         print("Initial number of particles: "+str(len(mod)))
 

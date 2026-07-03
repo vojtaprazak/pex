@@ -5,11 +5,25 @@ parser = argparse.ArgumentParser(description=("Enter X,Y,Z translation in pixels
 
 parser.add_argument('prm', help = "Peet parameter file path")
 parser.add_argument('iteration', type = int)
-parser.add_argument('translateXYZ', help = "Enter X Y Z translation in pixels separated by spaces (positive values translate right, up, backwards).", nargs = 3, type = int)
+parser.add_argument('translateXYZ', help = "Enter X Y Z translation in pixels separated by spaces (positive values translate right, up, backwards).", nargs = 3, type = float)
 parser.add_argument('output_directory', help = "Will be created if it does not exist already.")
-parser.add_argument('--rotateZYX', help = "Rotate around Z Y X (e.g. positive Z values rotate counterclockwise).", default = [0,0,0], nargs = 3, type = float)
+parser.add_argument('--rotateZYX', help = "Rotate around Z Y X (e.g. positive Z values rotate counterclockwise)."+
+                    "IMPORTANT NOTE: The angles internally (and intentionally) flipped to XYZ to match the expected rotation"+
+                    " behaviour, i.e. 3dmod slicer angles. Just in case you are confused by the --vocal output", default=[0,0,0], nargs=3, type=float)
 parser.add_argument('--max_cores', type = int, default = 2)
+parser.add_argument('--flgEuler', default=False, action='store_true', help = 'Use --rotateZXZ instead of --rotateZYX')
+#parser.add_argument('--flgInvert', default=False, action='store_true')
+parser.add_argument('--rotateZXZ', help = 'Use with flgEuler', default=[0,0,0], nargs=3, type=float)
+parser.add_argument('--vocal', default=False, action='store_true')
 args = parser.parse_args()
 print('requested cores %s' % args.max_cores)
 
-modify_prm(args.prm, args.iteration, args.translateXYZ, args.rotateZYX, args.output_directory, max_cores = args.max_cores)
+if args.flgEuler:
+    if args.rotateZYX != [0,0,0]:
+        raise Exception('Use --rotateZXZ with flgEuler')
+if args.rotateZXZ != [0,0,0]:
+    #reversing the order, it will be flipped back in the script....
+    args.rotateZYX = [args.rotateZXZ[2], args.rotateZXZ[1], args.rotateZXZ[0]]
+
+modify_prm(args.prm, args.iteration, args.translateXYZ, args.rotateZYX, args.output_directory, max_cores = args.max_cores,
+           flgEuler=args.flgEuler, vocal=args.vocal)

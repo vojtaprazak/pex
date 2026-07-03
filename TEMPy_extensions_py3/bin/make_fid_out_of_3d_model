@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+import argparse
+import os
+from os.path import join
+import shutil
+import subprocess
+from glob import glob
+import numpy as np
+
+
+def get_apix_and_size(path):
+    p = float(subprocess.check_output('header -p %s' % path, shell = True).split()[0])
+    s = np.array([int(x) for x in (subprocess.check_output('header -s %s'\
+                  % path, shell = True).split())])
+    return p, s
+
+def rotate_model(full_tomo, 
+                 model_file, add_tilt_params=[],
+                 overwrite=False):
+    base_dir = os.path.split(os.path.realpath(full_tomo))[0]
+    base = os.path.split(full_tomo)[1].split('_full')[0]
+    ext = full_tomo.split('.')[-1]
+    ali = join(base_dir, base + '_ali.mrc')
+    if not os.path.isfile(ali):
+        ali = join(base_dir, base + '.ali')
+        if not isfile(ali):
+            raise Exception('aligned stack not found')
+    reprojected_mod = join(base_dir, base + '.fid')
+    tlt = os.path.join(base_dir, base + '.tlt')
+    thickness = get_apix_and_size(full_tomo)[1][1]
+    if os.path.isfile(reprojected_mod):
+        orig_mod = 'orig_' + reprojected_mod
+        if os.path.isfile(orig_mod) and not overwrite:
+            raise Exception('%s already exists, aborting...' % orig_mod)
+        shutil.copyfile(reprojected_mod, orig_mod)
+
+    tilt_str = [('tilt -inp %s -ou %s -TILTFILE %s -THICKNESS %s' +
+                ' -ProjectModel %s') % (ali, reprojected_mod,
+                                       tlt, thickness, model_file)
+                ]                        
+    if np.any(add_tilt_params != 'skip'):
+        for y in range(len(add_tilt_params)):
+            tilt_str.append(add_tilt_params[y])
+    print('running %s' % (('').join(tilt_str)))
+    subprocess.check_output(('').join(tilt_str), shell = True)
+    return reprojected_mod
+p = argparse.ArgumentParser()
+p.add_argument("tomo")
+p.add_argument("model")
+args = p.parse_args()
+rotate_model(args.tomo, args.model) 

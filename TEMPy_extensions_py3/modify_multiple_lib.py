@@ -18,29 +18,84 @@ except:
 import multiprocessing
 
 
-def mod_p(csv, xrot, yrot, zrot, xtrans, ytrans, ztrans, out_dir):
-    #out_csv = os.path.join(out_dir, 'mod_' + str(csv))
-    
-    out_csv = os.path.join(out_dir, str(split(csv)[1]))
-    if not os.path.isfile(out_csv):
-        check_output('modifyMotiveList '+str(csv)+' '+str(out_csv)+ ' '+str(zrot)+\
-        ','+str(yrot)+','+str(xrot)+' '+str(xtrans)+','+str(ytrans)+','+str(ztrans),shell=True)
+def mod_p(csv, xrot, yrot, zrot, xtrans, ytrans, ztrans, out_csv, flgInvert=False, flgEuler=False):
+    append_str = ' '
+    if flgInvert:
+        append_str += '1'
+    else:
+        append_str == '0'
+    if flgEuler:
+        append_str += '1'
+    else:
+        append_str += '0'
 
-def modify_multiple_p(translation, out_dir, rotation, motls, max_cores = False):
+    if not os.path.isfile(out_csv):
+        rotations = '%s, %s, %s' % (str(zrot), str(yrot), str(xrot))
+        translations = '%s, %s, %s' % (str(xtrans), str(ytrans), str(ztrans))
+        shell_str = "modifyMotiveList %s %s '%s' '%s'%s" % (csv, out_csv, rotations, translations, append_str)
+        check_output(shell_str, shell = True)
+##        check_output('modifyMotiveList '+str(csv)+' '+str(out_csv)+ ' '+str(zrot)+\
+##        ','+str(yrot)+','+str(xrot)+' '+str(xtrans)+','+str(ytrans)+','+str(ztrans),shell=True)
+
+def modify_multiple_p(
+    translation,
+    out_dir,
+    rotation,
+    motls,
+    max_cores=False,
+    out_csvs=None,
+    flgInvert=False,
+    flgEuler=False,
+    vocal=False):
+    
     if not os.path.isdir(realpath(out_dir)):
         os.makedirs(realpath(out_dir))
+    if out_csvs is None:
+        out_csvs = [os.path.join(out_dir, split(x)[1]) for x in motls]
+    if len(out_csvs) != len(motls):
+        raise ValueError("Length of out_csvs must match motls")
 
+    #IMPORTANT: the order of angles is INTENTIONALLY flipped from ZYX (as entered) to XYZ. Heuristically this results in the desired behaviour, i.e. matching slicer angles in 3dmod.
     xrot, yrot, zrot = rotation
+    ######
     xtrans, ytrans, ztrans = translation
 
     num_cores = max_cores
     if not max_cores:
         num_cores = multiprocessing.cpu_count()
+    if vocal:
+        append_str = ' '
+        if flgInvert:
+            append_str += '1'
+        else:
+            append_str == '0'
+        if flgEuler:
+            append_str += '1'
+        else:
+            append_str += '0'
+        for x in range(len(motls)):
+            rotations = '%s, %s, %s' % (str(zrot), str(yrot), str(xrot))
+            translations = '%s, %s, %s' % (str(xtrans), str(ytrans), str(ztrans))
+            shell_str = "modifyMotiveList %s %s '%s' '%s'%s" % (motls[x], out_csvs[x], rotations, translations, append_str)
+            print(shell_str)
     if not jl:
-        for x in motls:
-            mod_p(x, xrot, yrot, zrot, xtrans, ytrans, ztrans, out_dir)
-    else:  
-        shifts = Parallel(n_jobs=num_cores)(delayed(mod_p)(x, xrot, yrot, zrot, xtrans, ytrans, ztrans, out_dir) for x in motls)
+        for x in range(len(motls)):
+            mod_p(
+                motls[x],
+                xrot, yrot, zrot,
+                xtrans, ytrans, ztrans,
+                out_csvs[x]
+            )
+    else:
+        shifts = Parallel(n_jobs=num_cores)(
+            delayed(mod_p)(
+                motls[x],
+                xrot, yrot, zrot,
+                xtrans, ytrans, ztrans,
+                out_csvs[x]
+            )
+            for x in range(len(motls))
+        )
 
 def rp(pl, ref_path = False):
     orig = os.getcwd()
@@ -61,7 +116,8 @@ def check_prm_ite(prm, ite, prmpath):
             raise Exception('Motive list(s) not found. Is the iteration correct?')
     return orig_motls
     
-def modify_prm(prmpath, ite, translation, rotation, out_dir, max_cores = False, copy_models = True):
+def modify_prm(prmpath, ite, translation, rotation, out_dir, max_cores = False, copy_models = True,
+               flgEuler=False, vocal=False):
 
     if not isdir(out_dir):
         os.makedirs(out_dir)
@@ -82,7 +138,8 @@ def modify_prm(prmpath, ite, translation, rotation, out_dir, max_cores = False, 
         
     outstr = translation + rotation
     motl_dir = join(out_dir)
-    modify_multiple_p(translation, motl_dir, rotation, orig_motls, max_cores = max_cores)
+    modify_multiple_p(translation, motl_dir, rotation, orig_motls, max_cores = max_cores,
+                      flgEuler=flgEuler, vocal=vocal)
 
     new_motls = [join(motl_dir, split(x)[1]) for x in orig_motls]
     new_mods = [join(motl_dir, split(x)[1]) for x in orig_mods]

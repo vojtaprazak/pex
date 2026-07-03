@@ -14,7 +14,7 @@ from MapParser_f32_new import *
 from PEETParticleAnalysis import *
 from PEETModelParser import PEETmodel
 from PEETMotiveList import PEETMotiveList
-from scipy.integrate import romberg
+from scipy.integrate import quad as romberg
 from scipy.spatial import ConvexHull, KDTree
 import random
 
