@@ -3,6 +3,7 @@ from math import pi, cos, sin, acos
 from matplotlib import pyplot as plt
 from scipy import interpolate
 from transformations import *
+from conversions import euler_from_matrix
 from scipy.spatial import KDTree
 from scipy.optimize import minimize, Bounds, shgo, dual_annealing
 

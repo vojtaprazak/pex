@@ -4,7 +4,8 @@ from PEETSphericalClean import CHPlsqSphereFit, cart2sph
 from Vector import axis_angle_to_matrix
 from scipy.spatial import KDTree
 import numpy as np
-from transformations import euler_matrix, euler_from_matrix
+from transformations import euler_matrix
+from conversions import euler_from_matrix
 from scipy.optimize import minimize, Bounds, shgo, dual_annealing
 from math import pi, sin, cos
 

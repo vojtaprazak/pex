@@ -1,9 +1,23 @@
 from transformations import *
 from Vector import *
+import math
 from math import cos,sin, radians, degrees
 from numpy import savetxt, array
+import numpy as _np
 import subprocess
 import random
+
+# The PyPI transformations package requires 4x4 matrices; TEMPy's
+# axis_angle_to_matrix returns 3x3.  Wrap euler_from_matrix to accept both.
+_euler_from_matrix_orig = euler_from_matrix
+
+def euler_from_matrix(matrix, axes='sxyz'):
+    m = _np.asarray(matrix, dtype=float)
+    if m.shape == (3, 3):
+        h = _np.eye(4)
+        h[:3, :3] = m
+        m = h
+    return _euler_from_matrix_orig(m, axes)
 
 def PEET_to_dynamo(z1,z2,y):
     m = euler_matrix(-radians(z1), -radians(x), -radians(z2), 'rzyz')[:3,:3]
@@ -188,9 +202,9 @@ class PEET_motive_list:
         mat_list = []
         for i in range(len(self.mlist)):
             a = self.get_angles(i)
-            z1 = math.radians(a[0])
-            x = math.radians(a[2])
-            z2 = math.radians(a[1])
+            z1 = radians(a[0])
+            x = radians(a[2])
+            z2 = radians(a[1])
             mat = euler_matrix(z2,x,z1,'rzxz')[:3,:3]
             mat_list.append(mat)
         return mat_list
@@ -219,9 +233,9 @@ class PEET_motive_list:
         for i in range(len(self.mlist)):
             a = self.get_angles(i)
             dummy = Vector(1,0,0)
-            z1 = math.radians(a[0])
-            x = math.radians(a[2])
-            z2 = math.radians(a[1])
+            z1 = radians(a[0])
+            x = radians(a[2])
+            z2 = radians(a[1])
             mat = euler_matrix(z2,x,z1, 'rzxz')[:3,:3]
             #print mat
             dummy2 = dummy.matrix_transform(mat)
@@ -233,9 +247,9 @@ class PEET_motive_list:
         for i in range(len(self.mlist)):
             a = self.get_angles(i)
             dummy = Vector(dummy[0], dummy[1], dummy[2])
-            z1 = math.radians(a[0])
-            x = math.radians(a[2])
-            z2 = math.radians(a[1])
+            z1 = radians(a[0])
+            x = radians(a[2])
+            z2 = radians(a[1])
             mat = euler_matrix(z2,x,z1, 'rzxz')[:3,:3]
             #print mat
             dummy2 = dummy.matrix_transform(mat)

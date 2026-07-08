@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
+
+def main():
+    import argparse
+    from PEETPRMParser import PEETPRMFile
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    parser = argparse.ArgumentParser(description=('Get all cross correlation values of particles from a given iteration.'))
+    parser.add_argument('prmfile', help='The name of the PEET parameter file (normally ending in .prm)')
+    parser.add_argument('iteration', type=int, help='Number value, the iteration to use when removing particles. 0 refers to the initial input files.')
+    parser.add_argument('outfile', help='Output file for ccc_values.')
+    parser.add_argument('--bins', help = 'Specify number of histogram bins.', default = False, type = int)
+
+    args = parser.parse_args()
+
+    inp = PEETPRMFile(args.prmfile)
+    inp.get_all_ccc(args.iteration, args.outfile)
+    fig_out = ('.').join(args.outfile.split('.')[:-1])
+
+    #plotting
+    aa = open(args.outfile).readlines()
+    aa = np.array(aa, dtype = float)
+
+    if not args.bins:
+        bins = int(np.ceil(len(aa)/20))
+        bins = min(max(bins, 5), 50)
+    else:
+        bins = args.bins
+
+
+    ff, ax = plt.subplots(figsize = (7,5))
+    t = plt.hist(aa, bins = bins)
+    ax.set_xlabel('CCC')
+    ax.set_ylabel('N particles')
+
+    plt.show()
+    ff.savefig(fig_out + '.png')
+
+
+
+if __name__ == '__main__':
+    main()

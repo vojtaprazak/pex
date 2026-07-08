@@ -14,6 +14,7 @@ from MarkerFileParser import MarkerFile
 from PEETParticleAnalysis import pcle_dist_from_nbr, csvfile_to_chim_markers
 from Vector import *
 from transformations import *
+from conversions import euler_from_matrix
 from math import radians
 from numpy import nonzero, array
 

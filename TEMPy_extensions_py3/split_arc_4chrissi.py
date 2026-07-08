@@ -1,5 +1,5 @@
 from Vector import Vector, axis_angle_to_matrix
-from transformations import euler_from_matrix
+from conversions import euler_from_matrix
 from numpy import array
 
 

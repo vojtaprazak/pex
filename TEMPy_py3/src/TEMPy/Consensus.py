@@ -65,7 +65,7 @@ class Consensus:
         private function used in Consensus Module.
         """
         for k,v in dict_score.items():
-            print k,v
+            print(k,v)
 
     def _modes(self,values):
         """
@@ -75,14 +75,14 @@ class Consensus:
         for v in values:
             count[v] +=1
         best = max(count.values())
-        print [k for k,v in count.items() if v == best]
+        print([k for k,v in count.items() if v == best])
 
     def _mode_here(self,arr):
         """
         private function used in Consensus Module.
         """
         m = max([arr.count(a) for a in arr])
-        print [x for x in arr if arr.count(x) == m][0] if m>1 else None
+        print([x for x in arr if arr.count(x) == m][0] if m>1 else None)
 
            
     def vote_mode(self,ensemble_list,score_list,res_target_map,sigma_coeff,number_top_mod=0,write=False,targetMap=False):
@@ -145,22 +145,22 @@ class Consensus:
         list_dict=[]
         if targetMap==False:
             #targetMap = self.protMap(prot, min(resolution/4., 3.5), resolution)
-            print "WARNING:Need target map"
+            print("WARNING:Need target map")
             sys.exit()
         score_select=[]
         for score in score_list:
             #check if score chosen are correct
             if score not in ['CCC','LAP','MI','NV','NV_Sobel','NV_Laplace','ENV','CD']:
-                print 'Incorrect Scoring Function: %s' % score
-                print 'Please select from one of the following scoring functions: %s' % ', '.join(['CCC','LAP','MI','NV','NV_Sobel','NV_Laplace','ENV','CD'])
+                print('Incorrect Scoring Function: %s' % score)
+                print('Please select from one of the following scoring functions: %s' % ', '.join(['CCC','LAP','MI','NV','NV_Sobel','NV_Laplace','ENV','CD']))
                 sys.exit()
             if score not in score_select:
                 score_select.append(score)
             else:
-                print 'Chose the %s twice' % score
+                print('Chose the %s twice' % score)
                 sys.exit()
         for score in score_list:
-            print "******",score
+            print("******",score)
             if score=='CCC':
                 rankCCC=cluster.rank_fit_ensemble(ensemble_list,score,res_target_map,sigma_coeff,number_top_mod=number_top_mod,targetMap=targetMap.copy())
                 dictCCC=Consensus()._makedict(rankCCC)
@@ -224,10 +224,10 @@ class Consensus:
             mode_list=max(set(v), key=v.count)
             
         sorted_dict = sorted(dict_out.items(), key=lambda x: x[1])
-        print "**************"
-        print "Consensus rank"
+        print("**************")
+        print("Consensus rank")
         for fit in sorted_dict:
-            print fit[1],fit[0]
+            print(fit[1],fit[0])
         return sorted_dict
     
     
@@ -307,22 +307,22 @@ class Consensus:
         voters=len(score_list)
         if targetMap==False:
             #targetMap = self.protMap(prot, min(resolution/4., 3.5), resolution)
-            print "WARNING:Need target map"
+            print("WARNING:Need target map")
             sys.exit()
         score_select=[]
         for score in score_list:
             #check if score chosen are correct
             if score not in ['CCC','LAP','MI','NV','NV_Sobel','NV_Laplace','ENV','CD']:
-                print 'Incorrect Scoring Function: %s' % score
-                print 'Please select from one of the following scoring functions: %s' % ', '.join(['CCC','LAP','MI','NV','NV_Sobel','NV_Laplace','ENV','CD'])
+                print('Incorrect Scoring Function: %s' % score)
+                print('Please select from one of the following scoring functions: %s' % ', '.join(['CCC','LAP','MI','NV','NV_Sobel','NV_Laplace','ENV','CD']))
                 sys.exit()
             if score not in score_select:
                 score_select.append(score)
             else:
-                print 'Chose the %s twice' % score
+                print('Chose the %s twice' % score)
                 sys.exit()
         for score in score_list:
-            print "******",score
+            print("******",score)
             if score=='CCC':
                 rankCCC=cluster.rank_fit_ensemble(ensemble_list,score,res_target_map,sigma_coeff,number_top_mod=number_top_mod,targetMap=targetMap.copy())
                 #print rankCCC
@@ -345,7 +345,7 @@ class Consensus:
                 list_dict.append(dictNV)
                 Consensus()._printdict(dictNV)
                 for i in rankNV:
-                	print i[0],i[2]
+                	print(i[0],i[2])
                 
             elif score=='NV_Sobel':        
                 rankNVS=cluster.rank_fit_ensemble(ensemble_list,score,res_target_map,sigma_coeff,number_top_mod=number_top_mod,targetMap=targetMap.copy())   
@@ -398,8 +398,8 @@ class Consensus:
             dict_out[k]=[borda_score,v]
             
         sorted_dict = sorted(dict_out.items(), key=lambda x: x[1][0],reverse=True)
-        print "**************"
-        print "Consensus rank"
+        print("**************")
+        print("Consensus rank")
         line=''
         line+="Borda_score\t"
         for score in score_list:
@@ -415,7 +415,7 @@ class Consensus:
                 line+='%s\t'%s
             m=fit[0]
             line+='%s\n'%m
-        print line
+        print(line)
         return sorted_dict
 
 #need to make it more elegant this come from private scripting.
@@ -456,8 +456,8 @@ class Consensus:
             dict_out[k]=[borda_score,v]
             
         sorted_dict = sorted(dict_out.items(), key=lambda x: x[1][0],reverse=True)
-        print "**************"
-        print "Consensus rank"
+        print("**************")
+        print("Consensus rank")
         line=''
         line+="Borda_score\t"
         count=0
@@ -475,7 +475,7 @@ class Consensus:
                 line+='%s\t'%s
             m=fit[0]
             line+='%s\n'%m
-        print line
+        print(line)
         return sorted_dict
 
 

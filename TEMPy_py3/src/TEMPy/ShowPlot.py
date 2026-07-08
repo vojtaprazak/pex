@@ -268,7 +268,7 @@ class Plot:
         line="model\tscore\tclusterRMSD\n"
         for x in cluster_output:
             line+='%s\t%s\t%s\n'%(x[1],x[0],x[-1])
-        print line
+        print(line)
         if write==True:
             file_out=open(file_name,'w')
             file_out.write(line)
@@ -312,7 +312,7 @@ class Plot:
         #print len(list_mod_load)
         for lab in list_mod_load:
             file_num=lab.split('.')[0].split('_')[-1]
-            print lab,file_num
+            print(lab,file_num)
             for mod in list_mod:
                 #if mod in lab:
                 if mod == file_num:

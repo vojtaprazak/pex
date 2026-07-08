@@ -105,7 +105,7 @@ class ScoringFunctions:
             return False
 
     def _failed_match(self):
-        print "Warning: can't match the map at the moment, use map with same box size." #comment all out!
+        print("Warning: can't match the map at the moment, use map with same box size." #comment all out!)
         sys.exit()
     
     def CCC(self, map_target, map_probe):
@@ -277,8 +277,8 @@ class ScoringFunctions:
         """
         
         if Filter not in ['Sobel','Laplace',None]:
-        	print "Incorrect name of filter: %s" % Filter
-        	print "Select one of the following Filters if applicable: %s\n" % ', '.join(['Sobel','Laplace'])
+        	print("Incorrect name of filter: %s" % Filter)
+        	print("Select one of the following Filters if applicable: %s\n" % ', '.join(['Sobel','Laplace']))
         	sys.exit()
         
         scores = []
@@ -317,9 +317,9 @@ class ScoringFunctions:
                 try:
                         scores.append(abs(n_vec.arg(o_vec)))
                 except ValueError:
-                        print 'Error: Angle between '+ str(n_vec) +', '+ str(o_vec) +' for point %d, %d, %d cannot be calculated.' %(v.x,v.y,v.z)
+                        print('Error: Angle between '+ str(n_vec) +', '+ str(o_vec) +' for point %d, %d, %d cannot be calculated.' %(v.x,v.y,v.z))
         if len(scores) == 0:
-                print "There are no points to be scored! The threshold values or the number of points to be considered needs to be changed."
+                print("There are no points to be scored! The threshold values or the number of points to be considered needs to be changed.")
         else:
                 if sum(scores) == 0:
                         return 0
@@ -450,14 +450,14 @@ class ScoringFunctions:
         else:
             self._failed_match()
             #m1,m2 = matchMaps(map_target, map_probe)
-        print "here"
+        print("here")
         if kdtree:
             return self._hausdorff_list(primary_boundary, secondary_boundary, kdtree, m2).mean()
         else:
-        	print m1,primary_boundary, secondary_boundary
+        	print(m1,primary_boundary, secondary_boundary)
         	kdtree = m1.makeKDTree(primary_boundary, secondary_boundary) #if you don't assine it wil be build one kdtree
         	if kdtree==None:
-        		print "Error. No points selected, change boundary parameters."
+        		print("Error. No points selected, change boundary parameters.")
         		sys.exit()
         	else:
  				return self._hausdorff_list(primary_boundary, secondary_boundary, kdtree, m2).mean()#mean distance to the nearest neighbour 

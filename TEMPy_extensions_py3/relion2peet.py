@@ -1,7 +1,8 @@
 from CifFile import StarFile, ReadStar
 from PEETModelParser import PEETmodel
 from PEETMotiveList import PEETMotiveList
-from transformations import euler_matrix, euler_from_matrix
+from transformations import euler_matrix
+from conversions import euler_from_matrix
 import numpy as np
 from numpy import radians, degrees
 

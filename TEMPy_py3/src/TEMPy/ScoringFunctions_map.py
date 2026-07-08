@@ -90,7 +90,7 @@ class ScoringFunctions_map:
 		if meanDist: return numsum((map_target.fullMap-npmean(map_target.fullMap)) * (map_probe.fullMap-npmean(map_probe.fullMap)))/(sqrt(numsum(square(map_target.fullMap-npmean(map_target.fullMap)))*numsum(square(map_probe.fullMap-npmean(map_probe.fullMap)))))
                 return numsum(map_target.fullMap * map_probe.fullMap)/sqrt(numsum(square(map_target.fullMap))*numsum(square(map_probe.fullMap)))
 	else:
-        	print "@@@ Maps could not be matched"
+        	print("@@@ Maps could not be matched")
                 return -999
  
 
@@ -125,8 +125,8 @@ class ScoringFunctions_map:
         """
 
         if Filter not in ['Sobel','Laplace','Minimum','Mean',None]:
-                print "Incorrect name of filter: %s" % Filter
-                print "Select one of the following Filters if applicable: %s\n" % ', '.join(['Sobel','Laplace','Minimum','Mean'])
+                print("Incorrect name of filter: %s" % Filter)
+                print("Select one of the following Filters if applicable: %s\n" % ', '.join(['Sobel','Laplace','Minimum','Mean']))
                 sys.exit()
 
         scores = []
@@ -187,9 +187,9 @@ class ScoringFunctions_map:
                 try:
                         scores.append(abs(n_vec.arg(o_vec)))
                 except ValueError:
-                        print 'Error: Angle between '+ str(n_vec) +', '+ str(o_vec) +' for point %d, %d, %d cannot be calculated.' %(v.x,v.y,v.z)
+                        print('Error: Angle between '+ str(n_vec) +', '+ str(o_vec) +' for point %d, %d, %d cannot be calculated.' %(v.x,v.y,v.z))
         if len(scores) == 0:
-                print "There are no points to be scored! The threshold values or the number of points to be considered needs to be changed."
+                print("There are no points to be scored! The threshold values or the number of points to be considered needs to be changed.")
         else:
                 if sum(scores) == 0:
                         return 0
@@ -236,7 +236,7 @@ class ScoringFunctions_map:
         """
 	# check if both maps are on the same grid       
         if not self.mapComparison(map_target, map_probe):
-            print "@@@ Maps could not be matched"
+            print("@@@ Maps could not be matched")
             return -999
         # if the boundaries are known, calculate the kdtree
         if Filter == None:
@@ -388,7 +388,7 @@ class ScoringFunctions_map:
             try:
                 perc_equiv = float(cumul_freq)/len(distances)
             except ZeroDivisionError:
-                print 'Distance weighting failed!!. Check surface defined'
+                print('Distance weighting failed!!. Check surface defined')
                 return -999, -999
             sum_sc = sum_sc + ((w)*perc_equiv)
             total += w

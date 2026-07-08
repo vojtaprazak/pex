@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "peet_extensions"
+version = "0.1.0"
+description = "peet_extensions: PEET extensions for subvolume averaging with IMOD"
+authors = [
+    {name = "Daven Vasishtan"},
+    {name = "Vojtech Prazak"},
+]
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = [
+    # TEMPy core
+    "numpy>=1.20",
+    "scipy>=1.7",
+    "biopython>=1.79",
+    # pex extension dependencies
+    "mrcfile",
+    "matplotlib",
+    "scikit-image",
+    "scikit-learn",
+    "lxml",
+    "transforms3d",
+    "transformations",
+    "PyCifRW",
+]
+
+[project.scripts]
+etomo_from_aretomo2 = "TEMPy_extensions_py3.pex_cli:etomo_from_aretomo2"
+make_fid_out_of_3d_model = "TEMPy_extensions_py3.pex_cli:make_fid_out_of_3d_model"
+pex_add_maps = "TEMPy_extensions_py3.pex_cli:pex_add_maps"
+pex_angular_distribution = "TEMPy_extensions_py3.pex_cli:pex_angular_distribution"
+pex_bin_model_files = "TEMPy_extensions_py3.pex_cli:pex_bin_model_files"
+pex_clean_by_planes = "TEMPy_extensions_py3.pex_cli:pex_clean_by_planes"
+pex_clean_by_tilt_ang = "TEMPy_extensions_py3.pex_cli:pex_clean_by_tilt_ang"
+pex_clean_using_chim_markers = "TEMPy_extensions_py3.pex_cli:pex_clean_using_chim_markers"
+pex_clean_using_imod_model = "TEMPy_extensions_py3.pex_cli:pex_clean_using_imod_model"
+pex_combine_model_files = "TEMPy_extensions_py3.pex_cli:pex_combine_model_files"
+pex_combine_prm_files = "TEMPy_extensions_py3.pex_cli:pex_combine_prm_files"
+pex_get_cccs = "TEMPy_extensions_py3.pex_cli:pex_get_cccs"
+pex_get_hexons = "TEMPy_extensions_py3.pex_cli:pex_get_hexons"
+pex_get_icos_symm_pcles = "TEMPy_extensions_py3.pex_cli:pex_get_icos_symm_pcles"
+pex_get_pentons = "TEMPy_extensions_py3.pex_cli:pex_get_pentons"
+pex_get_tetra = "TEMPy_extensions_py3.pex_cli:pex_get_tetra"
+pex_get_zeros_of_ctf = "TEMPy_extensions_py3.pex_cli:pex_get_zeros_of_ctf"
+pex_linear_pick = "TEMPy_extensions_py3.pex_cli:pex_linear_pick"
+pex_make_bilds = "TEMPy_extensions_py3.pex_cli:pex_make_bilds"
+pex_make_chim_markers = "TEMPy_extensions_py3.pex_cli:pex_make_chim_markers"
+pex_make_chim_markers_from_prm = "TEMPy_extensions_py3.pex_cli:pex_make_chim_markers_from_prm"
+pex_make_cylinder = "TEMPy_extensions_py3.pex_cli:pex_make_cylinder"
+pex_make_link_markers = "TEMPy_extensions_py3.pex_cli:pex_make_link_markers"
+pex_make_model_using_centres = "TEMPy_extensions_py3.pex_cli:pex_make_model_using_centres"
+pex_modify_multiple = "TEMPy_extensions_py3.pex_cli:pex_modify_multiple"
+pex_peet_to_dynamo = "TEMPy_extensions_py3.pex_cli:pex_peet_to_dynamo"
+pex_peet_to_pytom = "TEMPy_extensions_py3.pex_cli:pex_peet_to_pytom"
+pex_plot_resolution = "TEMPy_extensions_py3.pex_cli:pex_plot_resolution"
+pex_plotback = "TEMPy_extensions_py3.pex_cli:pex_plotback"
+pex_prm_prep = "TEMPy_extensions_py3.pex_cli:pex_prm_prep"
+pex_randomise_pcles = "TEMPy_extensions_py3.pex_cli:pex_randomise_pcles"
+pex_remove_bad_symm_pcles = "TEMPy_extensions_py3.pex_cli:pex_remove_bad_symm_pcles"
+pex_remove_duplicates = "TEMPy_extensions_py3.pex_cli:pex_remove_duplicates"
+pex_remove_edge_pcles = "TEMPy_extensions_py3.pex_cli:pex_remove_edge_pcles"
+pex_remove_tube_duplicates = "TEMPy_extensions_py3.pex_cli:pex_remove_tube_duplicates"
+pex_revoke_when_complete = "TEMPy_extensions_py3.pex_cli:pex_revoke_when_complete"
+pex_run_sumcorr_for_tomo_SerEM_dev = "TEMPy_extensions_py3.pex_cli:pex_run_sumcorr_for_tomo_SerEM_dev"
+pex_scale_map = "TEMPy_extensions_py3.pex_cli:pex_scale_map"
+pex_spherical_clean = "TEMPy_extensions_py3.pex_cli:pex_spherical_clean"
+pex_spherical_pick = "TEMPy_extensions_py3.pex_cli:pex_spherical_pick"
+pex_split_by_class = "TEMPy_extensions_py3.pex_cli:pex_split_by_class"
+pex_split_for_FSC = "TEMPy_extensions_py3.pex_cli:pex_split_for_FSC"
+pex_symm_checker = "TEMPy_extensions_py3.pex_cli:pex_symm_checker"
+pex_symmetrise = "TEMPy_extensions_py3.pex_cli:pex_symmetrise"
+rex_make_subtomo_dose_file = "TEMPy_extensions_py3.pex_cli:rex_make_subtomo_dose_file"
+rex_star_to_newstack = "TEMPy_extensions_py3.pex_cli:rex_star_to_newstack"
+test_pex_unblur = "TEMPy_extensions_py3.pex_cli:test_pex_unblur"
+
+# TEMPy is sourced from TEMPy_py3/src/; extensions live at the repo root
+[tool.setuptools]
+packages = ["TEMPy", "TEMPy_extensions_py3"]
+
+[tool.setuptools.package-dir]
+"TEMPy" = "TEMPy_py3/src/TEMPy"

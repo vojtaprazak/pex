@@ -68,14 +68,14 @@ class RBParser:
 			try:
 				return RB_structureinstance_tot
 			except UnboundLocalError:
-				print "wrong residues number"
+				print("wrong residues number")
 	
 		else:
 			for structure in RB_structureinstance_tot:
 				try:
 					return structure
 				except UnboundLocalError:
-					print "wrong residues number"
+					print("wrong residues number")
 
 
 	@staticmethod

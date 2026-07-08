@@ -2,7 +2,8 @@ from MapParser_f32_new import *
 from Vector import *
 from PEETModelParser import PEETmodel
 from PEETMotiveList import PEETMotiveList
-from transformations import euler_matrix, euler_from_matrix
+from transformations import euler_matrix
+from conversions import euler_from_matrix
 import numpy as np
 
 

@@ -1,6 +1,7 @@
 from Vector import *
 from conversions import *
 from transformations import *
+from conversions import euler_from_matrix
 from make_stalk_prm_file import *
 import subprocess, sys
 from scipy import interpolate

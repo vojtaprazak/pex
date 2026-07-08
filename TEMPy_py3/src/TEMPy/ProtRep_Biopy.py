@@ -550,14 +550,14 @@ REMARK    MODEL GENERATE WITH TEMPY
             g.write(line)
             #last_prot_num+=1
 
-        print last_prot_num
+        print(last_prot_num)
         if hetatom==True:
             hetstr=BioPy_Structure(hetatmlist)
             hetchain=hetstr.split_into_chains()
             for chain in range(len(hetchain)):
                 if chain==0:
                 #hetchain[chain].renumber_atoms()
-                    print last_prot_num
+                    print(last_prot_num)
                     hetchain[chain].renumber_atoms(start_num=last_prot_num+2)
 
                 else:
@@ -821,9 +821,9 @@ REMARK    MODEL GENERATE WITH TEMPY
         else:
             noc = self.no_of_chains()
             if len(chain_list) != self.no_of_chains():
-                print 'No. of chains in structure = '+str(noc)
-                print 'Length of chain list = '+str(len(chain_list))
-                print 'Chains not changed.'
+                print('No. of chains in structure = '+str(noc))
+                print('Length of chain list = '+str(len(chain_list)))
+                print('Chains not changed.')
                 return
         ch = self.atomList[0].chain
         renum = 0
@@ -927,7 +927,7 @@ REMARK    MODEL GENERATE WITH TEMPY
                     if otherStruct.atomList[a].atom_name == 'CA':
                         dists.append(self.atomList[a].distance_from_atom(otherStruct.atomList[a]))
                     else:
-                        print self.atomList[a].atom_name, otherStruct.atomList[a].atom_name,self.atomList[a].res_no, otherStruct.atomList[a].res_no
+                        print(self.atomList[a].atom_name, otherStruct.atomList[a].atom_name,self.atomList[a].res_no, otherStruct.atomList[a].res_no)
             else:
                 dists.append(self.atomList[a].distance_from_atom(otherStruct.atomList[a]))
         dists = array(dists)
@@ -1049,7 +1049,7 @@ REMARK    MODEL GENERATE WITH TEMPY
         if len(newAtomList)!=0:
             return BioPy_Structure(newAtomList)
         else:
-            print "Warning no chain %s found"%chainID
+            print("Warning no chain %s found"%chainID)
     
     
     def get_selection(self, startRes, finishRes):
@@ -1108,7 +1108,7 @@ REMARK    MODEL GENERATE WITH TEMPY
             else:
                 structList.append(fstStruct)
         if len(structList) ==0:
-        	print "Error: Residues not in PDB."
+        	print("Error: Residues not in PDB.")
         	sys.exit()
         else:
         	return structList

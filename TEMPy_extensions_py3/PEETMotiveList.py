@@ -9,7 +9,8 @@
 
 
 
-from transformations import euler_matrix, euler_from_matrix
+from transformations import euler_matrix
+from conversions import euler_from_matrix
 from copy import deepcopy
 from Vector import Vector, axis_angle_to_matrix, random_vector
 from math import cos, sin, radians, degrees

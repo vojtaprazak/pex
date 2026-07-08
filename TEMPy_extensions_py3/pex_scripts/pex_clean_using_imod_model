@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
+
+def main():
+    # -*- coding: utf-8 -*-
+
+    from subprocess import check_output
+    import os
+    from PEETPRMParser import PEETPRMFile
+    from PEETModelParser import PEETmodel
+    from PEETMotiveList import PEETMotiveList
+    import argparse
+    from modify_multiple_lib import check_prm_ite
+    from os.path import realpath, isdir, join, split
+    from shutil import copyfile
+
+    from scipy.spatial import KDTree
+    import numpy as np
+    from copy import deepcopy
+
+
+    def clean_prm_using_model(refprm_p, modprm_p, out_dir, ref_ite = 0, mod_ite = 0, distance = np.inf):
+
+        def get_mod_and_motls(prmpath, ite):
+            prm = PEETPRMFile(prmpath)
+            mods = prm.prm_dict['fnModParticle']
+            motls = check_prm_ite(prm, ite, prmpath)
+            all_coords = []
+            for x in mods:
+                t = PEETmodel(x).get_all_points()
+                if len(t) == 0:
+                    t = np.array([]).reshape(0,3)
+                all_coords.append(t)
+
+            return prm, mods, motls, all_coords
+
+        if not isdir(out_dir):
+            os.makedirs(out_dir)
+
+        out_dir = realpath(out_dir)
+        refprm_p = realpath(refprm_p)
+        modprm_p = realpath(modprm_p)
+
+        refprm, ref_mods, ref_motls, ref_all_coords = get_mod_and_motls(refprm_p, ref_ite)
+        modprm, mod_mods, mod_motls, mod_all_coords = get_mod_and_motls(modprm_p, mod_ite)
+
+        out_prm = deepcopy(modprm)
+        out_prm_path = join(out_dir, ('.').join(split(modprm_p)[1].split('.'))[:-1] + '_mod_clean.prm')
+        out_mods = [join(out_dir, split(x)[1]) for x in mod_mods]
+        out_motls = [join(out_dir, split(x)[1]) for x in mod_motls]
+        _ = [copyfile(mod_mods[x], out_mods[x]) for x in range(len(mod_mods))]
+
+        if len(np.vstack(ref_all_coords)) < len(np.vstack(mod_all_coords)):
+            raise Exception('Prm1 contains more model points than prm2. Exiting.')
+        for x in range(len(mod_mods)):
+
+            #find corresponding points
+            tree = KDTree(ref_all_coords[x])
+            dst, pos = tree.query(mod_all_coords[x], distance_upper_bound = distance)
+
+            im = PEETMotiveList(mod_motls[x])
+            om = PEETMotiveList()
+            _ = [om.add_pcle(im[y]) for y in pos]
+
+            om.renumber()
+            om.write_PEET_motive_list(out_motls[x])
+
+            if np.sum([n[3] for n in om[:10]])!= np.sum(np.arange(1,11)):
+                #no comprendo
+                om.write_PEET_motive_list(out_motls[x])
+                om = PEETMotiveList(out_motls[x])
+                om.renumber()
+
+            om.write_PEET_motive_list(out_motls[x])
+
+            print('Removed %s out of %s particles.' % (len(ref_all_coords[x]) - len(pos), len(ref_all_coords[x])))
+
+        out_prm.prm_dict['initMOTL'] = out_motls
+        out_prm.prm_dict['fnModParticle'] = out_mods
+        out_prm.write_prm_file(out_prm_path)
+
+
+
+    parser = argparse.ArgumentParser(description=("Remove particles from one prm using another."))
+
+    parser.add_argument('prm1', help = 'Original unmodified prm.')
+    parser.add_argument('prm2', help = 'Prm file where model points have been removed.')
+    parser.add_argument('out_dir')
+    parser.add_argument('--iter1', help = 'Iteration for prm1, default 0', default = 0, type = int)
+    parser.add_argument('--iter2', help = 'Iteration for prm2, default 0', default = 0, type = int)
+    parser.add_argument('--distance_limit', help = 'Search within specified radius.', type = float, default = None)
+
+    args = parser.parse_args()
+
+    if args.distance_limit is None:
+        distance_limit = np.inf
+    else:
+        distance_limit = args.distance_limit
+
+    clean_prm_using_model(args.prm1, args.prm2, args.out_dir, ref_ite = args.iter1, mod_ite = args.iter2, distance = distance_limit)
+
+
+
+if __name__ == '__main__':
+    main()

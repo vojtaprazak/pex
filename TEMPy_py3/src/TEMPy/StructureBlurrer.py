@@ -232,7 +232,7 @@ class StructureBlurrer:
         #Daven always use that so that it blurred based on the experiment box
         if not densMap:
             densMap = self.protMap(prot, min(resolution/4., 3.5), resolution)
-            print "WARNING: Use StructureBlurrer.gaussian_blur_box() to blured a map with a user defined defined cubic box"
+            print("WARNING: Use StructureBlurrer.gaussian_blur_box() to blured a map with a user defined defined cubic box")
             #from here till newMap.fullMap*=0 are few line of code that create an empty map with the new A/px of 1
             #this replace the make_clash_map(apix) function. they do the job but they need to be replaced with something more rigorous
         x_s = int(densMap.x_size()*densMap.apix)
@@ -332,7 +332,7 @@ class StructureBlurrer:
 
         if not densMap:
             densMap = self.protMap(prot, min(resolution/4., 3.5), resolution)
-            print "WARNING: Use StructureBlurrer.hard_sphere() to create a map with a user defined defined cubic box"
+            print("WARNING: Use StructureBlurrer.hard_sphere() to create a map with a user defined defined cubic box")
         x_s = int(densMap.x_size()*densMap.apix)
         y_s = int(densMap.y_size()*densMap.apix)
         z_s = int(densMap.z_size()*densMap.apix)
@@ -423,7 +423,7 @@ class StructureBlurrer:
         """
         if not densMap:
             densMap = self.protMap(prot, min(resolution/4., 3.5), resolution)
-            print "WARNING: Use StructureBlurrer.gaussian_blur_real_space_box() to blured a map with a user defined defined cubic box"
+            print("WARNING: Use StructureBlurrer.gaussian_blur_real_space_box() to blured a map with a user defined defined cubic box")
         x_s = int(densMap.x_size()*densMap.apix)
         y_s = int(densMap.y_size()*densMap.apix)
         z_s = int(densMap.z_size()*densMap.apix)
@@ -527,7 +527,7 @@ class StructureBlurrer:
                     t2 = time()
                     newMap[z][y][x] = self.bandpass_eq_gaussian(dist, lopass, lopass_min, lowid, hipass, hiwid)
                     t3 = time()
-                    print t2-t1, t3-t2
+                    print(t2-t1, t3-t2)
         return newMap
 
     def _bandpass_eq_gaussian(self, dist, lopass, lopass_min, lowid, hipass, hiwid):
@@ -557,6 +557,6 @@ class StructureBlurrer:
         for x in range(l_len):
             a[x] = self.bandpass_eq_gaussian(x, lopass, lopass_min, lowid, hipass, hiwid)
         end = time()
-        print end-start
+        print(end-start)
         return a
     
