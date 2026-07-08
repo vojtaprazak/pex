@@ -31,8 +31,8 @@ def make_cylinder(box_size, radius, height, symm_axis=1, centre=False, apix=1, f
     new_map = fill*(new_map<=radius**2)
     new_map = Map(new_map, origin, apix, 'cyl')
 
-    botcut = new_map.pixel_centre()[symm_axis] + height/2
-    topcut = new_map.pixel_centre()[symm_axis] - height/2
+    botcut = int(new_map.pixel_centre()[symm_axis] + height/2)
+    topcut = int(new_map.pixel_centre()[symm_axis] - height/2)
 
     if symm_axis == 0:
         new_map.fullMap[:,:,:topcut] = np.zeros([box_size[2], box_size[1], topcut])

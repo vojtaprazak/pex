@@ -419,7 +419,7 @@ def pcle_links(csvfile, modfile, max_dist, apix, maxnbrs=6, outfile='', head_rad
                 lnk.append(l)
         
         links.append(array(lnk))
-    links = array(links)
+    links = array(links, dtype=object)
     if outfile:
         points = csvfile.get_all_offsets()+modfile.get_all_points()
         inpfile = etree.Element('marker_set', name='1')

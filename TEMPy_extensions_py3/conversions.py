@@ -2,6 +2,7 @@ from transformations import *
 from Vector import *
 import math
 from math import cos,sin, radians, degrees
+import numpy
 from numpy import savetxt, array
 import numpy as _np
 import subprocess

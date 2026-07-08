@@ -230,7 +230,7 @@ def get_pentons(diameter, outfile=False, orient='i2'):
     vert.append(Vector(-t,0,-w))
     vert.append(Vector(-t,0,w))
 
-    vert = [v.unit()*diameter/2. for v in vert]
+    vert = [v.unit()*(diameter/2.) for v in vert]
 
     for v in range(len(vert)):
         mat = axis_angle_to_matrix(0,1,0,90)

@@ -854,9 +854,9 @@ class Map:
         new_map = self.copy()
         apix_ratio = self.apix/new_apix
         #new_map.apix = new_apix
-        new_map.fullMap = resample(new_map.fullMap, self.z_size()*apix_ratio, axis=0)
-        new_map.fullMap = resample(new_map.fullMap, self.y_size()*apix_ratio, axis=1)
-        new_map.fullMap = resample(new_map.fullMap, self.x_size()*apix_ratio, axis=2)        
+        new_map.fullMap = resample(new_map.fullMap, int(round(self.z_size()*apix_ratio)), axis=0)
+        new_map.fullMap = resample(new_map.fullMap, int(round(self.y_size()*apix_ratio)), axis=1)
+        new_map.fullMap = resample(new_map.fullMap, int(round(self.x_size()*apix_ratio)), axis=2)        
         new_map.apix = (self.apix*self.box_size()[2])/new_map.box_size()[2]
         return new_map
 
@@ -1518,7 +1518,7 @@ class Map:
         maparray = array(self.fullMap, dtype='float32')
         f = open(mrcfilename, 'wb')
         f.write(h)
-        f.write(maparray.tostring())
+        f.write(maparray.tobytes())
         f.close()
 
     def update_header(self):
@@ -1607,7 +1607,7 @@ class Map:
         amean = float32(self.mean())
         ispg = int32(0)
         nsymbt = int32(0)
-        extra = zeros(10).tostring()
+        extra = zeros(10).tobytes()
         xorigin = float32(self.origin[0])
         yorigin = float32(self.origin[1])
         zorigin = float32(self.origin[2])
@@ -1618,8 +1618,8 @@ class Map:
             byteorder = 0x11110000
         rms = float32(self.std())
         nlabels = int32(1)
-        label0 = 'Created by TEMpy on: ' + str(datetime.date.today()) + zeros(49).tostring()
-        otherlabels = zeros(90).tostring()
+        label0 = ('Created by TEMpy on: ' + str(datetime.date.today())).encode() + zeros(49).tobytes()
+        otherlabels = zeros(90).tobytes()
 
         fm_string = '=10l6f3l3f2l100s3f4slfl80s720s'
         packed = binary.pack(fm_string, nx, ny, nz, mode, nxstart, nystart, nzstart, mx, my, mz, xlen, ylen, zlen, alpha, beta, gamma,\

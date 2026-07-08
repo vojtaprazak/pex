@@ -49,13 +49,13 @@ def symm_checker(mapfile, axis=(0,1,0), maskfile=False, axis_centre=False, step=
     fou = real(fftshift(fft(scores)))
 
     if outfile:
-        f = file(outfile+'.txt','w')
-        for x in range(360/step):
+        f = open(outfile+'.txt','w')
+        for x in range(360//step):
             f.write(str(x*step)+'\t'+str(scores[x])+'\n')
         f.close()
-        f = file(outfile+'_fou.txt','w')
-        for x in range(180/step):
-            f.write(str(x)+'\t'+str(fou[x+len(fou)/2])+'\n')
+        f = open(outfile+'_fou.txt','w')
+        for x in range(180//step):
+            f.write(str(x)+'\t'+str(fou[x+len(fou)//2])+'\n')
         f.close()
 
     figure(figsize=(12,15))
@@ -71,8 +71,10 @@ def symm_checker(mapfile, axis=(0,1,0), maskfile=False, axis_centre=False, step=
     ylabel('Amplitude')
     title('Limited range fourier transform')
     grid(True)
-    plot(list(range(1,13)),fou[1+len(fou)/2:13+len(fou)/2])
-    #plot(range(1,len(scores)/2),fou[1+len(fou)/2:])
+    _half = len(fou)//2
+    _n = min(12, len(fou) - _half - 1)
+    plot(list(range(1, _n+1)), fou[_half+1:_half+1+_n])
+    #plot(range(1,len(scores)//2),fou[1+len(fou)//2:])
     subplot(222)
     xlabel('Angle/degrees')
     ylabel('Correlation')
@@ -85,7 +87,7 @@ def symm_checker(mapfile, axis=(0,1,0), maskfile=False, axis_centre=False, step=
     ylabel('Amplitude')
     title('Fourier transform')
     grid(True)
-    plot(list(range(len(scores)/2)),fou[len(fou)/2:])
+    plot(list(range(len(scores)//2)),fou[len(fou)//2:])
     if outfile:
         savefig(outfile+'.png')
     if verbose:

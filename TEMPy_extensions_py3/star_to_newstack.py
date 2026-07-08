@@ -7,7 +7,7 @@ def star_to_newstack_input(star_file, outfile):
     no_of_mics = len(set(star['images']['_rlnMicrographName']))
     curr_mic = im_names[0].split('@')[1]
 
-    with file(outfile, 'w') as f:
+    with open(outfile, 'w') as f:
         f.write(str(no_of_mics)+'\n'+ curr_mic + '\n')
         for p in im_names:
             pcle, new_mic = p.split('@')

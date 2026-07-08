@@ -47,7 +47,7 @@ def make_pytom_xml_file(pcle_path, pcle_template, tomogram, modfile, wedge_angs,
             wedge_rot.append(etree.SubElement(wedge[-1], 'Rotation',  X='0.0', Z1='0.0', Z2='0.0'))
             cl.append(etree.SubElement(pcles[-1], 'Class', Name='0'))
         
-    out = open(output_file, 'w')
+    out = open(output_file, 'wb')
     doc.write(out, pretty_print=True)
 
 
@@ -139,7 +139,7 @@ def extract_pcles_using_PEET_PRM(prmfile, iteration, box_size, num_start=1, no_o
     write_job_xml("all_pcle_lists.xml", "job.xml")
     
 def combine_pcle_lists(pcle_lists, outfile):
-    with file(outfile, 'w') as f:
+    with open(outfile, 'w') as f:
         f.write("<ParticleList>\n")
         for l in pcle_lists:
             lines = open(l, 'r').readlines()[1:-1]
@@ -148,7 +148,7 @@ def combine_pcle_lists(pcle_lists, outfile):
 
 
 def write_job_xml(pcle_list, outfile):
-    with file(outfile, 'w') as f:
+    with open(outfile, 'w') as f:
         f.write("<FRMJob Destination='.' BandwidthRange='[4, 64]' Frequency='6' MaxIterations='10' PeakOffset='10' AdaptiveResolution='0.1' FSC='0.5'>\n")
         f.write("""<Reference PreWedge="XXX-PreWedge.em" File="XXX.em" Weighting="XXX.em"/>\n""")
         f.write("""<Reference PreWedge="XXX-PreWedge.em" File="XXX.em" Weighting="XXX.em"/>\n""")

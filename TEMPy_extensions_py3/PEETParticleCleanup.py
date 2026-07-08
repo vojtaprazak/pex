@@ -462,6 +462,8 @@ def transfer_offsets_to_model(motl, model):
     *model*
         PEETmodel instance.
     """
+    if len(motl) == 0:
+        return motl, model
     if not len(motl) == len(model):
         raise TypeError("Motive list and model file have lengths of "+str(len(motl))+" and "+str(len(model))+". Lengths must be the same! Aborting...")
     offsets = motl.get_all_offsets()

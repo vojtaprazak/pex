@@ -11,4 +11,4 @@ def get_cumulative_dose(tomo, outfile=''):
     dose = cumsum(dose)
     out = array([array(x) for x in zip(tilts, dose)])
     if outfile:
-        savetxt(file(outfile, 'w'), out, fmt='%.4f')
+        savetxt(outfile, out, fmt='%.4f')

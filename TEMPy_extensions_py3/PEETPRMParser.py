@@ -765,7 +765,7 @@ class PEETPRMFile:
         dists = concatenate(dists, axis=0)
 
         if outfile:
-            savetxt(file(outfile, 'w'), dists)
+            savetxt(outfile, dists)
         return dists
     
     """

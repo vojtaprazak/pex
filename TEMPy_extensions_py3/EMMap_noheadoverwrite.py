@@ -856,9 +856,9 @@ class Map:
         new_map = self.copy()
         apix_ratio = self.apix/new_apix
         #new_map.apix = new_apix
-        new_map.fullMap = resample(new_map.fullMap, self.z_size()*apix_ratio, axis=0)
-        new_map.fullMap = resample(new_map.fullMap, self.y_size()*apix_ratio, axis=1)
-        new_map.fullMap = resample(new_map.fullMap, self.x_size()*apix_ratio, axis=2)        
+        new_map.fullMap = resample(new_map.fullMap, int(round(self.z_size()*apix_ratio)), axis=0)
+        new_map.fullMap = resample(new_map.fullMap, int(round(self.y_size()*apix_ratio)), axis=1)
+        new_map.fullMap = resample(new_map.fullMap, int(round(self.x_size()*apix_ratio)), axis=2)        
         new_map.apix = (self.apix*self.box_size()[2])/new_map.box_size()[2]
         return new_map
 
@@ -1532,7 +1532,7 @@ class Map:
         f.write(h)
         if self.ext_header:
             f.write(binary.pack('<'+(len(self.ext_header)*'f'), *self.ext_header))
-        f.write(maparray.tostring())
+        f.write(maparray.tobytes())
         f.close()
 
 
