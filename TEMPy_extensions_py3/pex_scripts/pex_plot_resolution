@@ -4,12 +4,6 @@ _sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)
 
 
 def main():
-    # -*- coding: utf-8 -*-
-    """
-    Created on Mon Aug 13 14:09:40 2018
-
-    @author: vojta
-    """
     import os
     from os.path import split, join, realpath
     import glob
@@ -20,79 +14,95 @@ def main():
     from PEET_matlab_trans_fn import fsc
     import mrcfile
 
-
-
-
-    def get_vols(path, base = False):
-        os.chdir(path)
+    def get_vols(path, base=False):
+        path = realpath(path)
         if base:
-            unm = glob.glob('%s*.mrc')
+            unm = sorted(glob.glob(os.path.join(path, '%s*.mrc' % base)))
             ma = []
         else:
-            unm = glob.glob('unMasked*_Ref?.mrc') + glob.glob('unMasked*_Ref??.mrc')
+            unm = sorted(
+                glob.glob(os.path.join(path, 'unMasked*_Ref?.mrc')) +
+                glob.glob(os.path.join(path, 'unMasked*_Ref??.mrc'))
+            )
             unm = [realpath(x) for x in unm]
+            if len(unm) < 1:
+                raise Exception('No averages found in %s' % path)
+            bn = split(unm[0])[1].split('_')[0][8:]
+            ma = sorted(
+                glob.glob(os.path.join(path, '%s_Ref?.mrc' % bn)) +
+                glob.glob(os.path.join(path, '%s_Ref??.mrc' % bn))
+            )
+            ma = [realpath(x) for x in ma]
         if len(unm) < 1:
             raise Exception('No averages found in %s' % path)
-        if not base:
-            bn = split(unm[0])[1].split('_')[0][8:]
-            ma = glob.glob('%s_Ref?.mrc' % (bn)) + glob.glob('%s_Ref??.mrc' % (bn))
-            ma = [realpath(x) for x in ma]
-            unm = sorted(unm)
-            ma = sorted(ma)
         return unm, ma
 
-    def plot_res(path1, path2, base = False, use_unmasked = False, edgeWidth = 2):
-        u1, m1 = get_vols(path1, base = base)
-        u2, m2 = get_vols(path2, base = base)
-        if base or use_unmasked:
-            v1 = u1
-            v2 = u2
-            winName = '1'
-        else:
-            v1 = m1
-            v2 = m2
-            winName = None
-
-        apix = float(check_output('header -p %s' % v1[0], shell = True).decode().split()[0])
-        labels = [split(x)[1] for x in v1]
-        a = []
-        for x in range(min(len(u1), len(u2))):
+    def compute_fscs(v1, v2, edgeWidth=2, winName=None):
+        curves = []
+        fs = None
+        for x in range(min(len(v1), len(v2))):
             ar1 = mrcfile.open(v1[x]).data
             ar2 = mrcfile.open(v2[x]).data
-            ta, fs = fsc(ar1, ar2, fShells = False, edgeWidth = edgeWidth, winName = winName)
-            a.append(ta)
-        xt = apix/fs
+            ta, fs = fsc(ar1, ar2, fShells=False, edgeWidth=edgeWidth, winName=winName)
+            curves.append(ta)
+        return curves, fs
+
+    def fill_subplot(ax, fs, curves, labels, apix, title):
+        xt = apix / fs
         la = []
         for x in range(len(xt)):
             if len(str(np.round(xt[x])).split('.')[0]) > 1:
                 la.append(int(np.round(xt[x])))
             else:
-                la.append(np.round(xt[x], decimals = 1))
-
-        la = la[::4]
-        ff, ax = plt.subplots()
+                la.append(np.round(xt[x], decimals=1))
         ax.set_xticks(fs[::4])
-        ax.set_xticklabels(la)
-        ax.axhline(y = 0.143, c = 'k', linewidth = 0.5, ls = '--')
-        ax.axhline(y = 0.5, c = 'k', linewidth = 0.5, ls = '--')
+        ax.set_xticklabels(la[::4])
+        ax.axhline(y=0.143, c='k', linewidth=0.5, ls='--', label='0.143')
+        ax.axhline(y=0.5, c='k', linewidth=0.5, ls=':', label='0.5')
+        for i, curve in enumerate(curves):
+            ax.plot(fs, curve, label=labels[i], alpha=0.7)
+        ax.set_title(title)
+        ax.set_xlabel('Spatial frequency (Å)')
+        ax.set_ylabel('FSC')
+        ax.legend(fontsize='small')
 
-        for x in range(len(a)): 
-            ax.plot(fs, a[x], label = labels[x], alpha = 0.5)
-        ff.legend()
-        plt.show()
+    def plot_res(path1, path2, base=False, edgeWidth=2):
+        u1, m1 = get_vols(path1, base=base)
+        u2, m2 = get_vols(path2, base=base)
+
+        apix = float(check_output(['header', '-p', u1[0]]).decode().split()[0])
+
+        ncols = 2 if (not base and m1 and m2) else 1
+        fig, axes = plt.subplots(1, ncols, figsize=(7 * ncols, 5))
+        if ncols == 1:
+            axes = [axes]
+
+        unm_labels = [split(x)[1] for x in u1]
+        unm_curves, fs = compute_fscs(u1, u2, edgeWidth=edgeWidth, winName='hanning')
+        fill_subplot(axes[0], fs, unm_curves, unm_labels, apix, 'Unmasked')
+
+        if ncols == 2:
+            ma_labels = [split(x)[1] for x in m1]
+            ma_curves, fs = compute_fscs(m1, m2, edgeWidth=edgeWidth, winName=None)
+            fill_subplot(axes[1], fs, ma_curves, ma_labels, apix, 'Masked')
+
+        fig.tight_layout()
         plt.savefig('fsc.png')
-
+        plt.show()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('dir1', help = 'Path to directory containing PEET averages')
-    parser.add_argument('dir2')
-    parser.add_argument('--use_unmasked', action = 'store_true', default = False, help = 'Use unmasked averages')
-    parser.add_argument('--base_name', help = 'Averages have non-standard name. Search for base_name*.mrc instead', default = False)
-    parser.add_argument('--edge_width', help = 'Padding width', default = 2, type = int)
+    parser.add_argument('dir1', help='Path to directory containing PEET averages (half-set 1)')
+    parser.add_argument('dir2', help='Path to directory containing PEET averages (half-set 2)')
+    parser.add_argument('--base_name', help='Averages have non-standard name. Search for base_name*.mrc instead',
+                        default=False)
+    parser.add_argument('--edge_width', help='Padding width', default=2, type=int)
     args = parser.parse_args()
 
-    plot_res(args.dir1, args.dir2, base = args.base_name, use_unmasked = args.use_unmasked, edgeWidth = args.edge_width)
+    # Resolve to absolute paths before any processing so relative paths work from any cwd
+    dir1 = realpath(args.dir1)
+    dir2 = realpath(args.dir2)
 
+    plot_res(dir1, dir2, base=args.base_name, edgeWidth=args.edge_width)
 
 
 if __name__ == '__main__':
